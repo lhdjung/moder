@@ -188,30 +188,17 @@ mode_all <- function(x, na.rm = FALSE) {
 #'
 #' @examples
 mode_single <- function(x, na.rm = FALSE) {
-  # Remove `NA`s if desired:
-  if (na.rm) {
-    x <- x[!is.na(x)]
-  }
   # We need to check the number of
   # modes here, so we call `mode_all()`.
   # `na.rm` is `FALSE` here because, if
   # the user set it to `TRUE`, missing
   # values were removed already.
-  mode1 <- mode_all(x, FALSE)
+  mode1 <- mode_all(x, na.rm)
   # As the name says, if the distribution
   # has a single mode (that passes the
-  # `NA` test), that value is returned.
-  # `NA` testing without allowing for ties
-  # between the `mode1` count and the sum
-  # of the `mode2` and `NA` counts
-  # (`FALSE` at the end) is necessary here
-  # because we need to make sure that
-  # `mode1` is really the only mode, even
-  # if all `NA`s stand in for `mode2`
-  # (the latter is computed within
-  # `decide_mode_na()`):
+  # `NA` test), that value is returned:
   if (length(mode1) == 1L) {
-    decide_mode_na(x, unique(x[!is.na(x)]), mode1)
+    mode1
     # Multimodal distributions are always `NA`.
     # Some users prefer this stricter way of
     # estimating the mode, or they require it
@@ -229,17 +216,20 @@ mode_single <- function(x, na.rm = FALSE) {
 #'
 #' @inheritParams mode_all
 #'
-#' @return Integer. Number of modes in `x`. If the modes can't be determined
-#'   because of missing values, returns `NA` instead.
+#' @return Integer. Number of modes (values tied for most frequent) in `x`. If
+#'   the modes can't be determined because of missing values, returns `NA`
+#'   instead.
 #'
 #' @export
 #'
 #' @examples
 mode_count <- function(x, na.rm = FALSE) {
   modes <- mode_all(x, na.rm)
-  # This condition needs to be wrapped in `all()` because multiple modes would
-  # otherwise lead to an error:
-  if (all(is.na(modes))) {
+  # If the set if modes can't be determined, the number of modes is an unknown
+  # integer. The length of `modes` is tested beforehand because it quickly rules
+  # out cases where `NA` testing is not necessary, and because multiple return
+  # values from `is.na()` would lead to an error in `if`:
+  if (length(modes) == 1L && is.na(modes)) {
     NA_integer_
   } else {
     length(modes)
