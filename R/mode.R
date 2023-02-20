@@ -222,6 +222,31 @@ mode_single <- function(x, na.rm = FALSE) {
 }
 
 
+#' Number of modes
+#'
+#' `mode_count()` counts the modes in a vector. Thin wrapper around
+#' [`mode_all()`].
+#'
+#' @inheritParams mode_all
+#'
+#' @return Integer. Number of modes in `x`. If the modes can't be determined
+#'   because of missing values, returns `NA` instead.
+#'
+#' @export
+#'
+#' @examples
+mode_count <- function(x, na.rm = FALSE) {
+  modes <- mode_all(x, na.rm)
+  # This condition needs to be wrapped in `all()` because multiple modes would
+  # otherwise lead to an error:
+  if (all(is.na(modes))) {
+    NA_integer_
+  } else {
+    length(modes)
+  }
+}
+
+
 # Helper function; not exported but called within all exported functions:
 decide_mode_na <- function(x, ux, mode1) {
   if (length(ux) == 1L) {
