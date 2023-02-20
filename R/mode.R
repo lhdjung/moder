@@ -61,42 +61,43 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     count_mode2_na <- 0L
   }
   count_mode2_na <- max(count_mode2_na) + length(x[is.na(x)])
-  # By default, `first_known = TRUE` lowers
-  # the threshold that `mode1` needs to pass
-  # by 1. That is because it accepts the first
-  # known mode even if that value appears only
-  # after the possible other mode, `mode2`:
-  if (first_known) {
-    count_mode2_na <- count_mode2_na - 1
-  }
+  # The highest count -- that of `mode1` --
+  # may decide the outcome right below.
+  # If it's higher than the highest possible
+  # count of any other value (`count_mode2_na`),
+  # it follows that `mode1` is the mode.
   if (max(tab) > count_mode2_na) {
     return(mode1)
+    # Otherwise, the only way the mode might
+    # still be determined is for the highest
+    # count to be at least half of the full
+    # length of the input:
+  } else if (max(tab) < length(x) / 2) {
+    return(methods::as(NA, typeof(x)))
+    # `mode_first()` is agnostic about other modes.
+    # By default (`first_known = TRUE`), it returns
+    # either the first-appearing value that is known
+    # to be a mode or `NA`. That's a pragmatic default.
+    # If a value might be a mode depending on true values
+    # behind `NA`s, and it appears before the first `mode1`
+    # value, the function still returns `mode1`.
+    # Set `first_known` to `FALSE` to make the function
+    # return `NA` in such cases. The idea is that, strictly
+    # speaking, the true first mode is unknown here.
+    # For example, `mode_first(c(2, 1, 1, NA))` returns `1`
+    # although `2` appears first -- and `2` might be another
+    # mode, but the first value that is known to be a mode
+    # is `1`. `mode_first(c(2, 1, 1, NA), first_known = FALSE)`
+    # returns `NA`.
+  } else if (first_known) {
+    return(mode1)
   }
-  # `mode_first()` is agnostic about other modes.
-  # By default (`first_known = TRUE`), it returns
-  # either the first-appearing value that is known
-  # to be a mode or `NA`. That's a pragmatic default.
-  # If a value might be a mode depending on true values
-  # behind `NA`s, and it appears before the first `mode1`
-  # value, the function still returns `mode1`.
-  # Set `first_known` to `FALSE` to make the function
-  # return `NA` in such cases. The idea is that, strictly
-  # speaking, the true first mode is unknown here.
-  # For example, `mode_first(c(2, 1, 1, NA))` returns `1`
-  # although `2` appears first -- and `2` might be another
-  # mode, but the first value that is known to be a mode
-  # is `1`. `mode_first(c(2, 1, 1, NA), first_known = FALSE)`
-  # returns `NA`.
   # Get the most frequent known value that is not `mode1`:
   mode2 <- ux[which.max(tabulate(match(x[x != mode1], ux)))]
-  mode1_appears_first <- match(mode1, x) < match(mode2, x)
-  mode1_is_half_or_more <- max(tab) >= length(x) / 2
-  if (mode1_is_half_or_more && (mode1_appears_first || first_known)) {
+  # Check whether `mode1` appears before `mode2`:
+  if (match(mode1, x) < match(mode2, x)) {
     mode1
-    # Call a helper function that adjudicates
-    # whether or not it's still possible to
-    # determine the mode:
-  } else if (length(ux) == 1L && mode1_is_half_or_more) {
+  } else if (length(ux) == 1L) {
     mode1
   } else {
     methods::as(NA, typeof(x))
