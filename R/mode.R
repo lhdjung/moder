@@ -96,8 +96,6 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     # Call a helper function that adjudicates
     # whether or not it's still possible to
     # determine the mode:
-  } else if (is.na(decide_mode_na(x, ux, mode1))) {
-    methods::as(NA, typeof(x))
   } else if (length(ux) == 1L && mode1_is_half_or_more) {
     mode1
   } else {
