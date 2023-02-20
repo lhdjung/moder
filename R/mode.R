@@ -217,7 +217,7 @@ mode_single <- function(x, na.rm = FALSE) {
     # estimating the mode, or they require it
     # for their specific use cases.
   } else {
-    methods::as(NA, typeof(x))
+    NA
   }
 }
 
