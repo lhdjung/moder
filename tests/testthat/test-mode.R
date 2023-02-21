@@ -10,6 +10,7 @@ x9 <- c(2, 1, 1, NA)
 x10 <- c(1, 1, NA)
 x11 <- c(1, NA)
 x12 <- c("a", "a", "a", "b", "b", "c", "d", "e", NA)
+x13 <- c(NA, 1)
 
 
 # Non-`NA` distributions --------------------------------------------------
@@ -35,47 +36,143 @@ test_that("`mode_single()` is right when no `NA`s are present", {
   expect_equal(mode_single(x7), NA)
 })
 
+test_that("`mode_count()` is right when no `NA`s are present", {
+  expect_equal(mode_count(x1), 1)
+  expect_equal(mode_count(x4), 2)
+  expect_equal(mode_count(x6), 1)
+  expect_equal(mode_count(x7), 2)
+})
+
 
 # Distributions with `NA`s ------------------------------------------------
+
+# 1. `mode_first()`
 
 test_that("`mode_first()` is right with some `NA` input but non-`NA` output", {
   expect_equal(mode_first(x3), 7)
   expect_equal(mode_first(x8), 1)
   expect_equal(mode_first(x9), 1)
+  expect_equal(mode_first(x10), 1)
+  expect_equal(mode_first(x11), 1)
 })
 
-test_that("`mode_first()` is right with some `NA` input but non-`NA` output,
-          and with `first_known = FALSE`", {
+test_that("`mode_first()` is right with some `NA` input, non-`NA` output,
+          and `first_known = FALSE`", {
   expect_equal(mode_first(x3, first_known = FALSE), 7)
   expect_equal(mode_first(x8, first_known = FALSE), 1)
-  expect_equal(mode_first(x9, first_known = FALSE), NA_real_)
+  expect_equal(mode_first(x10, first_known = FALSE), 1)
+  expect_equal(mode_first(x11, first_known = FALSE), 1)
+  expect_equal(mode_first(x12, first_known = FALSE), "a")
 })
 
 test_that("`mode_first()` is right with some `NA` input and `NA` output", {
   expect_equal(mode_first(x2), NA_real_)
   expect_equal(mode_first(x5), NA_real_)
-  expect_equal(mode_first(x10), 1)
-  expect_equal(mode_first(x11), 1)
 })
 
-test_that("`mode_first()` is right with some `NA` input but non-`NA` output,
-          and with `first_known = FALSE`", {
+test_that("`mode_first()` is right with some `NA` input and `na.rm = TRUE`", {
+  expect_equal(mode_first(x2, na.rm = TRUE), 2)
+  expect_equal(mode_first(x5, na.rm = TRUE), 1)
+})
+
+test_that("`mode_first()` is right with some `NA` input, `NA` output,
+          and `first_known = FALSE`", {
   expect_equal(mode_first(x2, first_known = FALSE), NA_real_)
   expect_equal(mode_first(x5, first_known = FALSE), NA_real_)
-  expect_equal(mode_first(x10, first_known = FALSE), 1)
-  expect_equal(mode_first(x11, first_known = FALSE), 1)
+  expect_equal(mode_first(x9, first_known = FALSE), NA_real_)
+  expect_equal(mode_first(x13, first_known = FALSE), NA_real_)
 })
 
+test_that("`mode_first()` is right with some `NA` input, `na.rm = TRUE`,
+          and `first_known = FALSE`", {
+  expect_equal(mode_first(x2, na.rm = TRUE, first_known = FALSE), 2)
+  expect_equal(mode_first(x5, na.rm = TRUE, first_known = FALSE), 1)
+  expect_equal(mode_first(x9, na.rm = TRUE, first_known = FALSE), 1)
+  expect_equal(mode_first(x13, na.rm = TRUE, first_known = FALSE), 1)
+})
+
+
+# 2. `mode_all()`
 
 test_that("`mode_all()` is right with some `NA` input but non-`NA` output", {
   expect_equal(mode_all(x3), 7)
+  expect_equal(mode_all(x10), 1)
 })
 
 test_that("`mode_all()` is right with some `NA` input and `NA` output", {
+  expect_equal(mode_all(x2), NA_real_)
+  expect_equal(mode_all(x5), NA_real_)
   expect_equal(mode_all(x8), NA_real_)
   expect_equal(mode_all(x9), NA_real_)
+  expect_equal(mode_all(x11), NA_real_)
   expect_equal(mode_all(x12), NA_character_)
+  expect_equal(mode_all(x13), NA_real_)
+})
+
+test_that("`mode_all()` is right with some `NA` input and `na.rm = TRUE`", {
+  expect_equal(mode_all(x2, na.rm = TRUE), 2)
+  expect_equal(mode_all(x5, na.rm = TRUE), c(1, 2))
+  expect_equal(mode_all(x8, na.rm = TRUE), 1)
+  expect_equal(mode_all(x9, na.rm = TRUE), 1)
+  expect_equal(mode_all(x11, na.rm = TRUE), 1)
+  expect_equal(mode_all(x12, na.rm = TRUE), "a")
+  expect_equal(mode_all(x13, na.rm = TRUE), 1)
 })
 
 
+# 3. `mode_single()`
+
+test_that("`mode_single()` is right with some `NA` input but non-`NA` output", {
+  expect_equal(mode_single(x3), 7)
+  expect_equal(mode_single(x10), 1)
+})
+
+test_that("`mode_single()` is right with some `NA` input and `NA` output", {
+  expect_equal(mode_single(x2), NA_real_)
+  expect_equal(mode_single(x5), NA_real_)
+  expect_equal(mode_single(x8), NA_real_)
+  expect_equal(mode_single(x9), NA_real_)
+  expect_equal(mode_single(x11), NA_real_)
+  expect_equal(mode_single(x12), NA_character_)
+  expect_equal(mode_single(x13), NA_real_)
+})
+
+test_that("`mode_single()` is right with some `NA` input and `na.rm = TRUE`
+          (but still `NA` output)", {
+  expect_equal(mode_single(x2), NA_real_)
+  expect_equal(mode_single(x5), NA_real_)
+  expect_equal(mode_single(x8), NA_real_)
+  expect_equal(mode_single(x9), NA_real_)
+  expect_equal(mode_single(x11), NA_real_)
+  expect_equal(mode_single(x12), NA_character_)
+  expect_equal(mode_single(x13), NA_real_)
+})
+
+
+# 4. `mode_count()`
+
+test_that("`mode_count()` is right with some `NA` input but non-`NA` output", {
+  expect_equal(mode_count(x3), 1)
+  expect_equal(mode_count(x10), 1)
+})
+
+test_that("`mode_count()` is right with some `NA` input and `NA` output", {
+  expect_equal(mode_count(x2), NA_integer_)
+  expect_equal(mode_count(x5), NA_integer_)
+  expect_equal(mode_count(x8), NA_integer_)
+  expect_equal(mode_count(x9), NA_integer_)
+  expect_equal(mode_count(x11), NA_integer_)
+  expect_equal(mode_count(x12), NA_integer_)
+  expect_equal(mode_count(x13), NA_integer_)
+})
+
+test_that("`mode_count()` is right with some `NA` input and `na.rm = TRUE`", {
+  expect_equal(mode_count(x2, na.rm = TRUE), 1)
+  expect_equal(mode_count(x5, na.rm = TRUE), 2)
+  expect_equal(mode_count(x8, na.rm = TRUE), 1)
+  expect_equal(mode_count(x9, na.rm = TRUE), 1)
+  expect_equal(mode_count(x11, na.rm = TRUE), 1)
+  expect_equal(mode_count(x12, na.rm = TRUE), 1)
+  expect_equal(mode_count(x13, na.rm = TRUE), 1)
+})
 
