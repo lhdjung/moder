@@ -56,6 +56,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # frequent value. The goal is to test whether
   # this value might contest `mode1`' s status
   # as the first-appearing mode:
+  count_mode1 <- max(tab)
   count_mode2_na <- sort(tab, decreasing = TRUE)[-1L]
   if (!length(count_mode2_na)) {
     count_mode2_na <- 0L
@@ -66,38 +67,52 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # If it's higher than the highest possible
   # count of any other value (`count_mode2_na`),
   # it follows that `mode1` is the mode.
-  if (max(tab) > count_mode2_na) {
-    return(mode1)
-    # Otherwise, the only way the mode might
-    # still be determined is for the highest
-    # count to be at least half of the full
-    # length of the input:
-  } else if (max(tab) < length(x) / 2) {
+  if (count_mode1 < count_mode2_na) {
     return(methods::as(NA, typeof(x)))
-    # `mode_first()` is agnostic about other modes.
-    # By default (`first_known = TRUE`), it returns
-    # either the first-appearing value that is known
-    # to be a mode or `NA`. That's a pragmatic default.
-    # If a value might be a mode depending on true values
-    # behind `NA`s, and it appears before the first `mode1`
-    # value, the function still returns `mode1`.
-    # Set `first_known` to `FALSE` to make the function
-    # return `NA` in such cases. The idea is that, strictly
-    # speaking, the true first mode is unknown here.
-    # For example, `mode_first(c(2, 1, 1, NA))` returns `1`
-    # although `2` appears first -- and `2` might be another
-    # mode, but the first value that is known to be a mode
-    # is `1`. `mode_first(c(2, 1, 1, NA), first_known = FALSE)`
-    # returns `NA`.
-  } else if (first_known) {
+  } else if (first_known || count_mode1 > count_mode2_na) {
     return(mode1)
+  #   # Otherwise, the only way the mode might
+  #   # still be determined is for the highest
+  #   # count to be at least half of the full
+  #   # length of the input:
+  # } else if (count_mode1 < length(x) / 2) {
+  #   return(methods::as(NA, typeof(x)))
+    # # `mode_first()` is agnostic about other modes.
+    # # By default (`first_known = TRUE`), it returns
+    # # either the first-appearing value that is known
+    # # to be a mode or `NA`. That's a pragmatic default.
+    # # If a value might be a mode depending on true values
+    # # behind `NA`s, and it appears before the first `mode1`
+    # # value, the function still returns `mode1`.
+    # # Set `first_known` to `FALSE` to make the function
+    # # return `NA` in such cases. The idea is that, strictly
+    # # speaking, the true first mode is unknown here.
+    # # For example, `mode_first(c(2, 1, 1, NA))` returns `1`
+    # # although `2` appears first -- and `2` might be another
+    # # mode, but the first value that is known to be a mode
+    # # is `1`. `mode_first(c(2, 1, 1, NA), first_known = FALSE)`
+    # # returns `NA`.
+  # } else if (first_known) {
+  #   return(mode1)
+  }
+  # Check whether there is only a single unique known
+  # value (i.e., `mode1` ). If so, and if it's the
+  # first value in `x`, `mode1` is the first mode
+  # (because it's just as frequent as the next-most-
+  # frequent value could possibly be). But if it only
+  # appears after a missing value, it isn't:
+  if (length(ux) == 1L) {
+    if (match(mode1, x) == 1L) {
+      return(mode1)
+    } else {
+      return(methods::as(NA, typeof(x)))
+    }
   }
   # Get the most frequent known value that is not `mode1`:
   mode2 <- ux[which.max(tabulate(match(x[x != mode1], ux)))]
-  # Check whether `mode1` appears before `mode2`:
+  # Check whether `mode1` appears before `mode2` --
+  # i.e., whether its index of first occurrence is lower:
   if (match(mode1, x) < match(mode2, x)) {
-    mode1
-  } else if (length(ux) == 1L) {
     mode1
   } else {
     methods::as(NA, typeof(x))
@@ -140,16 +155,10 @@ mode_all <- function(x, na.rm = FALSE) {
   # most frequent known values:
   modes <- ux[tab == max(tab)]
   # A seemingly unimodal distribution is
-  # subject to the `NA`-related caveats
-  # described in `mode_first()`, so we call
-  # the same `NA` helper as that function.
-  # However, we don't allow for ties between
-  # the `modes` count and the sum of the
-  # second-most-frequent value and `NA` counts
-  # (`FALSE` at the end) because such a tie
-  # means that the true set of modes is
-  # unknown -- all `NA`s might stand for
-  # the second-most frequent value, after all!
+  # still subject to some `NA`-related
+  # caveats. We call a helper function to
+  # adjudicate whether the candidate mode
+  # is certain to be the actual one or not:
   if (length(modes) == 1L) {
     decide_mode_na(x, ux, modes)
     # Any missing value could mask any of the
