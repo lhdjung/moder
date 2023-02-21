@@ -20,6 +20,27 @@
 #' - [mode_single()] for the *only* mode, or `NA` if there are more.
 #'
 #' @examples
+#' # `2` is most frequent:
+#' mode_first(c(1, 2, 2, 2, 3))
+#'
+#' # Can't determine the first mode --
+#' # it might be `1` or `2` depending
+#' # on the true value behind `NA:
+#' mode_first(c(1, 1, 2, 2, NA))
+#'
+#' # Ignore `NA`s with `na.rm = TRUE`
+#' # (there should be good reasons for this!):
+#' mode_first(c(1, 1, 2, 2, NA), na.rm = TRUE)
+#'
+#' # `1` is the most frequent value,
+#' # no matter what `NA` stands for:
+#' mode_first(c(1, 1, 1, 2, NA))
+#'
+#' # Insist on finding the first mode,
+#' # not just the first value known to
+#' # be a mode, with `first_known = FALSE`:
+#' mode_first(c(1, 2, 2, NA), first_known = FALSE)
+
 mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # Remove `NA`s if desired:
   if (na.rm) {
@@ -113,6 +134,29 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
 #' - [mode_single()] for the *only* mode, or `NA` if there are more.
 #'
 #' @examples
+#' # Both `3` and `4` are the modes:
+#' mode_all(c(1, 2, 3, 3, 4, 4))
+#'
+#' # Only `8` is:
+#' mode_all(c(8, 8, 9))
+#'
+#' # Can't determine the modes here --
+#' # `9` might be another mode:
+#' mode_all(c(8, 8, 9, NA))
+#'
+#' # Either `1` or `2` could be a
+#' # single mode, depending on `NA`:
+#' mode_all(c(1, 1, 2, 2, NA))
+#'
+#' # `1` is the most frequent value,
+#' # no matter what `NA` stands for:
+#' mode_all(c(1, 1, 1, 2, NA))
+#'
+#' # Ignore `NA`s with `na.rm = TRUE`
+#' # (there should be good reasons for this!):
+#' mode_all(c(8, 8, 9, NA), na.rm = TRUE)
+#' mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
+
 mode_all <- function(x, na.rm = FALSE) {
   # Remove `NA`s if desired:
   if (na.rm) {
@@ -170,6 +214,25 @@ mode_all <- function(x, na.rm = FALSE) {
 #' - [mode_all()] for the full set of modes.
 #'
 #' @examples
+#' # `8` is the only mode:
+#' mode_single(c(8, 8, 9))
+#'
+#' # With more than one mode, the function
+#' # returns `NA`:
+#' mode_single(c(1, 2, 3, 3, 4, 4))
+#'
+#' # Can't determine the modes here --
+#' # `9` might be another mode:
+#' mode_single(c(8, 8, 9, NA))
+#'
+#' # `1` is the most frequent value,
+#' # no matter what `NA` stands for:
+#' mode_single(c(1, 1, 1, 2, NA))
+#'
+#' # Ignore `NA`s with `na.rm = TRUE`
+#' # (there should be good reasons for this!):
+#' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
+
 mode_single <- function(x, na.rm = FALSE) {
   # We need to check the number of
   # modes here, so we call `mode_all()`.
@@ -205,6 +268,29 @@ mode_single <- function(x, na.rm = FALSE) {
 #' @export
 #'
 #' @examples
+#' # There are two modes, `3` and `4`:
+#' mode_count(c(1, 2, 3, 3, 4, 4))
+#'
+#' # Only one mode, `8`:
+#' mode_count(c(8, 8, 9))
+#'
+#' # Can't determine the number of modes
+#' # here -- `9` might be another mode:
+#' mode_count(c(8, 8, 9, NA))
+#'
+#' # Either `1` or `2` could be a
+#' # single mode, depending on `NA`:
+#' mode_count(c(1, 1, 2, 2, NA))
+#'
+#' # `1` is the most frequent value,
+#' # no matter what `NA` stands for:
+#' mode_count(c(1, 1, 1, 2, NA))
+#'
+#' # Ignore `NA`s with `na.rm = TRUE`
+#' # (there should be good reasons for this!):
+#' mode_count(c(8, 8, 9, NA), na.rm = TRUE)
+#' mode_count(c(1, 1, 2, 2, NA), na.rm = TRUE)
+
 mode_count <- function(x, na.rm = FALSE) {
   modes <- mode_all(x, na.rm)
   # If the set if modes can't be determined,
