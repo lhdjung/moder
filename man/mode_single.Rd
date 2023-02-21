@@ -21,6 +21,26 @@ instead.
 \code{mode_single()} returns the only mode in a vector, or \code{NA} if there are
 multiple modes.
 }
+\examples{
+# `8` is the only mode:
+mode_single(c(8, 8, 9))
+
+# With more than one mode, the function
+# returns `NA`:
+mode_single(c(1, 2, 3, 3, 4, 4))
+
+# Can't determine the modes here --
+# `9` might be another mode:
+mode_single(c(8, 8, 9, NA))
+
+# `1` is the most frequent value,
+# no matter what `NA` stands for:
+mode_single(c(1, 1, 1, 2, NA))
+
+# Ignore `NA`s with `na.rm = TRUE`
+# (there should be good reasons for this!):
+mode_single(c(8, 8, 9, NA), na.rm = TRUE)
+}
 \seealso{
 \itemize{
 \item \code{\link[=mode_first]{mode_first()}} for the first-appearing mode.

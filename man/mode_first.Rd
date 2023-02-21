@@ -24,6 +24,28 @@ determined because of missing values, returns \code{NA} instead.
 \code{mode_first()} returns the mode that appears first in a vector, i.e., before
 any other modes.
 }
+\examples{
+# `2` is most frequent:
+mode_first(c(1, 2, 2, 2, 3))
+
+# Can't determine the first mode --
+# it might be `1` or `2` depending
+# on the true value behind `NA:
+mode_first(c(1, 1, 2, 2, NA))
+
+# Ignore `NA`s with `na.rm = TRUE`
+# (there should be good reasons for this!):
+mode_first(c(1, 1, 2, 2, NA), na.rm = TRUE)
+
+# `1` is the most frequent value,
+# no matter what `NA` stands for:
+mode_first(c(1, 1, 1, 2, NA))
+
+# Insist on finding the first mode,
+# not just the first value known to
+# be a mode, with `first_known = FALSE`:
+mode_first(c(1, 2, 2, NA), first_known = FALSE)
+}
 \seealso{
 \itemize{
 \item \code{\link[=mode_all]{mode_all()}} for the full set of modes.

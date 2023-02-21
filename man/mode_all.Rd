@@ -13,12 +13,36 @@ mode_all(x, na.rm = FALSE)
 computation proceeds? Default is \code{FALSE}.}
 }
 \value{
-A vector with all modes (values tied for most frequent) from \code{x}. If
+A vector with all modes (values tied for most frequent) in \code{x}. If
 the modes can't be determined because of missing values, returns \code{NA}
 instead.
 }
 \description{
 \code{mode_all()} returns the set of all modes in a vector.
+}
+\examples{
+# Both `3` and `4` are the modes:
+mode_all(c(1, 2, 3, 3, 4, 4))
+
+# Only `8` is:
+mode_all(c(8, 8, 9))
+
+# Can't determine the modes here --
+# `9` might be another mode:
+mode_all(c(8, 8, 9, NA))
+
+# Either `1` or `2` could be a
+# single mode, depending on `NA`:
+mode_all(c(1, 1, 2, 2, NA))
+
+# `1` is the most frequent value,
+# no matter what `NA` stands for:
+mode_all(c(1, 1, 1, 2, NA))
+
+# Ignore `NA`s with `na.rm = TRUE`
+# (there should be good reasons for this!):
+mode_all(c(8, 8, 9, NA), na.rm = TRUE)
+mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 }
 \seealso{
 \itemize{

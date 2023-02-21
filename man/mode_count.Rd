@@ -13,10 +13,35 @@ mode_count(x, na.rm = FALSE)
 computation proceeds? Default is \code{FALSE}.}
 }
 \value{
-Integer. Number of modes in \code{x}. If the modes can't be determined
-because of missing values, returns \code{NA} instead.
+Integer. Number of modes (values tied for most frequent) in \code{x}. If
+the modes can't be determined because of missing values, returns \code{NA}
+instead.
 }
 \description{
 \code{mode_count()} counts the modes in a vector. Thin wrapper around
 \code{\link[=mode_all]{mode_all()}}.
+}
+\examples{
+# There are two modes, `3` and `4`:
+mode_count(c(1, 2, 3, 3, 4, 4))
+
+# Only one mode, `8`:
+mode_count(c(8, 8, 9))
+
+# Can't determine the number of modes
+# here -- `9` might be another mode:
+mode_count(c(8, 8, 9, NA))
+
+# Either `1` or `2` could be a
+# single mode, depending on `NA`:
+mode_count(c(1, 1, 2, 2, NA))
+
+# `1` is the most frequent value,
+# no matter what `NA` stands for:
+mode_count(c(1, 1, 1, 2, NA))
+
+# Ignore `NA`s with `na.rm = TRUE`
+# (there should be good reasons for this!):
+mode_count(c(8, 8, 9, NA), na.rm = TRUE)
+mode_count(c(1, 1, 2, 2, NA), na.rm = TRUE)
 }
