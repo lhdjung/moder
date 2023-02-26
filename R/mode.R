@@ -308,6 +308,46 @@ mode_count <- function(x, na.rm = FALSE) {
 }
 
 
+mode_possible_max <- function(x) {
+  # The number of missings determines how far the
+  # count of possible modes will go, and it will
+  # be decremented as the process goes on:
+  count_nas_left <- length(x[is.na(x)])
+  # No `NA`s mean no ambiguity about any
+  # possible modes below the top level, so
+  # the modes from this level are returned:
+  if (count_nas_left == 0L) {
+    return(mode_all(x, FALSE))
+  }
+  # Initialize the vector of mode values.
+  # These will be appended to the vector
+  # from within the loop: one set of
+  # mode values per level of modes.
+  modes_out <- NULL
+  while (count_nas_left > 0L) {
+    # Determine the modes on the *current* level:
+    modes <- mode_all(x, TRUE)
+    # This vector will ultimately be returned,
+    # but other values may be added to it:
+    modes_out <- c(modes_out, x[x == modes[1L]][1L])
+    # Next *lower* level of modes:
+    modes_next_level <- mode_all(x[!x %in% modes], TRUE)
+    difference <- length(x[x %in% modes]) - length(x[x %in% modes_next_level])
+    x <- x[!x %in% modes]
+    # modes_next_level <- mode_all(x[!x %in% modes], TRUE)
+    count_empty_slots <- length(modes_next_level) * difference
+    if (count_nas_left < count_empty_slots) {
+      count_nas_left <- 0L
+    } else {
+      modes_out <- c(modes_out, modes_next_level)
+      count_nas_left <- count_nas_left - count_empty_slots
+    }
+  }
+  modes_out
+}
+
+
+
 # Helper function; not exported but called within `mode_all()`:
 decide_mode_na <- function(x, ux, mode1) {
   if (length(ux) == 1L) {
