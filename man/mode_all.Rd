@@ -14,8 +14,8 @@ computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 A vector with all modes (values tied for most frequent) in \code{x}. If
-the modes can't be determined because of missing values, returns \code{NA}
-instead.
+the modes can't be determined because of missing values,
+returns \code{NA} instead.
 }
 \description{
 \code{mode_all()} returns the set of all modes in a vector.

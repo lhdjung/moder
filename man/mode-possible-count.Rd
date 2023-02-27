@@ -15,8 +15,8 @@ mode_count_possible_max(x)
 }
 \value{
 Integer. Minimal and maximal number of modes (values tied for most
-frequent) in \code{x}. If \code{mode_count_possible_min()} can't determine these
-possible modes because of missing values, it returns \code{NA} instead.
+frequent) in \code{x}. If the functions can't determine these possible
+modes because of missing values, they return \code{NA} instead.
 }
 \description{
 \code{mode_count_possible_min()} and \code{mode_count_possible_max()}

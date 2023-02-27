@@ -14,8 +14,8 @@ computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 Integer. Number of modes (values tied for most frequent) in \code{x}. If
-the modes can't be determined because of missing values, returns \code{NA}
-instead.
+the modes can't be determined because of missing values,
+returns \code{NA} instead.
 }
 \description{
 \code{mode_count()} counts the modes in a vector. Thin wrapper around

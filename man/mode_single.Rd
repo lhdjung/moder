@@ -14,8 +14,8 @@ computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 The only mode (most frequent value) in \code{x}. If it can't be determined
-because of missing values, or if there is more than one mode, returns \code{NA}
-instead.
+because of missing values, or if there is more than one mode,
+returns \code{NA} instead.
 }
 \description{
 \code{mode_single()} returns the only mode in a vector, or \code{NA} if there are

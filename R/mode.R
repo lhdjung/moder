@@ -127,8 +127,8 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
 #' @inheritParams mode_first
 #'
 #' @return A vector with all modes (values tied for most frequent) in `x`. If
-#'   the modes can't be determined because of missing values, returns `NA`
-#'   instead.
+#'   the modes can't be determined because of missing values,
+#'   returns `NA` instead.
 #'
 #' @export
 #'
@@ -207,8 +207,8 @@ mode_all <- function(x, na.rm = FALSE) {
 #' @inheritParams mode_first
 #'
 #' @return The only mode (most frequent value) in `x`. If it can't be determined
-#'   because of missing values, or if there is more than one mode, returns `NA`
-#'   instead.
+#'   because of missing values, or if there is more than one mode,
+#'   returns `NA` instead.
 #'
 #' @export
 #'
@@ -265,8 +265,8 @@ mode_single <- function(x, na.rm = FALSE) {
 #' @inheritParams mode_all
 #'
 #' @return Integer. Number of modes (values tied for most frequent) in `x`. If
-#'   the modes can't be determined because of missing values, returns `NA`
-#'   instead.
+#'   the modes can't be determined because of missing values,
+#'   returns `NA` instead.
 #'
 #' @export
 #'
@@ -417,8 +417,9 @@ mode_possible_max <- function(x) {
 #' @inheritParams mode-possible
 #'
 #' @return Integer. Minimal and maximal number of modes (values tied for most
-#'   frequent) in `x`. If `mode_count_possible_min()` can't determine these
-#'   possible modes because of missing values, it returns `NA` instead.
+#'   frequent) in `x`. If the functions can't determine these possible
+#'   modes because of missing values, they return `NA` instead.
+#'
 #'
 #' @export
 #'
