@@ -319,7 +319,6 @@ mode_possible_max <- function(x) {
   # the modes from this level are returned:
   modes <- mode_all(x, FALSE)
   if (count_nas_left == 0L) {
-    message("NO MISSINGS; EARLY RETURN")
     return(modes)
   }
   # Initialize the vector of mode values.
@@ -327,6 +326,10 @@ mode_possible_max <- function(x) {
   # from within the loop: one set of
   # mode values per level of modes.
   modes_out <- NULL
+  # Run through the mode levels of `x`
+  # for as long as there is a sufficient
+  # amount of missing values left to fill
+  # the "empty slots" of each lower level:
   while (count_nas_left > 0L) {
     # Determine the modes on the *current* level:
     modes <- mode_all(x, TRUE)
@@ -337,25 +340,18 @@ mode_possible_max <- function(x) {
     modes_next_level <- mode_all(x[!x %in% modes], TRUE)
     diff_length <- length(x[x %in% modes]) - length(x[x %in% modes_next_level])
     x <- x[!x %in% modes]
-    # modes_next_level <- mode_all(x[!x %in% modes], TRUE)
     count_empty_slots <- length(modes_next_level) * diff_length
     if (count_nas_left < count_empty_slots) {
-      message("MISSINGS COUNT SET TO ZERO")
+      # Make sure to escape the loop because
+      # there are not enough `NA`s left:
       count_nas_left <- 0L
     } else {
-      message("SUBTRACTING EMPTY SLOTS COUNT FROM MISSINGS COUNT")
+      # Append lower-level modes to the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
       count_nas_left <- count_nas_left - max(count_empty_slots, 1L)
     }
-    # # At the end of the loop, check if there are
-    # # any other values if `x`. If there aren't any,
-    # # there is no point in another run of the loop:
-    # if (length(x[!x %in% modes & !x %in% modes_next_level]) == 0L) {
-    #   message("NO OTHER VALUES FOUND")
-    #   # modes_out <- c(modes_out, x[x == modes_next_level[1L]][1L])
-    #   return(modes_out)
-    # }
   }
+  # Finally, return the vector of unique possible modes:
   unique(modes_out)
 }
 
