@@ -2,5 +2,9 @@
 
 export(mode_all)
 export(mode_count)
+export(mode_count_possible_max)
+export(mode_count_possible_min)
 export(mode_first)
+export(mode_possible_max)
+export(mode_possible_min)
 export(mode_single)
