@@ -15,12 +15,13 @@ mode_possible_max(x)
 }
 \value{
 A vector with the minimal or maximal possible modes (values tied for
-most frequent) in \code{x}. If \code{mode_possible_min()} can't determine these
-possible modes because of missing values, it returns \code{NA} instead.
+most frequent) in \code{x}. If the functions can't determine these possible
+modes because of missing values, they return \code{NA} instead.
 }
 \description{
 \code{mode_possible_min()} and \code{mode_possible_max()} determine the minimal and
-maximal sets of modes, given the number of missing values.
+maximal sets of modes from among known modes, given the number of missing
+values.
 }
 \examples{
 # "a" is guaranteed to be a mode,

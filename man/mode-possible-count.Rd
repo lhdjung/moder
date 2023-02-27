@@ -19,11 +19,13 @@ frequent) in \code{x}. If \code{mode_count_possible_min()} can't determine these
 possible modes because of missing values, it returns \code{NA} instead.
 }
 \description{
-\code{mode_count_possible_min()} and \code{mode_count_possible_max()} determine the
-minimal and maximal number of modes, given the number of missing values.
+\code{mode_count_possible_min()} and \code{mode_count_possible_max()}
+determine the minimal and maximal number of modes from among known modes,
+given the number of missing values.
+
+They are wrappers around \code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}}.
 }
 \seealso{
-\code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}} for determining the
-sets of these possible modes. The examples there will make it clear how the
-present functions work.
+The examples for \code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}}, to
+make it more clear how the present functions work.
 }

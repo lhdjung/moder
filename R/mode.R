@@ -305,13 +305,14 @@ mode_count <- function(x, na.rm = FALSE) {
 #' Possible modes
 #'
 #' `mode_possible_min()` and `mode_possible_max()` determine the minimal and
-#' maximal sets of modes, given the number of missing values.
+#' maximal sets of modes from among known modes, given the number of missing
+#' values.
 #'
 #' @param x A vector to search for its possible modes.
 #'
 #' @return A vector with the minimal or maximal possible modes (values tied for
-#'   most frequent) in `x`. If `mode_possible_min()` can't determine these
-#'   possible modes because of missing values, it returns `NA` instead.
+#'   most frequent) in `x`. If the functions can't determine these possible
+#'   modes because of missing values, they return `NA` instead.
 #'
 #' @export
 #'
@@ -394,15 +395,24 @@ mode_possible_max <- function(x) {
       count_nas_left <- count_nas_left - max(count_empty_slots, 1L)
     }
   }
-  # Finally, return the vector of unique possible modes:
-  unique(modes_out)
+  # Finally, return the vector of unique possible modes --
+  # or `NA` if there are none. This will likely only
+  # occur if each input value is `NA`.
+  if (length(modes_out)) {
+    unique(modes_out)
+  } else {
+    NA
+  }
 }
 
 
 #' Count possible modes
 #'
-#' `mode_count_possible_min()` and `mode_count_possible_max()` determine the
-#' minimal and maximal number of modes, given the number of missing values.
+#' @description `mode_count_possible_min()` and `mode_count_possible_max()`
+#'   determine the minimal and maximal number of modes from among known modes,
+#'   given the number of missing values.
+#'
+#'   They are wrappers around [mode_possible_min()] and [mode_possible_max()].
 #'
 #' @inheritParams mode-possible
 #'
@@ -412,9 +422,8 @@ mode_possible_max <- function(x) {
 #'
 #' @export
 #'
-#' @seealso [mode_possible_min()] and [mode_possible_max()] for determining the
-#'   sets of these possible modes. The examples there will make it clear how the
-#'   present functions work.
+#' @seealso The examples for [mode_possible_min()] and [mode_possible_max()], to
+#'   make it more clear how the present functions work.
 #'
 #' @name mode-possible-count
 
@@ -454,11 +463,13 @@ decide_mode_na <- function(x, ux, mode1) {
 }
 
 
-# Called within the `mode_count*()` functions.
+# Called within the counting functions:
+# `mode_count()`, `mode_count_possible_min()`,
+# and `mode_count_possible_max()`.
 # If the set if modes can't be determined,
 # the number of modes is an unknown integer.
 # The length of `modes` is tested beforehand
-# because it quickly rules out cases where
+# because this quickly rules out cases where
 # `NA` testing is not necessary, and because
 # multiple return values from `is.na()` would
 # lead to an error in `if`:
