@@ -426,14 +426,14 @@ mode_possible_max <- function(x) {
 #' @seealso The examples for [mode_possible_min()] and [mode_possible_max()], to
 #'   make it more clear how the present functions work.
 #'
-#' @name mode-possible-count
+#' @name mode-count-possible
 
 mode_count_possible_min <- function(x) {
   decide_count_na(mode_possible_min(x))
 }
 
 
-#' @rdname mode-possible-count
+#' @rdname mode-count-possible
 #' @export
 
 mode_count_possible_max <- function(x) {
