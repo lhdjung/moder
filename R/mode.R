@@ -45,21 +45,18 @@
 #' mode_first(c(1, 2, 2, NA), first_known = FALSE)
 
 mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
-  # Remove `NA`s if desired:
+  # Iteration in the for loop will only
+  # proceed on known `x` values:
+  ix1 <- x[!is.na(x)]
+  # Remove `NA`s entirely, if desired:
   if (na.rm) {
-    x <- x[!is.na(x)]
+    x <- ix1
   }
-  # We determine the unique known values
-  # of `x`. `NA`s are ignored at this point
-  # because they will receive special treatment
-  # later on.
-  ux <- unique(x[!is.na(x)])
-  # Count the instances of each known value:
-  tab <- tabulate(match(x, ux))
-  # Subset the most frequent known value --
-  # the putative mode; either this or `NA`
-  # will ultimately be returned:
-  mode1 <- ux[which.max(tab)]
+  frequency1 <- NULL
+  for (i in seq_along(ix1)) {
+    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[i]]))
+  }
+  mode1 <- x[which.max(frequency1)]
   # The present implementation only differs
   # from the original function in terms
   # of `NA` handling. Therefore, it returns
@@ -76,9 +73,11 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # The goal is to test whether the latter might
   # contest `mode1`'s status as the first-appearing
   # mode:
-  count_mode1 <- max(tab)
-  count_mode2_na <- sort(tab, decreasing = TRUE)[-1L]
-  if (!length(count_mode2_na)) {
+  count_mode1 <- max(frequency1)
+  count_mode2_na <- sort(unique(frequency1), decreasing = TRUE)
+  if (length(count_mode2_na) > 1L) {
+    count_mode2_na <- count_mode2_na[-1L]
+  } else if (!length(count_mode2_na) || length(unique(ix1)) == 1L) {
     count_mode2_na <- 0L
   }
   count_mode2_na <- max(count_mode2_na) + length(x[is.na(x)])
@@ -95,12 +94,12 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     return(mode1)
   }
   # Check whether there is only a single unique known
-  # value (i.e., `mode1` ). If so, and if it's the
+  # value (i.e., `mode1`). If so, and if it's the
   # first value in `x`, `mode1` is the first mode
   # (because it's just as frequent as the next-most-
   # frequent value could possibly be). But if it only
   # appears after a missing value, it isn't:
-  if (length(ux) == 1L) {
+  if (length(unique(ix1)) == 1L) {
     if (match(mode1, x) == 1L) {
       return(mode1)
     } else {
@@ -108,7 +107,16 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     }
   }
   # Get the most frequent known value that is not `mode1`:
-  mode2 <- ux[which.max(tabulate(match(x[x != mode1], ux)))]
+  frequency2 <- NULL
+  x2 <- x[x != mode1]
+  ix2 <- x2[!is.na(x2)]
+  for (i in seq_along(ix2)) {
+    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[i]]))
+  }
+  # `NA` is returned if either there is no first value
+  # or if `mode1` appears before `mode2` (i.e., if its
+  # index of first occurrence is lower):
+  mode2 <- x2[which.max(frequency2)]
   # Check whether `mode1` appears before `mode2` --
   # i.e., whether its index of first occurrence is lower:
   if (match(mode1, x) < match(mode2, x)) {
