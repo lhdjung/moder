@@ -48,8 +48,11 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # Iteration in the for loop will only
   # proceed on known `x` values:
   ix1 <- x[!is.na(x)]
-  # Remove `NA`s entirely, if desired:
-  if (na.rm) {
+  # Return `NA` early if required,
+  # or remove `NA`s entirely if desired:
+  if (!length(x) || all(is.na(x))) {
+    return(NA)
+  } else if (na.rm) {
     x <- ix1
   }
   frequency1 <- NULL
@@ -175,7 +178,7 @@ mode_all <- function(x, na.rm = FALSE) {
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required,
   # or remove `NA`s entirely if desired:
-  if (!length(x)) {
+  if (!length(x) || all(is.na(x))) {
     return(NA)
   } else if (na.rm) {
     x <- ix1
