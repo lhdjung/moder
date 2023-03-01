@@ -59,7 +59,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   for (i in seq_along(ix1)) {
     frequency1 <- c(frequency1, length(ix1[ix1 == ix1[i]]))
   }
-  mode1 <- x[which.max(frequency1)]
+  mode1 <- x[!is.na(x)][which.max(frequency1)]
   # The present implementation only differs
   # from the original function in terms
   # of `NA` handling. Therefore, it returns

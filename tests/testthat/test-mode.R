@@ -57,6 +57,8 @@ test_that("`mode_first()` is right with some `NA` input but non-`NA` output", {
   expect_equal(mode_first(x9) , 1)
   expect_equal(mode_first(x10), 1)
   expect_equal(mode_first(x11), 1)
+  expect_equal(mode_first(x12), "a")
+  expect_equal(mode_first(x13), 1)
 })
 
 test_that("`mode_first()` is right with some `NA` input, non-`NA` output,
@@ -66,6 +68,7 @@ test_that("`mode_first()` is right with some `NA` input, non-`NA` output,
   expect_equal(mode_first(x10, first_known = FALSE), 1)
   expect_equal(mode_first(x11, first_known = FALSE), 1)
   expect_equal(mode_first(x12, first_known = FALSE), "a")
+  expect_equal(mode_first(x13, first_known = FALSE), NA_real_)
 })
 
 test_that("`mode_first()` is right with some `NA` input and `NA` output", {
