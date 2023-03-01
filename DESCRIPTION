@@ -14,5 +14,6 @@ Suggests:
     methods,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/lhdjung/moder
+URL: https://github.com/lhdjung/moder,
+    https://lhdjung.github.io/moder/
 BugReports: https://github.com/lhdjung/moder/issues
