@@ -4,6 +4,8 @@
 # Mode estimation in R
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/lhdjung/moder/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lhdjung/moder/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The moder package determines single or multiple **modes** (most frequent
