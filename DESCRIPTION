@@ -1,6 +1,6 @@
 Package: moder
 Title: Mode estimation in R
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person("Lukas", "Jung", , "jung-lukas@gmx.net", role = c("aut", "cre"))
 Description: Determines single or multiple modes (most frequent values).
