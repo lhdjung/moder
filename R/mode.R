@@ -169,28 +169,34 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
 #' mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
 mode_all <- function(x, na.rm = FALSE) {
-  # Remove `NA`s if desired:
-  if (na.rm) {
-    x <- x[!is.na(x)]
+  # `NA`s are ignored at this point
+  # because they will receive
+  # special treatment later on:
+  ix1 <- x[!is.na(x)]
+  # Return `NA` early if required,
+  # or remove `NA`s entirely if desired:
+  if (!length(x)) {
+    return(NA)
+  } else if (na.rm) {
+    x <- ix1
   }
-  # As above, we determine the unique
-  # known values of `x`. `NA`s are ignored
-  # at this point because they will receive
-  # special treatment later on.
-  ux <- unique(x[!is.na(x)])
-  # Count the instances of each known value:
-  tab <- tabulate(match(x, ux))
+  # Determine the frequency of each
+  # unique value in `x`:
+  frequency1 <- NULL
+  for (i in seq_along(ix1)) {
+    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[i]]))
+  }
   # Subset the vector of unique known values
   # at the indices corresponding to the
   # most frequent known values:
-  modes <- ux[tab == max(tab)]
+  modes <- unique(ix1[frequency1 == max(frequency1)])
   # A seemingly unimodal distribution is
   # still subject to some `NA`-related
   # caveats. We call a helper function to
   # adjudicate whether the candidate mode
   # is certain to be the actual one or not:
   if (length(modes) == 1L) {
-    decide_mode_na(x, ux, modes)
+    decide_mode_na(x, unique(x[!is.na(x)]), modes)
     # Any missing value could mask any of the
     # known values tied for most frequent --
     # and break the tie. This makes it
@@ -453,17 +459,24 @@ mode_count_possible_max <- function(x) {
 # Helper functions (not exported) -----------------------------------------
 
 # Called within `mode_all()`:
-decide_mode_na <- function(x, ux, mode1) {
-  if (length(ux) == 1L) {
+decide_mode_na <- function(x, unique_x, mode1) {
+  if (length(unique_x) == 1L) {
     if (length(x[is.na(x)]) < length(x) / 2) {
       return(mode1)
     } else {
       return(methods::as(NA, typeof(x)))
     }
   }
-  mode2 <- ux[which.max(tabulate(match(x[x != mode1], ux)))]
+  ix2 <- x[x != mode1 & !is.na(x)]
+  frequency2 <- NULL
+  for (i in seq_along(ix2)) {
+    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[i]]))
+  }
+  mode2 <- ix2[which.max(frequency2)]
+  count_na <- length(x[is.na(x)])
+  x <- x[!is.na(x)]
   count_mode1 <- length(x[x == mode1])
-  count_mode2_na <- length(x[x == mode2]) + length(x[is.na(x)])
+  count_mode2_na <- length(x[x == mode2]) + count_na
   if (count_mode1 > count_mode2_na) {
     mode1
   } else {
