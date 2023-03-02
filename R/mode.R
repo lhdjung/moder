@@ -84,14 +84,21 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     count_mode2_na <- 0L
   }
   count_mode2_na <- max(count_mode2_na) + length(x[is.na(x)])
+  # Count unique modal values
+  # (see explanation right below):
+  count_modes_unique <- length(unique(ix1[frequency1 == max(frequency1)]))
   # The highest count -- that of `mode1` --
   # may decide the outcome right below.
   # If it's lower than the highest possible
   # count of any other value (`count_mode2_na`),
-  # it's not known to be the mode.
-  # But if it's higher than that value, or if
-  # `first_known = TRUE` (the default), it is:
-  if (count_mode1 < count_mode2_na) {
+  # it's not known to be the mode. The same is
+  # true if there is more than one unique mode
+  # (because some values are unknown).
+  # Otherwise, if the highest count is higher
+  # than `count_mode2_na`, or if
+  # `first_known = TRUE` (the default), `mode1`
+  # is definitely the mode:
+  if (count_mode1 < count_mode2_na || count_modes_unique > 1L) {
     return(methods::as(NA, typeof(x)))
   } else if (first_known || count_mode1 > count_mode2_na) {
     return(mode1)

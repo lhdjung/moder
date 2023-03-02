@@ -12,6 +12,7 @@ x10 <- c(1, 1, NA)
 x11 <- c(1, NA)
 x12 <- c("a", "a", "a", "b", "b", "c", "d", "e", NA)
 x13 <- c(NA, 1)
+x14 <- c(1, 1, 2, 2, 3, NA)
 
 
 
@@ -72,13 +73,15 @@ test_that("`mode_first()` is right with some `NA` input, non-`NA` output,
 })
 
 test_that("`mode_first()` is right with some `NA` input and `NA` output", {
-  expect_equal(mode_first(x2), NA_real_)
-  expect_equal(mode_first(x5), NA_real_)
+  expect_equal(mode_first(x2 ), NA_real_)
+  expect_equal(mode_first(x5 ), NA_real_)
+  expect_equal(mode_first(x14), NA_real_)
 })
 
 test_that("`mode_first()` is right with some `NA` input and `na.rm = TRUE`", {
-  expect_equal(mode_first(x2, na.rm = TRUE), 2)
-  expect_equal(mode_first(x5, na.rm = TRUE), 1)
+  expect_equal(mode_first(x2 , na.rm = TRUE), 2)
+  expect_equal(mode_first(x5 , na.rm = TRUE), 1)
+  expect_equal(mode_first(x14, na.rm = TRUE), 1)
 })
 
 test_that("`mode_first()` is right with some `NA` input, `NA` output,
@@ -87,6 +90,7 @@ test_that("`mode_first()` is right with some `NA` input, `NA` output,
   expect_equal(mode_first(x5 , first_known = FALSE), NA_real_)
   expect_equal(mode_first(x9 , first_known = FALSE), NA_real_)
   expect_equal(mode_first(x13, first_known = FALSE), NA_real_)
+  expect_equal(mode_first(x14, first_known = FALSE), NA_real_)
 })
 
 test_that("`mode_first()` is right with some `NA` input, `na.rm = TRUE`,
@@ -95,6 +99,7 @@ test_that("`mode_first()` is right with some `NA` input, `na.rm = TRUE`,
   expect_equal(mode_first(x5 , na.rm = TRUE, first_known = FALSE), 1)
   expect_equal(mode_first(x9 , na.rm = TRUE, first_known = FALSE), 1)
   expect_equal(mode_first(x13, na.rm = TRUE, first_known = FALSE), 1)
+  expect_equal(mode_first(x14, na.rm = TRUE, first_known = FALSE), 1)
 })
 
 
