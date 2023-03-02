@@ -57,7 +57,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   }
   frequency1 <- NULL
   for (i in seq_along(ix1)) {
-    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[i]]))
+    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[[i]]]))
   }
   mode1 <- ix1[which.max(frequency1)]
   # The present implementation only differs
@@ -114,7 +114,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   x2 <- x[x != mode1]
   ix2 <- x2[!is.na(x2)]
   for (i in seq_along(ix2)) {
-    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[i]]))
+    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[[i]]]))
   }
   # `NA` is returned if either there is no first value
   # or if `mode1` appears before `mode2` (i.e., if its
@@ -187,7 +187,7 @@ mode_all <- function(x, na.rm = FALSE) {
   # unique value in `x`:
   frequency1 <- NULL
   for (i in seq_along(ix1)) {
-    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[i]]))
+    frequency1 <- c(frequency1, length(ix1[ix1 == ix1[[i]]]))
   }
   # Subset the vector of unique known values
   # at the indices corresponding to the
@@ -473,7 +473,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
   ix2 <- x[x != mode1 & !is.na(x)]
   frequency2 <- NULL
   for (i in seq_along(ix2)) {
-    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[i]]))
+    frequency2 <- c(frequency2, length(ix2[ix2 == ix2[[i]]]))
   }
   mode2 <- ix2[which.max(frequency2)]
   count_na <- length(x[is.na(x)])
