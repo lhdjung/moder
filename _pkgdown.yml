@@ -1,4 +1,7 @@
 # url: https://lhdjung.github.io/moder/
+
+# This one was also set via:
+# git remote set-url origin ssh://git@github.com/lhdjung/moder.git
 url: ssh://git@github.com/lhdjung/moder.git
 
 lang: en
