@@ -2,6 +2,8 @@
 
 # This one was also set via:
 # git remote set-url origin ssh://git@github.com/lhdjung/moder.git
+# Updated credentials (new PAT with more permissions!) via:
+# gitcreds::gitcreds_set()
 url: ssh://git@github.com/lhdjung/moder.git
 
 lang: en
