@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/lhdjung/moder/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lhdjung/moder/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The moder package determines single or multiple **modes** (most frequent
@@ -120,3 +121,12 @@ mode_possible_min(c("a", "a", "a", "b", "b", "c", NA))
 mode_possible_max(c("a", "a", "a", "b", "b", "c", NA))
 #> [1] "a" "b"
 ```
+
+## Acknowledgements
+
+Ken Williams’ [mode functions on Stack
+Overflow](https://stackoverflow.com/questions/2547402/how-to-find-the-statistical-mode/8189441#8189441)
+were pivotal to moder. Use `mode_first()` and `mode_all()` as drop-in
+replacements for `Mode()` and `Modes()`, respectively. They will behave
+equally unless some values are missing, although the source code is
+somewhat different.
