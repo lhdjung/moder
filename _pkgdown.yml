@@ -1,4 +1,5 @@
-url: https://lhdjung.github.io/moder/
+# url: https://lhdjung.github.io/moder/
+url: ssh://git@github.com/lhdjung/moder.git
 
 lang: en
 
