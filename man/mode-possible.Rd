@@ -6,12 +6,16 @@
 \alias{mode_possible_max}
 \title{Possible modes}
 \usage{
-mode_possible_min(x)
+mode_possible_min(x, accept_known = TRUE)
 
 mode_possible_max(x)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
+
+\item{accept_known}{Boolean. Only in \code{mode_possible_min()}. If set to
+\code{FALSE}, the function returns \code{NA} if the set of all modes can't be
+determined due to missing values. Default is \code{TRUE}.}
 }
 \value{
 A vector with the minimal or maximal possible modes (values tied for
@@ -19,21 +23,25 @@ most frequent) in \code{x}. If the functions can't determine these possible
 modes because of missing values, they return \code{NA} instead.
 }
 \description{
-\code{mode_possible_min()} and \code{mode_possible_max()} determine the minimal and
-maximal sets of modes from among known modes, given the number of missing
-values.
+\code{mode_possible_min()} and \code{mode_possible_max()} determine the
+minimal and maximal sets of modes from among known modes, given the number
+of missing values.
+
+By default, the \verb{_min} function assumes that at least one known value is a
+mode. Note that it never checks whether this is true.
 }
 \examples{
 # "a" is guaranteed to be a mode,
-# "b" might also be one, but "c" is impossible:
+# "b" might also be one, but
+# "c" is impossible:
 mode_possible_min(c("a", "a", "a", "b", "b", "c", NA))
 mode_possible_max(c("a", "a", "a", "b", "b", "c", NA))
 
 # Only `7` can possibly be the mode
 # because, even if `NA` is `8`, it's
 # still less frequent than `7`:
-mode_possible_min(c(7, 7, 7, 7, 7, 8, 8, NA))
-mode_possible_max(c(7, 7, 7, 7, 7, 8, 8, NA))
+mode_possible_min(c(7, 7, 7, 7, 8, 8, NA))
+mode_possible_max(c(7, 7, 7, 7, 8, 8, NA))
 
 # No clear minimum of modes (because
 # `NA` may tip the balance towards a

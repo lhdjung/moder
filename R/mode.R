@@ -328,11 +328,17 @@ mode_count <- function(x, na.rm = FALSE) {
 
 #' Possible modes
 #'
-#' `mode_possible_min()` and `mode_possible_max()` determine the minimal and
-#' maximal sets of modes from among known modes, given the number of missing
-#' values.
+#' @description `mode_possible_min()` and `mode_possible_max()` determine the
+#'   minimal and maximal sets of modes from among known modes, given the number
+#'   of missing values.
+#'
+#'   By default, the `_min` function assumes that at least one known value is a
+#'   mode. Note that it never checks whether this is true.
 #'
 #' @param x A vector to search for its possible modes.
+#' @param accept_known Boolean. Only in `mode_possible_min()`. If set to
+#'   `FALSE`, the function returns `NA` if the set of all modes can't be
+#'   determined due to missing values. Default is `TRUE`.
 #'
 #' @return A vector with the minimal or maximal possible modes (values tied for
 #'   most frequent) in `x`. If the functions can't determine these possible
@@ -347,15 +353,16 @@ mode_count <- function(x, na.rm = FALSE) {
 #'
 #' @examples
 #' # "a" is guaranteed to be a mode,
-#' # "b" might also be one, but "c" is impossible:
+#' # "b" might also be one, but
+#' # "c" is impossible:
 #' mode_possible_min(c("a", "a", "a", "b", "b", "c", NA))
 #' mode_possible_max(c("a", "a", "a", "b", "b", "c", NA))
 #'
 #' # Only `7` can possibly be the mode
 #' # because, even if `NA` is `8`, it's
 #' # still less frequent than `7`:
-#' mode_possible_min(c(7, 7, 7, 7, 7, 8, 8, NA))
-#' mode_possible_max(c(7, 7, 7, 7, 7, 8, 8, NA))
+#' mode_possible_min(c(7, 7, 7, 7, 8, 8, NA))
+#' mode_possible_max(c(7, 7, 7, 7, 8, 8, NA))
 #'
 #' # No clear minimum of modes (because
 #' # `NA` may tip the balance towards a
@@ -363,12 +370,17 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_min(c(1, 1, 2, 2, NA))
 #' mode_possible_max(c(1, 1, 2, 2, NA))
 
-mode_possible_min <- function(x) {
+mode_possible_min <- function(x, accept_known = TRUE) {
+  if (!accept_known) {
+    return(mode_all(x, FALSE))
+  }
   modes <- mode_all(x, TRUE)
-  if (length(modes) == 1L || !any(is.na(x))) {
-    modes
-  } else {
+  count_na <- length(x[is.na(x)])
+  count_mode1 <- length(x[x == modes[[1L]] & !is.na(x)])
+  if (count_na > count_mode1) {
     NA
+  } else {
+    modes
   }
 }
 
@@ -452,8 +464,8 @@ mode_possible_max <- function(x) {
 #'
 #' @name mode-count-possible
 
-mode_count_possible_min <- function(x) {
-  decide_count_na(mode_possible_min(x))
+mode_count_possible_min <- function(x, accept_known = TRUE) {
+  decide_count_na(mode_possible_min(x, accept_known))
 }
 
 
