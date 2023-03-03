@@ -6,16 +6,12 @@
 \alias{mode_count_possible_max}
 \title{Count possible modes}
 \usage{
-mode_count_possible_min(x, accept_known = TRUE)
+mode_count_possible_min(x)
 
 mode_count_possible_max(x)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
-
-\item{accept_known}{Boolean. Only in \code{mode_possible_min()}. If set to
-\code{FALSE}, the function returns \code{NA} if the set of all modes can't be
-determined due to missing values. Default is \code{TRUE}.}
 }
 \value{
 Integer. Minimal and maximal number of modes (values tied for most

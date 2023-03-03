@@ -195,10 +195,10 @@ test_that("`mode_count()` is right with some `NA` input and `na.rm = TRUE`", {
 
 test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x1 ), 9)
-  expect_equal(mode_possible_min(x2 ), 2)
+  expect_equal(mode_possible_min(x2 ), NA)
   expect_equal(mode_possible_min(x3 ), 7)
   expect_equal(mode_possible_min(x4 ), c("a", "b"))
-  expect_equal(mode_possible_min(x5 ), c(1, 2))
+  expect_equal(mode_possible_min(x5 ), NA)
   expect_equal(mode_possible_min(x6 ), 5)
   expect_equal(mode_possible_min(x7 ), c("y", "z"))
   expect_equal(mode_possible_min(x8 ), 1)
@@ -207,7 +207,6 @@ test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x11), 1)
   expect_equal(mode_possible_min(x12), "a")
   expect_equal(mode_possible_min(x13), 1)
-  expect_equal(mode_possible_min(x5, accept_known = FALSE), NA_real_)
 })
 
 
@@ -233,10 +232,10 @@ test_that("`mode_possible_max()` works correctly", {
 
 test_that("`mode_count_possible_min()` works correctly", {
   expect_equal(mode_count_possible_min(x1 ), 1L)
-  expect_equal(mode_count_possible_min(x2 ), 1L)
+  expect_equal(mode_count_possible_min(x2 ), NA_integer_)
   expect_equal(mode_count_possible_min(x3 ), 1L)
   expect_equal(mode_count_possible_min(x4 ), 2L)
-  expect_equal(mode_count_possible_min(x5 ), 2L)
+  expect_equal(mode_count_possible_min(x5 ), NA_integer_)
   expect_equal(mode_count_possible_min(x6 ), 1L)
   expect_equal(mode_count_possible_min(x7 ), 2L)
   expect_equal(mode_count_possible_min(x8 ), 1L)
@@ -245,7 +244,6 @@ test_that("`mode_count_possible_min()` works correctly", {
   expect_equal(mode_count_possible_min(x11), 1L)
   expect_equal(mode_count_possible_min(x12), 1L)
   expect_equal(mode_count_possible_min(x13), 1L)
-  expect_equal(mode_count_possible_min(x5, accept_known = FALSE), NA_real_)
 })
 
 # 4. `mode_count_possible_max()`
