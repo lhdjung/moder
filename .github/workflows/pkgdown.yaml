@@ -12,6 +12,11 @@ on:
 
 name: pkgdown
 
+# Fix for build failure from:
+# https://github.com/actions/checkout/issues/254#issuecomment-899182888
+permissions:
+  contents: read
+
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
