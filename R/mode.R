@@ -376,11 +376,24 @@ mode_possible_min <- function(x) {
   # This is a corner case with just one
   # known value:
   if (length(x_without_mode1) == 0L && length(mode1) == 1L) {
-    return(mode1)
+    if (length(x[x == mode1[[1L]]]) < count_na) {
+      return(NA)
+    } else {
+      return(mode1)
+    }
   }
+  # (See below.)
   mode2 <- mode_all(x_without_mode1)
   count_mode1 <- length(x[x == mode1[[1L]]])
   count_mode2_na <- length(x[!is.na(x) & x %in% mode2]) + count_na
+  # The next-most-frequent known values
+  # plus `NA`s must not be more frequent
+  # than `mode1`, or the latter isn't
+  # guaranteed to be a minimum of modes.
+  # The same is true if there are two or
+  # more `mode1` values, because `NA`s
+  # can make any of these more frequent
+  # than the others:
   if (count_mode2_na > count_mode1 || length(mode1) > 1L) {
     NA
   } else {
@@ -422,7 +435,7 @@ mode_possible_max <- function(x) {
     modes_out <- c(modes_out, unique(x[x %in% modes]))
     # Next *lower* level of modes:
     modes_next_level <- mode_all(x[!x %in% modes], FALSE)
-    diff_length <- length(x[x %in% modes]) - length(x[x %in% modes_next_level])
+    diff_length <- length(x[x %in% modes[[1L]]]) - length(x[x %in% modes_next_level])
     x <- x[!x %in% modes]
     count_empty_slots <- length(modes_next_level) * diff_length
     if (count_nas_left < count_empty_slots) {
