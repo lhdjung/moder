@@ -206,7 +206,7 @@ mode_all <- function(x, na.rm = FALSE) {
   # adjudicate whether the candidate mode
   # is certain to be the actual one or not:
   if (length(modes) == 1L) {
-    decide_mode_na(x, unique(x[!is.na(x)]), modes)
+    decide_mode_na(x, unique(ix1), modes)
     # Any missing value could mask any of the
     # known values tied for most frequent --
     # and break the tie. This makes it
@@ -262,15 +262,12 @@ mode_all <- function(x, na.rm = FALSE) {
 
 mode_single <- function(x, na.rm = FALSE) {
   # We need to check the number of
-  # modes here, so we call `mode_all()`.
-  # `na.rm` is `FALSE` here because, if
-  # the user set it to `TRUE`, missing
-  # values were removed already.
-  mode1 <- mode_all(x, na.rm)
+  # modes here, so we call `mode_all()`:
+  modes <- mode_all(x, na.rm)
   # As the name says, if the distribution
   # has a single mode, return that value:
-  if (length(mode1) == 1L) {
-    mode1
+  if (length(modes) == 1L) {
+    modes
     # Multimodal distributions are always `NA`.
     # Some users prefer this stricter way of
     # estimating the mode, or they require it
@@ -365,13 +362,19 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
 
 mode_possible_min <- function(x) {
+  # Without missing values, the minimal
+  # set of modes is simply the actual one:
   count_na <- length(x[is.na(x)])
   if (count_na == 0L) {
     return(mode_all(x, FALSE))
   }
+  # Otherwise, the minimum might be
+  # the set of modes among known values:
   x <- x[!is.na(x)]
   mode1 <- mode_all(x, FALSE)
   x_without_mode1 <- x[!x %in% mode1]
+  # This is a corner case with just one
+  # known value:
   if (length(x_without_mode1) == 0L && length(mode1) == 1L) {
     return(mode1)
   }
@@ -423,9 +426,9 @@ mode_possible_max <- function(x) {
     x <- x[!x %in% modes]
     count_empty_slots <- length(modes_next_level) * diff_length
     if (count_nas_left < count_empty_slots) {
-      # Make sure to escape the loop because
+      # Escape from the loop because
       # there are not enough `NA`s left:
-      count_nas_left <- 0L
+      break
     } else {
       # Append lower-level modes to the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
