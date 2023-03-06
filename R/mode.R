@@ -423,6 +423,10 @@ mode_possible_max <- function(x) {
   # from within the loop: one set of
   # mode values per level of modes.
   modes_out <- NULL
+  # Also initialize a vector that will
+  # keep track of the maximum frequency,
+  # and that may resolve a corner case:
+  count_max <- NULL
   # Run through the mode levels of `x`
   # for as long as there is a sufficient
   # amount of missing values left to fill
@@ -435,14 +439,40 @@ mode_possible_max <- function(x) {
     modes_out <- c(modes_out, unique(x[x %in% modes]))
     # Next *lower* level of modes:
     modes_next_level <- mode_all(x[!x %in% modes], FALSE)
-    diff_length <- length(x[x %in% modes[[1L]]]) - length(x[x %in% modes_next_level])
+    count_modes <- length(x[x %in% modes[[1L]]])
+    count_modes_next_level <- length(x[x %in% modes_next_level[[1L]]])
+    count_diff <- count_modes - count_modes_next_level
+    count_max <- max(count_max, count_modes)
     x <- x[!x %in% modes]
-    count_empty_slots <- length(modes_next_level) * diff_length
+    count_empty_slots <- length(modes_next_level) * count_diff
+    # In case the remaining `NA`s can't
+    # fill up the empty slots, there
+    # won't be another loop cycle:
     if (count_nas_left < count_empty_slots) {
-      # Escape from the loop because
-      # there are not enough `NA`s left:
-      break
+      # With multiple next-most-frequent values
+      # and some `NA`s remaining (but not enough;
+      # see right above) as well as the possibility
+      # that some of the multiples might be actual
+      # modes if combined with all remaining `NA`s,
+      # there is no clear maximum set of modes
+      # because the `NA`s make it unclear which
+      # of the next-most-frequent values might
+      # be as frequent as the top-level ones.
+      # This returns `NA` for the same reason
+      # that `mode_all(c(1, 1, 2, 2, NA))` does.
+      if (
+        length(modes_next_level) > 1L &&
+        count_nas_left > 0L &&
+        count_modes_next_level + count_nas_left >= count_max
+      ) {
+        return(NA)
+      } else {
+        # Escape from the loop because
+        # there are not enough `NA`s left:
+        break
+      }
     } else {
+      # In this case, the empty slots can be filled.
       # Append lower-level modes to the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
       count_nas_left <- count_nas_left - max(count_empty_slots, 1L)

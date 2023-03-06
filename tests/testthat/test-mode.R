@@ -14,7 +14,7 @@ x12 <- c("a", "a", "a", "b", "b", "c", "d", "e", NA)
 x13 <- c(NA, 1)
 x14 <- c(1, 1, 2, 2, 3, NA)
 x15 <- c(1, NA, NA)
-
+x16 <- c(1, 1, 1, 2, 2, 3, 3, NA)
 
 
 # Actual modes, without `NA`s ---------------------------------------------
@@ -247,6 +247,8 @@ test_that("`mode_possible_max()` works correctly", {
   expect_equal(mode_possible_max(x13), 1)
   expect_equal(mode_possible_max(x14), c(1, 2, 3))
   expect_equal(mode_possible_max(x15), 1)
+  expect_equal(mode_possible_max(x16), NA)
+  expect_equal(mode_possible_max(c(x16, 1)), 1)
 })
 
 # 3. `mode_count_possible_min()`
@@ -287,5 +289,7 @@ test_that("`mode_count_possible_max()` works correctly", {
   expect_equal(mode_count_possible_max(x13), 1L)
   expect_equal(mode_count_possible_max(x14), 3L)
   expect_equal(mode_count_possible_max(x15), 1L)
+  expect_equal(mode_count_possible_max(x16), NA_integer_)
+  expect_equal(mode_count_possible_max(c(x16, 1)), 1)
 })
 
