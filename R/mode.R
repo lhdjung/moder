@@ -385,7 +385,7 @@ mode_possible_min <- function(x) {
   # (See below.)
   mode2 <- mode_all(x_without_mode1)
   count_mode1 <- length(x[x == mode1[[1L]]])
-  count_mode2_na <- length(x[x %in% mode2]) + count_na
+  count_mode2_na <- length(x[x %in% mode2[[1L]]]) + count_na
   # The next-most-frequent known values
   # plus `NA`s must not be more frequent
   # than `mode1`, or the latter isn't
