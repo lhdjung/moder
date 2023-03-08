@@ -99,7 +99,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # `first_known = TRUE` (the default), `mode1`
   # is definitely the mode:
   if (count_mode1 < count_mode2_na || count_modes_unique > 1L) {
-    return(methods::as(NA, typeof(x)))
+    return(x[NA_integer_])
   } else if (first_known || count_mode1 > count_mode2_na) {
     return(mode1)
   }
@@ -113,7 +113,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
     if (match(mode1, x) == 1L) {
       return(mode1)
     } else {
-      return(methods::as(NA, typeof(x)))
+      return(x[NA_integer_])
     }
   }
   # Get the most frequent known value that is not `mode1`:
@@ -132,7 +132,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   if (match(mode1, x) < match(mode2, x)) {
     mode1
   } else {
-    methods::as(NA, typeof(x))
+    x[NA_integer_]
   }
 }
 
@@ -213,7 +213,7 @@ mode_all <- function(x, na.rm = FALSE) {
     # impossible to determine the true set
     # of modes, so the function returns `NA`:
   } else if (any(is.na(x))) {
-    methods::as(NA, typeof(x))
+    x[NA_integer_]
     # Multimodal distributions without `NA`s
     # have a clearly determined set of modes:
   } else {
@@ -533,7 +533,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
     if (length(x[is.na(x)]) < length(x) / 2) {
       return(mode1)
     } else {
-      return(methods::as(NA, typeof(x)))
+      return(x[NA_integer_])
     }
   }
   ix2 <- x[x != mode1 & !is.na(x)]
@@ -549,7 +549,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
   if (count_mode1 > count_mode2_na) {
     mode1
   } else {
-    methods::as(NA, typeof(x))
+    x[NA_integer_]
   }
 }
 
