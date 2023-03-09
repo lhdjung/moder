@@ -434,6 +434,13 @@ mode_possible_max <- function(x) {
   while (count_nas_left > 0L) {
     # Determine the modes on the *current* level:
     modes <- mode_all(x, FALSE)
+    # More than one mode per level means
+    # there is a pseudo-tie that can be
+    # broken by `NA`s, so there is no
+    # clear maximum in this case:
+    if (length(modes) > 1L) {
+      return(NA)
+    }
     # This vector will ultimately be returned,
     # but other values may be added to it:
     modes_out <- c(modes_out, unique(x[x %in% modes]))
