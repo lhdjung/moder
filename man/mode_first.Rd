@@ -4,7 +4,7 @@
 \alias{mode_first}
 \title{The first-appearing mode}
 \usage{
-mode_first(x, na.rm = FALSE, first_known = TRUE)
+mode_first(x, na.rm = FALSE, first_known = FALSE)
 }
 \arguments{
 \item{x}{A vector to search for its first mode.}
@@ -13,8 +13,8 @@ mode_first(x, na.rm = FALSE, first_known = TRUE)
 computation proceeds? Default is \code{FALSE}.}
 
 \item{first_known}{Boolean. Should the first-appearing value known to be a
-mode be accepted? If \code{FALSE}, returns \code{NA} if a value that appears earlier
-might be another mode due to missing values. Default is \code{TRUE}.}
+mode be accepted? If \code{FALSE} (the default), returns \code{NA} if a value that
+appears earlier might be another mode due to missing values.}
 }
 \value{
 The first mode (most frequent value) in \code{x}. If it can't be
@@ -41,10 +41,15 @@ mode_first(c(1, 1, 2, 2, NA), na.rm = TRUE)
 # no matter what `NA` stands for:
 mode_first(c(1, 1, 1, 2, NA))
 
-# Insist on finding the first mode,
-# not just the first value known to
-# be a mode, with `first_known = FALSE`:
-mode_first(c(1, 2, 2, NA), first_known = FALSE)
+# By default, the function insists on
+# the first mode, so it won't accept the
+# first value *known* to be a mode if an
+# earlier value might be a mode, too:
+mode_first(c(1, 2, 2, NA))
+
+# Accept the first-known mode with
+# `first_known = TRUE`:
+mode_first(c(1, 2, 2, NA), first_known = TRUE)
 }
 \seealso{
 \itemize{

@@ -4,19 +4,19 @@
 \alias{mode_single}
 \title{The single mode}
 \usage{
-mode_single(x, multiple = "NA", na.rm = FALSE)
+mode_single(x, na.rm = FALSE, multiple = "NA")
 }
 \arguments{
 \item{x}{A vector to search for its mode.}
 
+\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+computation proceeds? Default is \code{FALSE}.}
+
 \item{multiple}{String or integer (length 1), or a function. What to do if
-\code{x} has multiple modes. The default is \code{"NA"}. All other options rely on
+\code{x} has multiple modes. The default returns \code{NA}. All other options rely on
 the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
 \code{"last"}, and \code{"random"}. Alternatively, \code{multiple} can be an index number,
 or a function that summarizes the modes. See details.}
-
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
-computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 The only mode (most frequent value) in \code{x}. If it can't be determined

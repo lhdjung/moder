@@ -56,11 +56,11 @@ test_that("`mode_count()` is right when no `NA`s are present", {
 test_that("`mode_first()` is right with some `NA` input but non-`NA` output", {
   expect_equal(mode_first(x3) , 7)
   expect_equal(mode_first(x8) , 1)
-  expect_equal(mode_first(x9) , 1)
+  expect_equal(mode_first(x9) , NA_real_)
   expect_equal(mode_first(x10), 1)
   expect_equal(mode_first(x11), 1)
   expect_equal(mode_first(x12), "a")
-  expect_equal(mode_first(x13), 1)
+  expect_equal(mode_first(x13), NA_real_)
 })
 
 test_that("`mode_first()` is right with some `NA` input, non-`NA` output,

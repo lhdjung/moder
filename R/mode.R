@@ -10,8 +10,8 @@
 #' @param na.rm Boolean. Should missing values in `x` be removed before
 #'   computation proceeds? Default is `FALSE`.
 #' @param first_known Boolean. Should the first-appearing value known to be a
-#'   mode be accepted? If `FALSE`, returns `NA` if a value that appears earlier
-#'   might be another mode due to missing values. Default is `TRUE`.
+#'   mode be accepted? If `FALSE` (the default), returns `NA` if a value that
+#'   appears earlier might be another mode due to missing values.
 #'
 #' @return The first mode (most frequent value) in `x`. If it can't be
 #'   determined because of missing values, returns `NA` instead.
@@ -39,12 +39,17 @@
 #' # no matter what `NA` stands for:
 #' mode_first(c(1, 1, 1, 2, NA))
 #'
-#' # Insist on finding the first mode,
-#' # not just the first value known to
-#' # be a mode, with `first_known = FALSE`:
-#' mode_first(c(1, 2, 2, NA), first_known = FALSE)
+#' # By default, the function insists on
+#' # the first mode, so it won't accept the
+#' # first value *known* to be a mode if an
+#' # earlier value might be a mode, too:
+#' mode_first(c(1, 2, 2, NA))
+#'
+#' # Accept the first-known mode with
+#' # `first_known = TRUE`:
+#' mode_first(c(1, 2, 2, NA), first_known = TRUE)
 
-mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
+mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   # Iteration in the for loop will only
   # proceed on known `x` values:
   ix1 <- x[!is.na(x)]
@@ -95,12 +100,13 @@ mode_first <- function(x, na.rm = FALSE, first_known = TRUE) {
   # true if there is more than one unique mode
   # (because some values are unknown).
   # Otherwise, if the highest count is higher
-  # than `count_mode2_na`, or if
-  # `first_known = TRUE` (the default), `mode1`
-  # is definitely the mode:
+  # than `count_mode2_na`, `mode1` is definitely
+  # the mode. It's also accepted as such if
+  # `first_known = TRUE` because it's known to be
+  # a mode, even if an earlier value is also one:
   if (count_mode1 < count_mode2_na || count_modes_unique > 1L) {
     return(x[NA_integer_])
-  } else if (first_known || count_mode1 > count_mode2_na) {
+  } else if (count_mode1 > count_mode2_na || first_known) {
     return(mode1)
   }
   # Check whether there is only a single unique known
@@ -229,7 +235,7 @@ mode_all <- function(x, na.rm = FALSE) {
 #'
 #' @param x A vector to search for its mode.
 #' @param multiple String or integer (length 1), or a function. What to do if
-#'   `x` has multiple modes. The default is `"NA"`. All other options rely on
+#'   `x` has multiple modes. The default returns `NA`. All other options rely on
 #'   the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
 #'   `"last"`, and `"random"`. Alternatively, `multiple` can be an index number,
 #'   or a function that summarizes the modes. See details.
@@ -276,7 +282,7 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, multiple = "NA", na.rm = FALSE) {
+mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
   # The `multiple` argument will usually be a string.
   # It should then be checked against the vector of
   # possible string shorthands for dealing with
