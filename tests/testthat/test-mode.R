@@ -35,9 +35,9 @@ test_that("`mode_all()` is right when no `NA`s are present", {
 
 test_that("`mode_single()` is right when no `NA`s are present", {
   expect_equal(mode_single(x1), 9)
-  expect_equal(mode_single(x4), NA)
+  expect_equal(mode_single(x4), NA_character_)
   expect_equal(mode_single(x6), 5)
-  expect_equal(mode_single(x7), NA)
+  expect_equal(mode_single(x7), NA_character_)
 })
 
 test_that("`mode_count()` is right when no `NA`s are present", {
@@ -162,13 +162,13 @@ test_that("`mode_single()` is right with some `NA` input and `NA` output", {
 test_that("`mode_single()` is right with some `NA` input and `na.rm = TRUE`
           (but still `NA` output)", {
   expect_equal(mode_single(x2 , na.rm = TRUE), 2)
-  expect_equal(mode_single(x5 , na.rm = TRUE), NA)
+  expect_equal(mode_single(x5 , na.rm = TRUE), NA_real_)
   expect_equal(mode_single(x8 , na.rm = TRUE), 1)
   expect_equal(mode_single(x9 , na.rm = TRUE), 1)
   expect_equal(mode_single(x11, na.rm = TRUE), 1)
   expect_equal(mode_single(x12, na.rm = TRUE), "a")
   expect_equal(mode_single(x13, na.rm = TRUE), 1)
-  expect_equal(mode_single(x14, na.rm = TRUE), NA)
+  expect_equal(mode_single(x14, na.rm = TRUE), NA_real_)
   expect_equal(mode_single(x15, na.rm = TRUE), 1)
 })
 

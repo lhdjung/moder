@@ -4,22 +4,40 @@
 \alias{mode_single}
 \title{The single mode}
 \usage{
-mode_single(x, na.rm = FALSE)
+mode_single(x, multiple = "NA", na.rm = FALSE)
 }
 \arguments{
 \item{x}{A vector to search for its mode.}
+
+\item{multiple}{String or integer (length 1), or a function. What to do if
+\code{x} has multiple modes. The default is \code{"NA"}. All other options rely on
+the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
+\code{"last"}, and \code{"random"}. Alternatively, \code{multiple} can be an index number,
+or a function that summarizes the modes. See details.}
 
 \item{na.rm}{Boolean. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 The only mode (most frequent value) in \code{x}. If it can't be determined
-because of missing values, or if there is more than one mode,
-returns \code{NA} instead.
+because of missing values, \code{NA} is returned instead. By default, \code{NA} is
+also returned if there are multiple modes (\code{multiple = "NA"}).
 }
 \description{
-\code{mode_single()} returns the only mode in a vector, or \code{NA} if there are
-multiple modes.
+\code{mode_single()} returns the only mode in a vector. If there are multiple
+modes, it returns \code{NA} by default.
+}
+\details{
+If \code{x} is a string vector and \code{multiple} is \code{"min"} or \code{"max"}, the
+mode is selected lexically, just like \code{min(letters)} returns \code{"a"}. The
+\code{"mean"} and \code{"median"} options return \code{NA} with a warning. For factors,
+\code{"min"}, \code{"max"}, and \code{"median"} are errors, but \code{"mean"} returns \code{NA} with
+a warning. These are inconsistencies in base R.
+
+The \code{multiple} options \code{"first"} and \code{"last"} always select the mode that
+appears first or last in \code{x}. Index numbers, like \code{multiple = 2}, allow you
+to select more flexibly. If \code{multiple} is a function, its output must be
+length 1.
 }
 \examples{
 # `8` is the only mode:

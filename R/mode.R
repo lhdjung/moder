@@ -224,15 +224,31 @@ mode_all <- function(x, na.rm = FALSE) {
 
 #' The single mode
 #'
-#' `mode_single()` returns the only mode in a vector, or `NA` if there are
-#' multiple modes.
+#' `mode_single()` returns the only mode in a vector. If there are multiple
+#' modes, it returns `NA` by default.
 #'
 #' @param x A vector to search for its mode.
+#' @param multiple String or integer (length 1), or a function. What to do if
+#'   `x` has multiple modes. The default is `"NA"`. All other options rely on
+#'   the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
+#'   `"last"`, and `"random"`. Alternatively, `multiple` can be an index number,
+#'   or a function that summarizes the modes. See details.
 #' @inheritParams mode_first
 #'
 #' @return The only mode (most frequent value) in `x`. If it can't be determined
-#'   because of missing values, or if there is more than one mode,
-#'   returns `NA` instead.
+#'   because of missing values, `NA` is returned instead. By default, `NA` is
+#'   also returned if there are multiple modes (`multiple = "NA"`).
+#'
+#' @details If `x` is a string vector and `multiple` is `"min"` or `"max"`, the
+#'   mode is selected lexically, just like `min(letters)` returns `"a"`. The
+#'   `"mean"` and `"median"` options return `NA` with a warning. For factors,
+#'   `"min"`, `"max"`, and `"median"` are errors, but `"mean"` returns `NA` with
+#'   a warning. These are inconsistencies in base R.
+#'
+#'   The `multiple` options `"first"` and `"last"` always select the mode that
+#'   appears first or last in `x`. Index numbers, like `multiple = 2`, allow you
+#'   to select more flexibly. If `multiple` is a function, its output must be
+#'   length 1.
 #'
 #' @export
 #'
@@ -260,7 +276,19 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, na.rm = FALSE) {
+mode_single <- function(x, multiple = "NA", na.rm = FALSE) {
+  # The `multiple` argument will usually be a string.
+  # It should then be checked against the vector of
+  # possible string shorthands for dealing with
+  # multiple modes, using an intermediate variable
+  # to avoid redundant printing of each string in
+  # case of an error:
+  if (is.character(multiple)) {
+    possible_strings <-
+      c("NA", "min", "max", "mean", "median", "first", "last", "random")
+    match.arg(multiple, possible_strings)
+    rm(possible_strings)
+  }
   # We need to check the number of
   # modes here, so we call `mode_all()`:
   modes <- mode_all(x, na.rm)
@@ -268,12 +296,52 @@ mode_single <- function(x, na.rm = FALSE) {
   # has a single mode, return that value:
   if (length(modes) == 1L) {
     modes
-    # Multimodal distributions are always `NA`.
+    # Multimodal distributions are `NA` by default.
     # Some users prefer this stricter way of
-    # estimating the mode, or they require it
-    # for their specific use cases.
+    # estimating the mode, or they require it for
+    # their specific use cases.
+  } else if (is.character(multiple)) {
+    # Execute the user's chosen strategy
+    # for dealing with multiple modes,
+    # or the "NA" default:
+    switch(
+      multiple,
+      "NA"      = x[NA_integer_],
+      "min"     = min(modes),
+      "max"     = max(modes),
+      "mean"    = mean(modes),
+      "median"  = stats::median(modes),
+      "first"   = modes[1L],
+      "last"    = modes[length(modes)],
+      "random"  = sample(modes, size = 1L)
+    )
+  } else if (is.numeric(multiple)) {
+    # Index numbers must not be greater than
+    # the number of modes, which is an error:
+    if (multiple > length(modes)) {
+      msg_error <- paste("`multiple` is", multiple, "but there are only")
+      msg_error <- paste(msg_error, length(modes), "modes")
+      stop(msg_error)
+    }
+    modes[multiple]
   } else {
-    NA
+    # The user may also specify `multiple`
+    # as an object that can be interpreted
+    # as a function to manually summarize
+    # `modes`:
+    modes <- as.function(multiple)(modes)
+    # The output of the user-supplied
+    # function has to be of length 1
+    # to keep `mode_single()` true to
+    # itself, or else there will be
+    # an error:
+    if (length(modes) == 1L) {
+      modes
+    } else {
+      msg_error <- "Function supplied to `multiple` returns object of length"
+      msg_error <- paste(msg_error, length(modes), "instead of 1")
+      stop(msg_error)
+    }
   }
 }
 

@@ -13,6 +13,7 @@ RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
+    stats,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://github.com/lhdjung/moder,
