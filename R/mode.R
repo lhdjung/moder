@@ -56,7 +56,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   # Return `NA` early if required,
   # or remove `NA`s entirely if desired:
   if (!length(x) || all(is.na(x))) {
-    return(NA)
+    return(x[NA_integer_])
   } else if (na.rm) {
     x <- ix1
   }
@@ -192,7 +192,7 @@ mode_all <- function(x, na.rm = FALSE) {
   # Return `NA` early if required,
   # or remove `NA`s entirely if desired:
   if (!length(x) || all(is.na(x))) {
-    return(NA)
+    return(x[NA_integer_])
   } else if (na.rm) {
     x <- ix1
   }
@@ -451,7 +451,7 @@ mode_possible_min <- function(x) {
   # known value:
   if (length(x_without_mode1) == 0L && length(mode1) == 1L) {
     if (length(x[x == mode1[[1L]]]) < count_na) {
-      return(NA)
+      return(x[NA_integer_])
     } else {
       return(mode1)
     }
@@ -469,7 +469,7 @@ mode_possible_min <- function(x) {
   # can make any of these more frequent
   # than the others:
   if (count_mode2_na > count_mode1 || length(mode1) > 1L) {
-    NA
+    x[NA_integer_]
   } else {
     mode1
   }
@@ -513,7 +513,7 @@ mode_possible_max <- function(x) {
     # broken by `NA`s, so there is no
     # clear maximum in this case:
     if (length(modes) > 1L) {
-      return(NA)
+      return(x[NA_integer_])
     }
     # This vector will ultimately be returned,
     # but other values may be added to it:
@@ -546,7 +546,7 @@ mode_possible_max <- function(x) {
         count_nas_left > 0L &&
         count_modes_next_level + count_nas_left >= count_max
       ) {
-        return(NA)
+        return(x[NA_integer_])
       } else {
         # Escape from the loop because
         # there are not enough `NA`s left:
@@ -565,7 +565,7 @@ mode_possible_max <- function(x) {
   if (length(modes_out)) {
     unique(modes_out)
   } else {
-    NA
+    x[NA_integer_]
   }
 }
 

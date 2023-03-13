@@ -212,10 +212,10 @@ test_that("`mode_count()` is right with some `NA` input and `na.rm = TRUE`", {
 
 test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x1 ), 9)
-  expect_equal(mode_possible_min(x2 ), NA)
+  expect_equal(mode_possible_min(x2 ), NA_real_)
   expect_equal(mode_possible_min(x3 ), 7)
   expect_equal(mode_possible_min(x4 ), c("a", "b"))
-  expect_equal(mode_possible_min(x5 ), NA)
+  expect_equal(mode_possible_min(x5 ), NA_real_)
   expect_equal(mode_possible_min(x6 ), 5)
   expect_equal(mode_possible_min(x7 ), c("y", "z"))
   expect_equal(mode_possible_min(x8 ), 1)
@@ -224,8 +224,8 @@ test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x11), 1)
   expect_equal(mode_possible_min(x12), "a")
   expect_equal(mode_possible_min(x13), 1)
-  expect_equal(mode_possible_min(x14), NA)
-  expect_equal(mode_possible_min(x15), NA)
+  expect_equal(mode_possible_min(x14), NA_real_)
+  expect_equal(mode_possible_min(x15), NA_real_)
 })
 
 
@@ -236,7 +236,7 @@ test_that("`mode_possible_max()` works correctly", {
   expect_equal(mode_possible_max(x2 ), c(2, 1))
   expect_equal(mode_possible_max(x3 ), 7)
   expect_equal(mode_possible_max(x4 ), c("a", "b"))
-  expect_equal(mode_possible_max(x5 ), NA)
+  expect_equal(mode_possible_max(x5 ), NA_real_)
   expect_equal(mode_possible_max(x6 ), 5)
   expect_equal(mode_possible_max(x7 ), c("y", "z"))
   expect_equal(mode_possible_max(x8 ), c(1, 2))
@@ -245,9 +245,9 @@ test_that("`mode_possible_max()` works correctly", {
   expect_equal(mode_possible_max(x11), 1)
   expect_equal(mode_possible_max(x12), c("a", "b"))
   expect_equal(mode_possible_max(x13), 1)
-  expect_equal(mode_possible_max(x14), NA)
+  expect_equal(mode_possible_max(x14), NA_real_)
   expect_equal(mode_possible_max(x15), 1)
-  expect_equal(mode_possible_max(x16), NA)
+  expect_equal(mode_possible_max(x16), NA_real_)
   expect_equal(mode_possible_max(c(x16, 1)), 1)
 })
 
