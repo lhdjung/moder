@@ -29,8 +29,10 @@ reference:
   - mode_first
   - mode_all
   - mode_single
+  - mode_frequency
   - mode_count
 - title: Possible modes
 - contents:
   - mode_possible_max
+  - mode_frequency_range
   - mode_count_possible_max

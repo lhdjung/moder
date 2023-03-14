@@ -352,6 +352,41 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
 }
 
 
+#' Modal frequency
+#'
+#' @description Call `mode_frequency()` to get the number of times that a
+#'   vector's mode appears in the vector.
+#'
+#'   By default, the function returns `NA` if any values are missing. That is
+#'   because missings make the frequency uncertain even if the mode is known.
+#'   See [mode_frequency_range()] for bounds around an unknown frequency.
+#'
+#' @inheritParams mode_first
+#'
+#' @return Integer (length 1) or `NA`.
+#'
+#' @seealso [mode_first()], which the function wraps.
+#'
+#' @export
+#'
+#' @examples
+
+mode_frequency <- function(x, na.rm = FALSE) {
+  # This requires one mode of `x`, so we call
+  # `mode_first()` with `first_known = TRUE`
+  # (because position is irrelevant here):
+  mode <- mode_first(x, na.rm, TRUE)
+  # If the mode could be determined, count
+  # its occurrences among non-`NA` values
+  # in `x`:
+  if (!na.rm && any(is.na(x))) {
+    NA_integer_
+  } else {
+    length(x[x == mode & !is.na(x)])
+  }
+}
+
+
 #' Number of modes
 #'
 #' `mode_count()` counts the modes in a vector. Thin wrapper around
@@ -602,6 +637,56 @@ mode_count_possible_min <- function(x) {
 
 mode_count_possible_max <- function(x) {
   decide_count_na(mode_possible_max(x))
+}
+
+
+#' Modal frequency range
+#'
+#' @description Call `mode_frequency_range()` to get the number of times that a
+#'   vector's mode appears in the vector. It returns the range of the frequency
+#'   in a length-2 vector. The lower bound assumes that no `NA`s count towards
+#'   the mode; the upper bound assumes that all `NA`s do. If there are no `NA`s,
+#'   the bounds are identical.
+#'
+#'   If the mode can't be determined, `NA` is returned instead.
+#'
+#' @inheritParams mode_first
+#'
+#' @return Integer (length 2) or `NA`.
+#'
+#' @export
+#'
+#' @seealso
+#' - [mode_first()], which the function wraps.
+#' - [mode_frequency()], for the precise frequency (or `NA` if it can't be
+#' determined).
+#'
+#' @examples
+#' # The mode is `7`. It appears four or
+#' # five times because the `NA` might
+#  # also be a `7`:
+#' mode_frequency_range(c(7, 7, 7, 7, 8, 8, NA))
+#'
+#' # `"c"`, `"d"`, and `"e"` are the modes,
+#' # and each of them appears twice:
+#' mode_frequency_range(c("a", "b", "c", "c", "d", "d", "e", "e"))
+
+mode_frequency_range <- function(x) {
+  # This requires one mode of `x`, so we call
+  # `mode_first()` with `first_known = TRUE`
+  # (because position is irrelevant here):
+  mode <- mode_first(x, FALSE, TRUE)
+  # If the mode could be determined, count
+  # its occurrences among non-`NA` values
+  # in `x` (lower bound) and add the
+  # number of `NA`s (upper bound):
+  if (length(mode) == 1L && is.na(mode)) {
+    NA_integer_
+  } else {
+    count_mode <- length(x[x == mode & !is.na(x)])
+    count_na <- length(x[is.na(x)])
+    c(count_mode, count_mode + count_na)
+  }
 }
 
 
