@@ -23,35 +23,3 @@ Accuracy and flexibility are among the strong suits of moder. Performance is not
 Why is that? All of the code is written in R. By contrast, the default `mean()` method calls an internal function. Also, handling missing values is much more complex when determining the mode(s) than with the mean or the median; see `vignette("missings")`. The default `mean()` and `median()` methods are fairly short when compared to `mode_first()`, and to `mode_all()` if its helper function is included. `mode_single()` is a wrapper around `mode_all()`, so it's even longer.
 
 It is also possible that some of the code is less efficient than it could be. In particular, rewriting moder's R code in a language like C++ or Rust might blend accuracy with high performance. I myself am not going to port the package in the near term, so help is welcome. If you have any suggestions, please [open an issue](https://github.com/lhdjung/moder/issues) or get in touch via email (jung-lukas\@gmx.net).
-
-## Benchmarking
-
-The mode functions return `1` for the vector below, while `mean()` and `median()` return `NA`. I still think it makes sense to compare them because this difference may occur in many realistic distributions: Some values are missing, so the mean and the median are unknown, but there are enough known values to determine at least one mode.
-
-```{r, eval=FALSE, include=FALSE}
-# NOTE: The code below doesn't run when
-# knitting the page, and I inserted
-# the image manually. This is to avoid
-# repetition of time-consuming benchmarking.
-```
-
-```{r, eval=FALSE}
-library(bench)
-library(ggplot2)
-
-x <- c(2, 4, 6, NA, 3, 1, 1, 8, 1, 7)
-
-df <- mark(
-  mode_single = mode_single(x),
-  mode_first = mode_first(x),
-  mode_all = mode_all(x),
-  mean = mean(x),
-  median = median(x),
-  check = FALSE, iterations = 100000
-)
-
-plot(df) +
-  theme_minimal(base_size = 13)
-```
-
-![](images/moder_benchmarks)
