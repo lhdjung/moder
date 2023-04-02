@@ -21,7 +21,6 @@ vector's mode appears in the vector.
 
 By default, the function returns \code{NA} if any values are missing. That is
 because missings make the frequency uncertain even if the mode is known.
-See \code{\link[=mode_frequency_range]{mode_frequency_range()}} for bounds around an unknown frequency.
 }
 \seealso{
 \code{\link[=mode_first]{mode_first()}}, which the function wraps.

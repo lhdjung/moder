@@ -6,7 +6,6 @@ url: https://lhdjung.github.io/moder/
 # gitcreds::gitcreds_set()
 
 lang: en
-
 home:
   title: Mode estimation in R
   description: |
@@ -22,7 +21,6 @@ template:
     code-color: '#ca225e'
     navbar-dark-hover-color: '#ca225e'
     navbar-dark-active-color: '#f9ea6b'
-
 reference:
 - title: Actual modes
 - contents:
@@ -34,5 +32,5 @@ reference:
 - title: Possible modes
 - contents:
   - mode_possible_max
-  - mode_frequency_range
+  # - mode_frequency_range
   - mode_count_possible_max
