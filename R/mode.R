@@ -358,34 +358,50 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
 #' @description Call `mode_frequency()` to get the number of times that a
 #'   vector's mode appears in the vector.
 #'
-#'   By default, the function returns `NA` if any values are missing. That is
-#'   because missings make the frequency uncertain even if the mode is known.
 
 #   See [mode_frequency_range()] for bounds around an unknown frequency.
 
 #'
 #' @inheritParams mode_first
 #'
+#' @details By default (`na.rm = FALSE`), the function returns `NA` if any
+#'   values are missing. That is because missings make the frequency uncertain
+#'   even if the mode is known: any missing value may or may not be the mode,
+#'   and hence count towards the modal frequency.
+#'
 #' @return Integer (length 1) or `NA`.
 #'
 #' @seealso [mode_first()], which the function wraps.
 #'
 #' @export
-
-# @examples
+#'
+#' @examples
+#' # The mode, `9`, appears three times:
+#' mode_frequency(c(7, 8, 8, 9, 9, 9))
+#'
+#' # With missing values, the frequency
+#' # is unknown, even if the mode isn't:
+#' mode_frequency(c(1, 1, NA))
+#'
+#' # You can ignore this problem and
+#' # determine the frequency among known values
+#' # (there should be good reasons for this!):
+#' mode_frequency(c(1, 1, NA), na.rm = TRUE)
 
 mode_frequency <- function(x, na.rm = FALSE) {
-  # This requires one mode of `x`, so we call
-  # `mode_first()` with `first_known = TRUE`
-  # (because position is irrelevant here):
-  mode <- mode_first(x, na.rm, TRUE)
-  # If the mode could be determined, count
-  # its occurrences among non-`NA` values
-  # in `x`:
-  if (!na.rm && anyNA(x)) {
-    NA_integer_
-  } else {
+  # The modal frequency can't be determined if
+  # any values are missing because each of them
+  # might increase the frequency:
+  if (na.rm || !anyNA(x)) {
+    # If the mode can be determined, count
+    # its occurrences among non-`NA` values.
+    # This requires one mode of `x`, so we call
+    # `mode_first()` with `first_known = TRUE`
+    # (because position is irrelevant here):
+    mode <- mode_first(x, na.rm, TRUE)
     length(x[x == mode & !is.na(x)])
+  } else {
+    NA_integer_
   }
 }
 

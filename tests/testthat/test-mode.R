@@ -47,6 +47,13 @@ test_that("`mode_count()` is right when no `NA`s are present", {
   expect_equal(mode_count(x7), 2)
 })
 
+test_that("`mode_frequency()` is right when no `NA`s are present", {
+  expect_equal(mode_frequency(x1), 3L)
+  expect_equal(mode_frequency(x4), 2L)
+  expect_equal(mode_frequency(x6), 3L)
+  expect_equal(mode_frequency(x7), 2L)
+})
+
 
 
 # Actual modes, with `NA`s ------------------------------------------------
@@ -202,6 +209,45 @@ test_that("`mode_count()` is right with some `NA` input and `na.rm = TRUE`", {
   expect_equal(mode_count(x13, na.rm = TRUE), 1L)
   expect_equal(mode_count(x14, na.rm = TRUE), 2L)
   expect_equal(mode_count(x15, na.rm = TRUE), 1L)
+})
+
+
+# 5. `mode_frequency()`
+
+# Note: By default (`na.rm = FALSE`), `mode_frequency()` returns `NA_integer_`
+# whenever any value is missing.
+
+test_that("`mode_frequency()` is right with some `NA` input
+          but non-`NA` output", {
+  expect_equal(mode_frequency(x3) , NA_integer_)
+  expect_equal(mode_frequency(x10), NA_integer_)
+})
+
+test_that("`mode_frequency()` is right with some `NA` input and `NA` output", {
+  expect_equal(mode_frequency(x2) , NA_integer_)
+  expect_equal(mode_frequency(x3) , NA_integer_)
+  expect_equal(mode_frequency(x5) , NA_integer_)
+  expect_equal(mode_frequency(x8) , NA_integer_)
+  expect_equal(mode_frequency(x9) , NA_integer_)
+  expect_equal(mode_frequency(x10), NA_integer_)
+  expect_equal(mode_frequency(x11), NA_integer_)
+  expect_equal(mode_frequency(x12), NA_integer_)
+  expect_equal(mode_frequency(x13), NA_integer_)
+  expect_equal(mode_frequency(x14), NA_integer_)
+  expect_equal(mode_frequency(x15), NA_integer_)
+})
+
+test_that("`mode_frequency()` is right with some `NA` input
+          and `na.rm = TRUE`", {
+  expect_equal(mode_frequency(x2 , na.rm = TRUE), 4L)
+  expect_equal(mode_frequency(x5 , na.rm = TRUE), 2L)
+  expect_equal(mode_frequency(x8 , na.rm = TRUE), 2L)
+  expect_equal(mode_frequency(x9 , na.rm = TRUE), 2L)
+  expect_equal(mode_frequency(x11, na.rm = TRUE), 1L)
+  expect_equal(mode_frequency(x12, na.rm = TRUE), 3L)
+  expect_equal(mode_frequency(x13, na.rm = TRUE), 1L)
+  expect_equal(mode_frequency(x14, na.rm = TRUE), 2L)
+  expect_equal(mode_frequency(x15, na.rm = TRUE), 1L)
 })
 
 

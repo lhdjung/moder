@@ -18,9 +18,25 @@ Integer (length 1) or \code{NA}.
 \description{
 Call \code{mode_frequency()} to get the number of times that a
 vector's mode appears in the vector.
+}
+\details{
+By default (\code{na.rm = FALSE}), the function returns \code{NA} if any
+values are missing. That is because missings make the frequency uncertain
+even if the mode is known: any missing value may or may not be the mode,
+and hence count towards the modal frequency.
+}
+\examples{
+# The mode, `9`, appears three times:
+mode_frequency(c(7, 8, 8, 9, 9, 9))
 
-By default, the function returns \code{NA} if any values are missing. That is
-because missings make the frequency uncertain even if the mode is known.
+# With missing values, the frequency
+# is unknown, even if the mode isn't:
+mode_frequency(c(1, 1, NA))
+
+# You can ignore this problem and
+# determine the frequency among known values
+# (there should be good reasons for this!):
+mode_frequency(c(1, 1, NA), na.rm = TRUE)
 }
 \seealso{
 \code{\link[=mode_first]{mode_first()}}, which the function wraps.
