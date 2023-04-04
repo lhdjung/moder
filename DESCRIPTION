@@ -5,12 +5,13 @@ Authors@R:
     person("Lukas", "Jung", , "jung-lukas@gmx.net", role = c("aut", "cre"))
 Description: Determines single or multiple modes (most frequent values).
     Checks if missing values make this impossible, and returns `NA`
-    in this case. Dependency-free.
+    in this case. Dependency-free source code.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
+    devtools,
     knitr,
     rmarkdown,
     stats,
