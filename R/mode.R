@@ -70,7 +70,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   # of `NA` handling. Therefore, it returns
   # `mode1` just like that function does
   # if there are no missing values:
-  if (!any(is.na(x))) {
+  if (!anyNA(x)) {
     return(mode1)
   }
   # What if some values really are missing?
@@ -219,7 +219,7 @@ mode_all <- function(x, na.rm = FALSE) {
     # and break the tie. This makes it
     # impossible to determine the true set
     # of modes, so the function returns `NA`:
-  } else if (any(is.na(x))) {
+  } else if (anyNA(x)) {
     x[NA_integer_]
     # Multimodal distributions without `NA`s
     # have a clearly determined set of modes:
@@ -382,7 +382,7 @@ mode_frequency <- function(x, na.rm = FALSE) {
   # If the mode could be determined, count
   # its occurrences among non-`NA` values
   # in `x`:
-  if (!na.rm && any(is.na(x))) {
+  if (!na.rm && anyNA(x)) {
     NA_integer_
   } else {
     length(x[x == mode & !is.na(x)])
