@@ -8,6 +8,9 @@ mode_frequency(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{A vector to check for its modal frequency.}
+
+\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+computation proceeds? Default is \code{FALSE}.}
 }
 \value{
 Integer (length 1) or \code{NA}.

@@ -361,6 +361,7 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
 #'   See [mode_frequency_range()] for bounds on an unknown frequency.
 #'
 #' @param x A vector to check for its modal frequency.
+#' @inheritParams mode_first
 #'
 #' @details By default (`na.rm = FALSE`), the function returns `NA` if any
 #'   values are missing. That is because missings make the frequency uncertain
