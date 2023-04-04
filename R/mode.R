@@ -404,7 +404,7 @@ mode_frequency <- function(x, na.rm = FALSE) {
 }
 
 
-#' Number of modes
+#' Modal count
 #'
 #' `mode_count()` counts the modes in a vector. Thin wrapper around
 #' [`mode_all()`].
@@ -449,7 +449,7 @@ mode_count <- function(x, na.rm = FALSE) {
 
 # Possible modes ----------------------------------------------------------
 
-#' Possible modes
+#' Possible sets of modes
 #'
 #' @description `mode_possible_min()` and `mode_possible_max()` determine the
 #'   minimal and maximal sets of modes from among known modes, given the number
@@ -463,8 +463,7 @@ mode_count <- function(x, na.rm = FALSE) {
 #'
 #' @export
 #'
-#' @seealso [mode_count_possible_min()] and [mode_count_possible_max()] for
-#'   counting these possible modes.
+#' @seealso [mode_count_range()] for counting these possible modes.
 #'
 #' @name mode-possible
 #'
@@ -481,9 +480,9 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_min(c(7, 7, 8, 8, 8, 8, NA))
 #' mode_possible_max(c(7, 7, 8, 8, 8, 8, NA))
 #'
-#' # No clear minimum of modes (because
-#' # `NA` may tip the balance towards a
-#' # single mode), but a clear maximum:
+#' # No clear minimal or maximal set
+#' # of modes (because `NA` may tip
+#' # the balance towards a single mode):
 #' mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA))
 #' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
 
@@ -622,38 +621,26 @@ mode_possible_max <- function(x) {
 }
 
 
-#' Count possible modes
+#' Modal count range
 #'
-#' @description `mode_count_possible_min()` and `mode_count_possible_max()`
-#'   determine the minimal and maximal number of modes from among known modes,
-#'   given the number of missing values.
-#'
-#'   They are wrappers around [mode_possible_min()] and [mode_possible_max()].
+#' @description `mode_count_range()` determines the minimal and maximal number
+#'   of modes from among known modes, given the number of missing values.
 #'
 #' @inheritParams mode-possible
 #'
-#' @return Integer. Minimal and maximal number of modes (values tied for most
-#'   frequent) in `x`. If the functions can't determine these possible
-#'   modes because of missing values, they return `NA` instead.
-#'
+#' @return Integer (length 2). Minimal and maximal number of modes (values tied
+#'   for most frequent) in `x`. If these possible modescan't be determined
+#'   because of missing values, the function returns `NA` instead.
 #'
 #' @export
 #'
 #' @seealso The examples for [mode_possible_min()] and [mode_possible_max()], to
-#'   make it more clear how the present functions work.
-#'
-#' @name mode-count-possible
+#'   make it more clear how the present function works. (It wraps these two.)
 
-mode_count_possible_min <- function(x) {
-  decide_count_na(mode_possible_min(x))
-}
-
-
-#' @rdname mode-count-possible
-#' @export
-
-mode_count_possible_max <- function(x) {
-  decide_count_na(mode_possible_max(x))
+mode_count_range <- function(x) {
+  count_min <- decide_count_na(mode_possible_min(x))
+  count_max <- decide_count_na(mode_possible_max(x))
+  c(count_min, count_max)
 }
 
 
@@ -738,8 +725,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
 
 
 # Called within the counting functions:
-# `mode_count()`, `mode_count_possible_min()`,
-# and `mode_count_possible_max()`.
+# `mode_count()` and `mode_count_range()`.
 # If the set if modes can't be determined,
 # the number of modes is an unknown integer.
 # The length of `modes` is tested beforehand

@@ -2,8 +2,7 @@
 
 export(mode_all)
 export(mode_count)
-export(mode_count_possible_max)
-export(mode_count_possible_min)
+export(mode_count_range)
 export(mode_first)
 export(mode_frequency)
 export(mode_frequency_range)

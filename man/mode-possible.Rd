@@ -4,7 +4,7 @@
 \alias{mode-possible}
 \alias{mode_possible_min}
 \alias{mode_possible_max}
-\title{Possible modes}
+\title{Possible sets of modes}
 \usage{
 mode_possible_min(x)
 
@@ -36,13 +36,12 @@ mode_possible_max(c("a", "a", "a", "b", "b", "c", NA))
 mode_possible_min(c(7, 7, 8, 8, 8, 8, NA))
 mode_possible_max(c(7, 7, 8, 8, 8, 8, NA))
 
-# No clear minimum of modes (because
-# `NA` may tip the balance towards a
-# single mode), but a clear maximum:
+# No clear minimal or maximal set
+# of modes (because `NA` may tip
+# the balance towards a single mode):
 mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA))
 mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
 }
 \seealso{
-\code{\link[=mode_count_possible_min]{mode_count_possible_min()}} and \code{\link[=mode_count_possible_max]{mode_count_possible_max()}} for
-counting these possible modes.
+\code{\link[=mode_count_range]{mode_count_range()}} for counting these possible modes.
 }

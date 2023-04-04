@@ -2,7 +2,7 @@
 % Please edit documentation in R/mode.R
 \name{mode_count}
 \alias{mode_count}
-\title{Number of modes}
+\title{Modal count}
 \usage{
 mode_count(x, na.rm = FALSE)
 }
