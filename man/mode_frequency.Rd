@@ -7,10 +7,7 @@
 mode_frequency(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{A vector to search for its first mode.}
-
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
-computation proceeds? Default is \code{FALSE}.}
+\item{x}{A vector to check for its modal frequency.}
 }
 \value{
 Integer (length 1) or \code{NA}.
@@ -18,6 +15,8 @@ Integer (length 1) or \code{NA}.
 \description{
 Call \code{mode_frequency()} to get the number of times that a
 vector's mode appears in the vector.
+
+See \code{\link[=mode_frequency_range]{mode_frequency_range()}} for bounds on an unknown frequency.
 }
 \details{
 By default (\code{na.rm = FALSE}), the function returns \code{NA} if any

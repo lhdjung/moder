@@ -32,5 +32,5 @@ reference:
 - title: Possible modes
 - contents:
   - mode_possible_max
-  # - mode_frequency_range
+  - mode_frequency_range
   - mode_count_possible_max
