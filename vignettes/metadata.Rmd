@@ -1,0 +1,91 @@
+---
+title: "Modal counts and frequencies"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modal counts and frequencies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE}
+# Dev only: load moder from within moder
+devtools::load_all(".")
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(moder)
+```
+
+In addition to finding a vector's mode(s), you might be interested in some metadata about them:
+
+-   A vector's modal **count** is the number of its modes.
+
+-   A vector's modal **frequency** is the number of times that a vector's mode appears in the vector.
+
+This vignette briefly presents moder's tools for determining these quantities.
+
+## Modal count
+
+`mode_count()` computes the number of modes:
+
+```{r}
+mode_count(c(5, 5, 6))
+mode_count(c(5, 5, 6, 6, 7))
+```
+
+Even with missing values, the number of modes is sometimes known. It can only be 1 here because even if the `NA` is secretly `"b"`, then `"b"` would appear twice, but `"a"` would appear three times:
+
+```{r}
+mode_count(c("a", "a", "a", "b", NA))
+```
+
+All this only works if the full set of modes can be determined. Below, `NA` could secretly be `5`, `6`, or any other value. If it's `5` or `6`, that value is the mode but the other value isn't, so there is only one mode. But if it's some other value, `5` and `6` are equally frequent, and both are modes. Since we lack this information, the number of modes is unknown.
+
+All this only works if the full set of modes can be determined. Below, `NA` could secretly be `7`, `8`, or any other value. If it's `8`, there are two modes, `7` and `8`. Otherwise, `7` is the only mode. Since we lack this information, the number of modes is unknown.
+
+```{r}
+mode_count(c(7, 7, 7, 8, 8, NA))
+
+```
+
+Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes:
+
+```{r}
+mode_count_range(c(7, 7, 7, 8, 8, NA))
+```
+
+Yet even this function can fail because some vectors don't have a clear minimum or maximum. Here, `NA` could be either `1` or `2` in disguise, which would make that number the only mode:
+
+```{r}
+mode_count_range(c(1, 1, 2, 2, NA))
+```
+
+## Modal frequency
+
+`mode_frequency()` counts the instances of a vector's modes in the vector:
+
+```{r}
+mode_frequency(c(4, 4, 5))
+mode_frequency(c(4, 4, 4, 5))
+```
+
+Missing values are an issue here, even if the mode is obvious. Each `NA` might be another instance of the mode, so the frequency is unknown:
+
+```{r}
+mode_frequency(c(1, 1, 1, 1, 2, NA))
+```
+
+With `mode_frequency_range()`, at least the minimal and maximal frequencies can be determined. There are four instances of `1` without counting the `NA`, and five with counting it:
+
+```{r}
+mode_frequency_range(c(1, 1, 1, 1, 2, NA))
+```
+
+Finally, a function that never returns `NA`!

@@ -21,6 +21,13 @@ template:
     code-color: '#ca225e'
     navbar-dark-hover-color: '#ca225e'
     navbar-dark-active-color: '#f9ea6b'
+articles:
+- title: ~
+  navbar: ~
+  contents:
+  - missings
+  - metadata
+  - performance
 reference:
 - title: Actual modes
 - contents:
