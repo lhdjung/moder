@@ -55,7 +55,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required,
   # or remove `NA`s entirely if desired:
-  if (!length(x) || all(is.na(x))) {
+  if (length(x) == 0L || all(is.na(x))) {
     return(x[NA_integer_])
   } else if (na.rm) {
     x <- ix1
@@ -85,7 +85,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   count_mode2_na <- sort(unique(frequency1), decreasing = TRUE)
   if (length(count_mode2_na) > 1L) {
     count_mode2_na <- count_mode2_na[-1L]
-  } else if (!length(count_mode2_na) || length(unique(ix1)) == 1L) {
+  } else if (length(count_mode2_na) == 0L || length(unique(ix1)) == 1L) {
     count_mode2_na <- 0L
   }
   count_mode2_na <- max(count_mode2_na) + length(x[is.na(x)])
@@ -192,7 +192,7 @@ mode_all <- function(x, na.rm = FALSE) {
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required,
   # or remove `NA`s entirely if desired:
-  if (!length(x) || all(is.na(x))) {
+  if (length(x) == 0L || all(is.na(x))) {
     return(x[NA_integer_])
   } else if (na.rm) {
     x <- ix1
