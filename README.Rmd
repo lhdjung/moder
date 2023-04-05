@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The moder package determines single or multiple **modes** (most frequent values). By default, its functions check whether missing values make this impossible, and return `NA` in this case. It has no dependencies.
+The moder package determines single or multiple modes (most frequent values). By default, its functions check whether missing values make this impossible, and return `NA` in this case. Its source code has no dependencies.
 
 Mode functions fill a gap in measures of central tendency in R. `mean()` and `median()` are built into the standard library, but there is a lack of properly `NA`-sensitive functions for calculating the mode. Use moder for this!
 
@@ -47,16 +47,16 @@ Everything is fine here:
 mode_first(c(7, 8, 8, 9, 9, 9))
 ```
 
-But what if some values are missing? Think about what it means to look for the most frequent value in such a distribution. Maybe there are so many missings that it's impossible to tell which value is the most frequent one:
+But what if some values are missing? Maybe there are so many missings that it's impossible to tell which value is the most frequent one. If all `NA`s in the next example are secretly `2`, this value is the (first) mode. Otherwise, `1` is. The mode is unclear, so the function returns `NA`:
 
 ```{r}
-mode_first(c(1, 1, 2, 2, 2, 2, NA, NA, NA, NA))
+mode_first(c(1, 1, 2, NA, NA, NA))
 ```
 
 Ignore `NA`s using `na.rm = TRUE` if there is a strong rationale for it:
 
 ```{r}
-mode_first(c(1, 1, 2, 2, 2, 2, NA, NA, NA, NA), na.rm = TRUE)
+mode_first(c(1, 1, 2, NA, NA, NA), na.rm = TRUE)
 ```
 
 This distribution is different:
@@ -91,7 +91,7 @@ mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
 ### Find the single mode (or `NA`) with `mode_single()`
 
-`mode_single()` is stricter than `mode_first()`: It returns `NA` if there are multiple modes. Otherwise, it works the same way.
+`mode_single()` is stricter than `mode_first()`: It returns `NA` by default if there are multiple modes. Otherwise, it works the same way.
 
 ```{r}
 mode_single(c(3, 4, 4, 5, 5, 5))
@@ -109,4 +109,4 @@ mode_possible_max(c("a", "a", "a", "b", "b", "c", NA))
 
 ## Acknowledgements
 
-Ken Williams' [mode functions on Stack Overflow](https://stackoverflow.com/questions/2547402/how-to-find-the-statistical-mode/8189441#8189441) were pivotal to moder. Use `mode_first()` and `mode_all()` as drop-in replacements for `Mode()` and `Modes()`, respectively. They will behave equally unless some values are missing, although the source code is somewhat different.
+Ken Williams' [mode functions on Stack Overflow](https://stackoverflow.com/questions/2547402/how-to-find-the-statistical-mode/8189441#8189441) were pivotal to moder.
