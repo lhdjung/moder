@@ -14,12 +14,36 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(moder)
-```
+Accuracy and flexibility are among the strong suits of moder. Performance is not. `mode_all()` and friends are multiple times slower than R's built-in functions for common measures of central tendency, `mean()` and `median()`.
 
-Accuracy and flexibility are among the strong suits of moder. Performance is not. `mode_all()` and friends are slower than R's built-in functions for common measures of central tendency, `mean()` and `median()`. In the example below, the latter two take around 5 microseconds at the median on my MacBook Pro, while the mode functions take 35 to 60.
-
-Why is that? All of the code is written in R. By contrast, the default `mean()` method calls an internal function. Also, handling missing values is much more complex when determining the mode(s) than with the mean or the median; see `vignette("missings")`. The default `mean()` and `median()` methods are fairly short when compared to `mode_first()`, and to `mode_all()` if its helper function is included. `mode_single()` is a wrapper around `mode_all()`, so it's even longer.
+Why is that? All of moder's code is written in R. By contrast, the default `mean()` method calls an internal function. Also, handling missing values is much more complex in the mode functions than in `mean()` or `median()`; see `vignette("missings")`. The default methods for `mean()` and `median()` are fairly short when compared to `mode_first()`, and to `mode_all()` if its helper function is included. `mode_single()` is a wrapper around `mode_all()`, so it's even longer.
 
 It is also possible that some of the code is less efficient than it could be. In particular, rewriting moder's R code in a language like C++ or Rust might blend accuracy with high performance. I myself am not going to port the package in the near term, so help is welcome. If you have any suggestions, please [open an issue](https://github.com/lhdjung/moder/issues) or get in touch via email (jung-lukas\@gmx.net).
+
+```{r, eval=FALSE, include=FALSE}
+library(moder)
+library(profvis)
+library(bench)
+library(ggplot2)
+
+x <- c(2, 4, 6, NA, 3, 1, 1, 8, 1, 7)
+
+# Profiling `mode_first()`:
+na.rm <- FALSE
+first_known <- FALSE
+
+profvis(purrr::map(
+  .x = rep(list(x), 100000),
+  .f = mode_first
+))
+
+# Benchmarking:
+df <- mark(
+  mode_single = mode_single(x),
+  mode_first = mode_first(x),
+  mode_all = mode_all(x),
+  mean = mean(x),
+  median = median(x),
+  check = FALSE, iterations = 100000
+)
+```
