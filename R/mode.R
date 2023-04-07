@@ -60,10 +60,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   } else if (na.rm) {
     x <- ix1
   }
-  frequency1 <- integer(length(ix1))
-  for (i in seq_along(ix1)) {
-    frequency1[i] <- length(ix1[ix1 == ix1[[i]]])
-  }
+  frequency1 <- vapply(ix1, function(x) length(ix1[ix1 == x]), 1L)
   mode1 <- ix1[which.max(frequency1)]
   # The present implementation only differs
   # from the original function in terms
@@ -126,10 +123,7 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   # frequency2 <- NULL
   x2 <- x[x != mode1]
   ix2 <- x2[!is.na(x2)]
-  frequency2 <- integer(length(ix2))
-  for (i in seq_along(ix2)) {
-    frequency2[i] <- length(ix2[ix2 == ix2[[i]]])
-  }
+  frequency2 <- vapply(ix2, function(x) length(ix2[ix2 == x]), 1L)
   # `NA` is returned if either there is no first value
   # or if `mode1` appears before `mode2` (i.e., if its
   # index of first occurrence is lower):
@@ -199,10 +193,7 @@ mode_all <- function(x, na.rm = FALSE) {
   }
   # Determine the frequency of each
   # unique value in `x`:
-  frequency1 <- integer(length(ix1))
-  for (i in seq_along(ix1)) {
-    frequency1[i] <- length(ix1[ix1 == ix1[[i]]])
-  }
+  frequency1 <- vapply(ix1, function(x) length(ix1[ix1 == x]), 1L)
   # Subset the vector of unique known values
   # at the indices corresponding to the
   # most frequent known values:
@@ -708,10 +699,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
     }
   }
   ix2 <- x[x != mode1 & !is.na(x)]
-  frequency2 <- integer(length(ix2))
-  for (i in seq_along(ix2)) {
-    frequency2[i] <- length(ix2[ix2 == ix2[[i]]])
-  }
+  frequency2 <- vapply(ix2, function(x) length(ix2[ix2 == x]), 1L)
   mode2 <- ix2[which.max(frequency2)]
   count_na <- length(x[is.na(x)])
   x <- x[!is.na(x)]
