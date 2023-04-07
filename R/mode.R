@@ -638,17 +638,16 @@ mode_count_range <- function(x) {
 
 #' Modal frequency range
 #'
-#' @description Call `mode_frequency_range()` to get lower and upper bounds for
-#'   the number of times that a vector's mode appears in the vector. The lower
-#'   bound assumes that no `NA`s are the mode; the upper bound assumes that all
-#'   `NA`s are.
+#' @description `mode_frequency_range()` determines the minimum and maximum
+#'   number of times that a vector's mode appears in the vector. The minimum
+#'   assumes that no `NA`s are the mode; the maximum assumes that all `NA`s are.
 #'
 #' @inheritParams mode_frequency
 #'
-#' @return Integer (length 2). If there are no `NA`s in `x`, the two integer
-#'   values are identical. If all `x` values are `NA`, the values are `1` (no
-#'   two values are the same) and the total number of values (all values are the
-#'   same).
+#' @return Integer (length 2). If there are no `NA`s in `x`, the two return
+#'   values are identical. If all `x` values are `NA`, the return values are `1`
+#'   (no two `x` values are the same) and the total number of values (all `x`
+#'   values are the same).
 #'
 #' @export
 #'
@@ -666,23 +665,21 @@ mode_count_range <- function(x) {
 #' mode_frequency_range(c("a", "b", "c", "c", "d", "d", "e", "e"))
 
 mode_frequency_range <- function(x) {
-  # This will be decreased by the
-  # number of known values:
-  count_na <- length(x)
+  count_x_orig <- length(x)
   x <- x[!is.na(x)]
-  # If all values are missing,
-  # the range is very uncertain:
+  # If all values are missing, the range
+  # is highly uncertain (see docs):
   if (length(x) == 0L) {
-    return(c(1L, count_na))
+    return(c(1L, count_x_orig))
   }
-  # This is now the true `NA` count:
-  count_na <- count_na - length(x)
+  count_na <- count_x_orig - length(x)
   # Minimum modal frequency: exclude all `NA`s
   # (they were removed above)
   # Maximum modal frequency: include all `NA`s
   # (add their count to the minimum)
-  frequency1 <- mode_frequency(x, FALSE)
-  c(frequency1, frequency1 + count_na)
+  frequency_min <- mode_frequency(x, FALSE)
+  frequency_max <- frequency_min + count_na
+  c(frequency_min, frequency_max)
 }
 
 
