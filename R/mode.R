@@ -715,7 +715,7 @@ decide_mode_na <- function(x, unique_x, mode1) {
 
 # Called within the counting functions:
 # `mode_count()` and `mode_count_range()`.
-# If the set if modes can't be determined,
+# If the set of modes can't be determined,
 # the number of modes is an unknown integer.
 # The length of `modes` is tested beforehand
 # because this quickly rules out cases where
