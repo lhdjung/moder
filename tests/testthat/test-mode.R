@@ -313,10 +313,10 @@ test_that("`mode_possible_max()` works correctly", {
 
 test_that("`mode_count_range()` works correctly", {
   expect_equal(mode_count_range(x1 ), c(1L, 1L))
-  expect_equal(mode_count_range(x2 ), c(NA_integer_, 2L))
+  expect_equal(mode_count_range(x2 ), c(1L, 2L))
   expect_equal(mode_count_range(x3 ), c(1L, 1L))
   expect_equal(mode_count_range(x4 ), c(2L, 2L))
-  expect_equal(mode_count_range(x5 ), c(NA_integer_, NA_integer_))
+  expect_equal(mode_count_range(x5 ), c(1L, 2L))
   expect_equal(mode_count_range(x6 ), c(1L, 1L))
   expect_equal(mode_count_range(x7 ), c(2L, 2L))
   expect_equal(mode_count_range(x8 ), c(1L, 2L))
@@ -324,10 +324,10 @@ test_that("`mode_count_range()` works correctly", {
   expect_equal(mode_count_range(x10), c(1L, 1L))
   expect_equal(mode_count_range(x11), c(1L, 1L))
   expect_equal(mode_count_range(x12), c(1L, 2L))
-  expect_equal(mode_count_range(x13), c(1L, 1L))
-  expect_equal(mode_count_range(x14), c(NA_integer_, NA_integer_))
-  expect_equal(mode_count_range(x15), c(NA_integer_, 1L))
-  expect_equal(mode_count_range(x16), c(1L, NA_integer_))
+  expect_equal(mode_count_range(x13), c(1L, 2L))
+  expect_equal(mode_count_range(x14), c(1L, 3L))
+  expect_equal(mode_count_range(x15), c(1L, 3L))
+  expect_equal(mode_count_range(x16), c(1L, 2L))
 })
 
 # 4. `mode_frequency_range()`
