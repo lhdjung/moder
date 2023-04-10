@@ -448,6 +448,14 @@ mode_count <- function(x, na.rm = FALSE) {
 #'   of missing values.
 #'
 #' @param x A vector to search for its possible modes.
+#' @param multiple Boolean. For internal use only; ignore (or see details).
+#'
+#' @details If `multiple` is set to `TRUE`, the functions return multiple modes
+#'   with the same frequency, even if some values are missing. The default is
+#'   `FALSE` because `NA`s may tip the balance between values that seem to have
+#'   the same frequency. Thus, `multiple = TRUE` might return incorrect results.
+#'   Its purpose is to enable `mode_count_range()` to determine the minimal and
+#'   maximal *number* of modes.
 #'
 #' @return A vector with the minimal or maximal possible modes (values tied for
 #'   most frequent) in `x`. If the functions can't determine these possible
@@ -478,7 +486,7 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA))
 #' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
 
-mode_possible_min <- function(x) {
+mode_possible_min <- function(x, multiple = FALSE) {
   # Without missing values, the minimal
   # set of modes is simply the actual one:
   count_na <- length(x[is.na(x)])
@@ -511,7 +519,7 @@ mode_possible_min <- function(x) {
   # more `mode1` values, because `NA`s
   # can make any of these more frequent
   # than the others:
-  if (count_mode2_na > count_mode1 || length(mode1) > 1L) {
+  if (count_mode2_na > count_mode1 || (length(mode1) > 1L && !multiple)) {
     x[NA_integer_]
   } else {
     mode1
@@ -522,7 +530,7 @@ mode_possible_min <- function(x) {
 #' @rdname mode-possible
 #' @export
 
-mode_possible_max <- function(x) {
+mode_possible_max <- function(x, multiple = FALSE) {
   # The number of missings determines how far the
   # count of possible modes will go, and it will
   # be decremented as the process goes on:
@@ -555,7 +563,7 @@ mode_possible_max <- function(x) {
     # there is a pseudo-tie that can be
     # broken by `NA`s, so there is no
     # clear maximum in this case:
-    if (length(modes) > 1L) {
+    if (length(modes) > 1L && !multiple) {
       return(x[NA_integer_])
     }
     # This vector will ultimately be returned,
@@ -574,6 +582,7 @@ mode_possible_max <- function(x) {
     # won't be another loop cycle:
     if (count_nas_left < count_empty_slots) {
       # With multiple next-most-frequent values
+      # (which is not accepted by default of `multiple`)
       # and some `NA`s remaining (but not enough;
       # see right above) as well as the possibility
       # that some of the multiples might be actual
@@ -584,8 +593,14 @@ mode_possible_max <- function(x) {
       # be as frequent as the top-level ones.
       # This returns `NA` for the same reason
       # that `mode_all(c(1, 1, 2, 2, NA))` does.
-      if (
+
+      # TO DO: FIX FOR mode_count_range() with x13, x15, and x16!
+
+      if (multiple && count_modes_next_level + count_nas_left >= count_max) {
+        next
+      } else if (
         length(modes_next_level) > 1L &&
+        # !multiple &&
         count_nas_left > 0L &&
         count_modes_next_level + count_nas_left >= count_max
       ) {
@@ -621,19 +636,139 @@ mode_possible_max <- function(x) {
 #' @inheritParams mode-possible
 #'
 #' @return Integer (length 2). Minimal and maximal number of modes (values tied
-#'   for most frequent) in `x`. If these possible modescan't be determined
+#'   for most frequent) in `x`. If these possible modes cannot be determined
 #'   because of missing values, the function returns `NA` instead.
 #'
 #' @export
 #'
-#' @seealso The examples for [mode_possible_min()] and [mode_possible_max()], to
-#'   make it more clear how the present function works. (It wraps these two.)
+#' @seealso [mode_possible_min()] and [mode_possible_max()], which the present
+#'   function wraps.
+#'
+#' @examples
+#' # If `NA` is `7` or `8`, that number is
+#' # the only mode; otherwise, both numbers
+#' # are modes:
+#' mode_count_range(c(7, 7, 8, 8, NA))
+#'
+#' # Same result here -- `7` is the only mode
+#' # unless `NA` is secretly `8`, in which case
+#' # there are two modes:
+#' mode_count_range(c(7, 7, 7, 8, 8, NA))
+#'
+#' # But now, there is now way for `8` to be
+#' # as frequent as `7`:
+#' mode_count_range(c(7, 7, 7, 7, 8, 8, NA))
 
 mode_count_range <- function(x) {
-  count_min <- decide_count_na(mode_possible_min(x))
-  count_max <- decide_count_na(mode_possible_max(x))
+
+  if (!anyNA(x)) {
+    return(rep(mode_count(x, FALSE), times = 2L))
+  }
+
+  # modes_min <- mode_possible_min(x, multiple = TRUE)
+  # count_min <- if (length(modes_min) > 1L || !is.na(modes_min)) {
+  #   # 1L
+  #   length(modes_min)# / length(unique(modes_min))
+  # } else {
+  #   length(mode_all(x, na.rm = TRUE))
+  # }
+
+  # # Maximum: UNCLEAR IF THIS PART IS NEEDED!
+  # modes_max <- mode_possible_max(x, multiple = TRUE)
+  # count_max <- if (length(modes_max) > 1L || !is.na(modes_max)) {
+  #   length(modes_max)
+  # } else {
+  #   NA_integer_
+  # }
+  # # return(c(count_min, count_max))
+
+  # count_na <- length(x)
+  # x <- x[!is.na(x)]
+  # count_na <- count_na - length(x)
+
+  # # TO DO: Use integer division or modulo to determine the number of additional
+  # # modes that might be hidden in the `NA`s!
+  # frequency1 <- mode_frequency(x, FALSE)
+  # # count_max <- if (length(x[is.na(x)]) >= )
+
+  # modes_max <- mode_possible_max(x, multiple = TRUE)
+  # # count_max <- length(modes_max)
+  # count_nas_left <- length(x[is.na(x)])
+
+  # Initialize vectors for the while loop:
+  modes_out <- NULL
+  count_max <- NULL
+  count_nas_left <- length(x[is.na(x)])
+  x <- x[!is.na(x)]
+
+  # TO DO: ADJUST THE WHILE LOOP TO THIS FUNCTION!
+  while (count_nas_left > 0L) {
+    # Determine the modes on the *current* level:
+    modes <- mode_all(x, FALSE)
+    modes_out <- c(modes_out, unique(x[x %in% modes]))
+    # Next *lower* level of modes:
+    modes_next_level <- mode_all(x[!x %in% modes], FALSE)
+    if (all(is.na(modes_next_level))) {
+      # break
+      frequency_max <- mode_frequency(x)
+      # frequency_next_level <- mode_frequency(modes_out[length(modes_out)])
+      # if (count_nas_left >= length(modes_out)) {
+      if (count_nas_left >= frequency_max) {
+        message("TOO MANY `NA`S LEFT!")
+        frequency_potential <- count_nas_left %/% frequency_max
+        return(c(1L, 1L + frequency_potential))
+        # return(list(modes_out, frequency_next_level))
+      } else {
+        break
+      }
+    }
+    count_modes <- length(x[x %in% modes[[1L]]])
+    count_modes_next_level <- length(x[x %in% modes_next_level[[1L]]])
+    count_diff <- count_modes - count_modes_next_level
+    count_max <- max(count_max, count_modes)
+    x <- x[!x %in% modes]
+    count_empty_slots <- length(modes_next_level) * count_diff
+    if (count_nas_left < count_empty_slots) {
+      # if (count_modes_next_level + count_nas_left >= count_max) {
+      #   next
+      # # } else if (
+      # #   length(modes_next_level) > 1L &&
+      # #   count_nas_left > 0L &&
+      # #   count_modes_next_level + count_nas_left >= count_max
+      # # ) {
+      # #   return(x[NA_integer_])
+      # } else {
+        # Escape from the loop because
+        # there are not enough `NA`s left:
+        break
+      # }
+    } else {
+      # In this case, the empty slots can be filled.
+      # Append lower-level modes to the return vector:
+      modes_out <- c(modes_out, unique(x[x == modes_next_level]))
+      count_nas_left <- count_nas_left - max(count_empty_slots, 1L)
+    }
+  }
+
+  if (count_nas_left >= count_diff) {
+    message("ENOUGH `NA`S FOR A NEW MODE!")
+    # frequency_max <- mode_frequency(x)
+    # frequency_potential <- count_nas_left %/% frequency_max
+    # return(c(1L, 1L + frequency_potential))
+    frequency_potential <- count_nas_left %/% count_max
+    return(c(1L, 1L + frequency_potential))
+  }
+
+  # TO DO: FIGURE OUT THE MAX HERE!
+
+  return(c(1L, length(unique(modes_out))))
+
+  # Return the range:
   c(count_min, count_max)
 }
+
+# TO DO: Fix the function for vectors like x13, x15, and x16!
+
 
 
 #' Modal frequency range
