@@ -718,8 +718,8 @@ mode_count_range <- function(x) {
         frequency_potential <- count_nas_left %/% frequency_max
         return(c(1L, 1L + frequency_potential))
         # return(list(modes_out, frequency_next_level))
-      } else {
-        break
+      # } else {
+      #   break
       }
     }
     count_modes <- length(x[x %in% modes[[1L]]])
@@ -753,10 +753,10 @@ mode_count_range <- function(x) {
   if (count_nas_left >= count_diff) {
     message("ENOUGH `NA`S FOR A NEW MODE!")
     # frequency_max <- mode_frequency(x)
-    # frequency_potential <- count_nas_left %/% frequency_max
-    # return(c(1L, 1L + frequency_potential))
-    frequency_potential <- count_nas_left %/% count_max
+    frequency_potential <- count_nas_left %/% count_diff  #frequency_max
     return(c(1L, 1L + frequency_potential))
+    # frequency_potential <- count_nas_left %/% count_max
+    # return(c(1L, 1L + frequency_potential))
   }
 
   # TO DO: FIGURE OUT THE MAX HERE!
