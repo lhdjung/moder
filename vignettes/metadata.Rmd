@@ -46,9 +46,7 @@ Even with missing values, the number of modes is sometimes known. It can only be
 mode_count(c("a", "a", "a", "b", NA))
 ```
 
-All this only works if the full set of modes can be determined. Below, `NA` could secretly be `5`, `6`, or any other value. If it's `5` or `6`, that value is the mode but the other value isn't, so there is only one mode. But if it's some other value, `5` and `6` are equally frequent, and both are modes. Since we lack this information, the number of modes is unknown.
-
-All this only works if the full set of modes can be determined. Below, `NA` could secretly be `7`, `8`, or any other value. If it's `8`, there are two modes, `7` and `8`. Otherwise, `7` is the only mode. Since we lack this information, the number of modes is unknown.
+All this only works if the full set of modes can be determined. Below, `NA` could secretly be `7`, `8`, or any other value. If it's `8`, both numbers are equally frequent. Otherwise, `7` is the only mode. Since we lack this information, the number of modes is unknown.
 
 ```{r}
 mode_count(c(7, 7, 7, 8, 8, NA))
@@ -59,12 +57,6 @@ Use `mode_count_range()` in such cases. It will determine the minimal and maxima
 
 ```{r}
 mode_count_range(c(7, 7, 7, 8, 8, NA))
-```
-
-Yet even this function can fail because some vectors don't have a clear minimum or maximum. Here, `NA` could be either `1` or `2` in disguise, which would make that number the only mode:
-
-```{r}
-mode_count_range(c(1, 1, 2, 2, NA))
 ```
 
 ## Modal frequency
