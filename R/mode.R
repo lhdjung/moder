@@ -867,3 +867,25 @@ decide_count_na <- function(modes) {
   }
 }
 
+
+# Count the occurrences that all non-modal
+# values together lack compared to the mode.
+# These "empty slots" would have to be filled
+# by `NA`s in a hypothetical scenario in order
+# for the respective values to be modes:
+get_count_empty_slots <- function(x) {
+  x <- x[!is.na(x)]
+  frequency_max <- length(x[x %in% mode_first(x)])
+  count_slots_all <- length(unique(x)) * frequency_max
+  count_slots_all - length(x)
+}
+
+
+# This is a faster version of `mode_all()`
+# that can be used as a helper if and only if
+# no `x` values are missing:
+mode_all_if_no_na <- function(x) {
+  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
+  unique(x[frequency1 == max(frequency1)])
+}
+

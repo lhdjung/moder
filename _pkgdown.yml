@@ -34,6 +34,7 @@ reference:
   - mode_first
   - mode_all
   - mode_single
+  - mode_is_trivial
   - mode_count
   - mode_frequency
 - title: Possible modes
