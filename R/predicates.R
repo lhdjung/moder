@@ -57,7 +57,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   if (length(x) < 3L) {
     return(TRUE)
   }
-  count_na <- length(x[is.na(x)])
+  n_na <- length(x[is.na(x)])
   x <- x[!is.na(x)]
   unique_x <- unique(x)
   # If some values are missing
@@ -65,7 +65,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   # all known values are equal, it's
   # unknown whether there is a value
   # with a different frequency:
-  if (count_na > 0L && length(unique_x) == 1L) {
+  if (n_na > 0L && length(unique_x) == 1L) {
     return(NA)
   }
   modes <- mode_all_if_no_na(x)
@@ -86,19 +86,19 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   # at least some of these must belong to less
   # frequent values, so `FALSE` is returned.
   if (all(unique_x %in% modes)) {
-    if (count_na == 0L) {
+    if (n_na == 0L) {
       return(TRUE)
-    } else if (!exclusive && count_na %% length(modes) == 0L) {
+    } else if (!exclusive && n_na %% length(modes) == 0L) {
       return(NA)
     } else {
       return(FALSE)
     }
   }
-  # Reduce `count_na` to the number of `NA`s
+  # Reduce `n_na` to the number of `NA`s
   # that are left after distributing other `NA`s
   # among the non-modal values such that they
   # become modes in a hypothetical scenario:
-  count_na <- count_na - get_count_empty_slots(x)
+  n_na <- n_na - count_slots_empty(x)
   # (These conditions aim to avoid a costly part,
   # which is why the returns are redundant:)
   # -- If their "count" is negative, it means the empty
@@ -115,11 +115,11 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   # of a group with the modal frequency. They must be
   # values with a lesser frequency, so there are
   # different frequencies among true `x` values.
-  if (count_na < 0L) {
+  if (n_na < 0L) {
     FALSE
   } else if (
-    count_na == 0L ||
-    (!exclusive && count_na %% length(unique_x) == 0L)
+    n_na == 0L ||
+    (!exclusive && n_na %% length(unique_x) == 0L)
   ) {
     NA
   } else {
