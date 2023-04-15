@@ -6,12 +6,14 @@
 \alias{mode_possible_max}
 \title{Possible sets of modes}
 \usage{
-mode_possible_min(x)
+mode_possible_min(x, multiple = FALSE)
 
-mode_possible_max(x)
+mode_possible_max(x, multiple = FALSE)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
+
+\item{multiple}{Boolean. For internal use only; ignore (or see details).}
 }
 \value{
 A vector with the minimal or maximal possible modes (values tied for
@@ -22,6 +24,14 @@ modes because of missing values, they return \code{NA} instead.
 \code{mode_possible_min()} and \code{mode_possible_max()} determine the
 minimal and maximal sets of modes from among known modes, given the number
 of missing values.
+}
+\details{
+If \code{multiple} is set to \code{TRUE}, the functions return multiple modes
+with the same frequency, even if some values are missing. The default is
+\code{FALSE} because \code{NA}s may tip the balance between values that seem to have
+the same frequency. Thus, \code{multiple = TRUE} might return incorrect results.
+Its purpose is to enable \code{mode_count_range()} to determine the minimal and
+maximal \emph{number} of modes.
 }
 \examples{
 # "a" is guaranteed to be a mode,

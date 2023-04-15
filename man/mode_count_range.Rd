@@ -11,14 +11,29 @@ mode_count_range(x)
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
-for most frequent) in \code{x}. If these possible modescan't be determined
+for most frequent) in \code{x}. If these possible modes cannot be determined
 because of missing values, the function returns \code{NA} instead.
 }
 \description{
 \code{mode_count_range()} determines the minimal and maximal number
 of modes from among known modes, given the number of missing values.
 }
+\examples{
+# If `NA` is `7` or `8`, that number is
+# the only mode; otherwise, both numbers
+# are modes:
+mode_count_range(c(7, 7, 8, 8, NA))
+
+# Same result here -- `7` is the only mode
+# unless `NA` is secretly `8`, in which case
+# there are two modes:
+mode_count_range(c(7, 7, 7, 8, 8, NA))
+
+# But now, there is now way for `8` to be
+# as frequent as `7`:
+mode_count_range(c(7, 7, 7, 7, 8, 8, NA))
+}
 \seealso{
-The examples for \code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}}, to
-make it more clear how the present function works. (It wraps these two.)
+\code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}}, which the present
+function wraps.
 }
