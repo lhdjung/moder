@@ -4,19 +4,23 @@
 \alias{mode_count_range}
 \title{Modal count range}
 \usage{
-mode_count_range(x)
+mode_count_range(x, exclusive = FALSE)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
+
+\item{exclusive}{Boolean. Can \code{NA}s only represent known values? Set
+\code{exclusive} to \code{TRUE} if you are certain that there are no other values
+behind the \code{NA}s, such that each \code{NA} masks one of the known values.
+Default is \code{FALSE}.}
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
-for most frequent) in \code{x}. If these possible modes cannot be determined
-because of missing values, the function returns \code{NA} instead.
+for most frequent) in \code{x}.
 }
 \description{
 \code{mode_count_range()} determines the minimal and maximal number
-of modes from among known modes, given the number of missing values.
+of modes given the number of missing values.
 }
 \examples{
 # If `NA` is `7` or `8`, that number is
@@ -32,8 +36,14 @@ mode_count_range(c(7, 7, 7, 8, 8, NA))
 # But now, there is now way for `8` to be
 # as frequent as `7`:
 mode_count_range(c(7, 7, 7, 7, 8, 8, NA))
-}
-\seealso{
-\code{\link[=mode_possible_min]{mode_possible_min()}} and \code{\link[=mode_possible_max]{mode_possible_max()}}, which the present
-function wraps.
+
+# The `NA`s might form a new mode here
+# if they are both, e.g., `9`:
+mode_count_range(c(7, 7, 8, 8, NA, NA))
+
+# However, if there can be no values beyond
+# those already known -- `7` and `8` --
+# the `NA`s can't form a new mode.
+# Specify this with `exclusive = TRUE`:
+mode_count_range(c(7, 7, 8, 8, NA, NA), exclusive = TRUE)
 }

@@ -369,6 +369,28 @@ test_that("`mode_count_range()` works correctly", {
   expect_equal(mode_count_range(x17), c(1L, 3L))
 })
 
+test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
+  expect_equal(mode_count_range(x1 , TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x2 , TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x3 , TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x4 , TRUE), c(2L, 2L))
+  # `x5` has a different expectation here: Since the `NA` is known to be either
+  # `1` or `2`, it must tip the balance either way, leading to a single mode!
+  expect_equal(mode_count_range(x5 , TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x6 , TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x7 , TRUE), c(2L, 2L))
+  expect_equal(mode_count_range(x8 , TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x9 , TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x10, TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x11, TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x12, TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x13, TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x14, TRUE), c(1L, 3L))
+  expect_equal(mode_count_range(x15, TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x16, TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x17, TRUE), c(1L, 2L))
+})
+
 # 4. `mode_frequency_range()`
 
 test_that("`mode_frequency_range()` works correctly", {
