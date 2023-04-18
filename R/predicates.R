@@ -60,6 +60,8 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   n_na <- length(x[is.na(x)])
   x <- x[!is.na(x)]
   unique_x <- unique(x)
+  # A factor-specific warning if `exclusive = FALSE` (the default):
+  warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_is_trivial")
   # If some values are missing
   # (from a length >= 3 vector) and
   # all known values are equal, it's

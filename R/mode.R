@@ -680,6 +680,8 @@ mode_count_range <- function(x, exclusive = FALSE) {
   frequency_max <- length(x[x %in% mode_first(x)])
   n_slots_all <- n_unique_x * frequency_max
   n_slots_empty <- n_slots_all - length(x)
+  # A factor-specific warning if `exclusive = FALSE` (the default):
+  warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_count_range")
   # Prepare an early return if there is no way
   # for all known values to be modes:
   if (n_na < n_slots_empty) {
@@ -841,5 +843,19 @@ count_slots_empty <- function(x) {
 mode_all_if_no_na <- function(x) {
   frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
   unique(x[frequency1 == max(frequency1)])
+}
+
+
+warn_if_factor_not_exclusive <- function(x, exclusive, n_na, fn_name) {
+  if (is.factor(x) && !exclusive) {
+    warn <- paste0("In `", fn_name, "()`, `exclusive` should be `TRUE` if `x`")
+    warn <- paste(warn, "is a factor (the presumption is that all factor")
+    warn <- paste(warn, "levels are known).")
+    if (n_na < count_slots_empty(x)) {
+      warn <- paste(warn, "\nIt won't matter in this particular case because")
+      warn <- paste(warn, "there are not enough `NA`s to form any new modes.")
+    }
+    warning(warn)
+  }
 }
 
