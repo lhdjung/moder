@@ -851,7 +851,8 @@ warn_if_factor_not_exclusive <- function(x, exclusive, n_na, fn_name) {
     warn <- paste0("In `", fn_name, "()`, `exclusive` should be `TRUE` if `x`")
     warn <- paste(warn, "is a factor (the presumption is that all factor")
     warn <- paste(warn, "levels are known).")
-    if (n_na < count_slots_empty(x)) {
+    frequency_max <- max(vapply(x, function(y) length(x[x == y]), 1L))
+    if (n_na < frequency_max) {
       warn <- paste(warn, "\nIt won't matter in this particular case because")
       warn <- paste(warn, "there are not enough `NA`s to form any new modes.")
     }

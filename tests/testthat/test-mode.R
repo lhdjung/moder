@@ -382,12 +382,18 @@ test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
   expect_equal(mode_count_range(x8 , TRUE), c(1L, 2L))
   expect_equal(mode_count_range(x9 , TRUE), c(1L, 2L))
   expect_equal(mode_count_range(x10, TRUE), c(1L, 1L))
+  # `x11` has only one known value, so if it's exclusive, the `NA` must
+  # represent that value, as well:
   expect_equal(mode_count_range(x11, TRUE), c(1L, 1L))
   expect_equal(mode_count_range(x12, TRUE), c(1L, 2L))
+  # (See `x11`.)
   expect_equal(mode_count_range(x13, TRUE), c(1L, 1L))
   expect_equal(mode_count_range(x14, TRUE), c(1L, 3L))
+  # (See `x11`.)
   expect_equal(mode_count_range(x15, TRUE), c(1L, 1L))
   expect_equal(mode_count_range(x16, TRUE), c(1L, 2L))
+  # As in `x11`, except there are two known values, so the `NA`s must be
+  # fully distributed across them instead of forming a new mode:
   expect_equal(mode_count_range(x17, TRUE), c(1L, 2L))
 })
 
@@ -435,5 +441,23 @@ test_that("`mode_is_trivial()` works correctly", {
   expect_equal(mode_is_trivial(x15), NA)
   expect_equal(mode_is_trivial(x16), FALSE)
   expect_equal(mode_is_trivial(x17), NA)
+})
+
+
+
+# Helpers -----------------------------------------------------------------
+
+test_that("`warn_if_factor_not_exclusive()` works correctly", {
+  x12_factor <- as.factor(x12)
+  x17_factor <- as.factor(x17)
+  # Also check that the warning includes the extra part that is conditionally
+  # pasted onto the basic part:
+  expect_warning(mode_count_range(x12_factor, FALSE), "this particular case")
+  # Also check that the warning does *not* include the extra part; i.e., it ends
+  # on the basic part:
+  expect_warning(mode_count_range(x17_factor, FALSE), "are known).$")
+  # No warning should be thrown if `exclusive` was set to `TRUE`:
+  expect_no_warning(mode_count_range(x12_factor, TRUE))
+  expect_no_warning(mode_count_range(x17_factor, TRUE))
 })
 
