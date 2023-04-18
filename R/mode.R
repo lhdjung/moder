@@ -434,7 +434,12 @@ mode_frequency <- function(x, na.rm = FALSE) {
 #' mode_count(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
 mode_count <- function(x, na.rm = FALSE) {
-  decide_count_na(mode_all(x, na.rm))
+  modes <- mode_all(x, na.rm)
+  if (length(modes) == 1L && is.na(modes)) {
+    NA_integer_
+  } else {
+    length(modes)
+  }
 }
 
 
@@ -813,25 +818,6 @@ decide_mode_na <- function(x, unique_x, mode1) {
     x[NA_integer_]
   }
 }
-
-
-# Called within the counting functions:
-# `mode_count()` and `mode_count_range()`.
-# If the set of modes can't be determined,
-# the number of modes is an unknown integer.
-# The length of `modes` is tested beforehand
-# because this quickly rules out cases where
-# `NA` testing is not necessary, and because
-# multiple return values from `is.na()` would
-# lead to an error in `if`:
-decide_count_na <- function(modes) {
-  if (length(modes) == 1L && is.na(modes)) {
-    NA_integer_
-  } else {
-    length(modes)
-  }
-}
-
 
 # Count the occurrences that all non-modal
 # values together lack compared to the mode.
