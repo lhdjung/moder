@@ -303,6 +303,26 @@ test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x17), NA_real_)
 })
 
+test_that("`mode_possible_min()` works correctly with `multiple = TRUE`", {
+  expect_equal(mode_possible_min(x1 , TRUE), 9)
+  expect_equal(mode_possible_min(x2 , TRUE), NA_real_)
+  expect_equal(mode_possible_min(x3 , TRUE), 7)
+  expect_equal(mode_possible_min(x4 , TRUE), c("a", "b"))
+  expect_equal(mode_possible_min(x5 , TRUE), c(1, 2))
+  expect_equal(mode_possible_min(x6 , TRUE), 5)
+  expect_equal(mode_possible_min(x7 , TRUE), c("y", "z"))
+  expect_equal(mode_possible_min(x8 , TRUE), 1)
+  expect_equal(mode_possible_min(x9 , TRUE), 1)
+  expect_equal(mode_possible_min(x10, TRUE), 1)
+  expect_equal(mode_possible_min(x11, TRUE), 1)
+  expect_equal(mode_possible_min(x12, TRUE), "a")
+  expect_equal(mode_possible_min(x13, TRUE), 1)
+  expect_equal(mode_possible_min(x14, TRUE), c(1, 2))
+  expect_equal(mode_possible_min(x15, TRUE), NA_real_)
+  expect_equal(mode_possible_min(x16, TRUE), 1)
+  expect_equal(mode_possible_min(x17, TRUE), c(1, 2))
+})
+
 
 # 2. `mode_possible_max()`
 

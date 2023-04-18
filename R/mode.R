@@ -448,22 +448,23 @@ mode_count <- function(x, na.rm = FALSE) {
 #'   of missing values.
 #'
 #' @param x A vector to search for its possible modes.
-#' @param multiple Boolean. For internal use only; ignore (or see details).
+#' @param multiple Boolean. If `multiple` is set to `TRUE`, the functions return
+#'   multiple modes with the same frequency, even if some values are missing.
+#'   Default is `FALSE` because `NA`s may tip the balance between values that
+#'   are equally frequent among the known values. Thus, if `multiple = TRUE`,
+#'   the functions don't necessarily return the minimal or maximal sets of
+#'   modes, but all values that *might* be part of those sets.
 #'
-#' @details If `multiple` is set to `TRUE`, the functions return multiple modes
-#'   with the same frequency, even if some values are missing. The default is
-#'   `FALSE` because `NA`s may tip the balance between values that seem to have
-#'   the same frequency. Thus, `multiple = TRUE` might return incorrect results.
-#'   Its purpose is to enable `mode_count_range()` to determine the minimal and
-#'   maximal *number* of modes.
-#'
-#' @return A vector with the minimal or maximal possible modes (values tied for
-#'   most frequent) in `x`. If the functions can't determine these possible
-#'   modes because of missing values, they return `NA` instead.
+#' @return By default, a vector with the minimal or maximal possible sets of
+#'   modes (values tied for most frequent) in `x`. If the functions can't
+#'   determine these possible modes because of missing values, they return `NA`
+#'   by default (`multiple = FALSE`).
 #'
 #' @export
 #'
-#' @seealso [mode_count_range()] for counting these possible modes.
+#' @seealso [mode_count_range()] for the minimal and maximal *numbers* of
+#'   possible modes. They can always be determined, even if the present
+#'   functions return `NA`.
 #'
 #' @name mode-possible
 #'
@@ -481,10 +482,18 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_max(c(7, 7, 8, 8, 8, 8, NA))
 #'
 #' # No clear minimal or maximal set
-#' # of modes (because `NA` may tip
-#' # the balance towards a single mode):
+#' # of modes because `NA` may tip
+#' # the balance between `1` and `2`
+#' # towards a single mode:
 #' mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA))
 #' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
+#'
+#' # With `multiple = TRUE`, the functions
+#' # return all values that might be part of
+#' # the min / max sets of modes; not these
+#' # sets themselves:
+#' mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA), multiple = TRUE)
+#' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA), multiple = TRUE)
 
 mode_possible_min <- function(x, multiple = FALSE) {
   # Without missing values, the minimal
