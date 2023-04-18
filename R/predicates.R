@@ -90,7 +90,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   if (all(unique_x %in% modes)) {
     if (n_na == 0L) {
       return(TRUE)
-    } else if (!exclusive && n_na %% length(modes) == 0L) {
+    } else if (n_na %% length(modes) == 0L) {
       return(NA)
     } else {
       return(FALSE)
