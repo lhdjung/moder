@@ -50,11 +50,9 @@
 #' mode_first(c(1, 2, 2, NA), first_known = TRUE)
 
 mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
-  # Iteration in the for loop will only
-  # proceed on known `x` values:
+  # Iteration in the for loop will only proceed on known `x` values:
   ix1 <- x[!is.na(x)]
-  # Return `NA` early if required,
-  # or remove `NA`s entirely if desired:
+  # Return `NA` early if required, or remove `NA`s entirely if desired:
   if (length(x) == 0L || all(is.na(x))) {
     return(x[NA_integer_])
   } else if (na.rm) {
@@ -62,22 +60,17 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   }
   frequency1 <- vapply(ix1, function(x) length(ix1[ix1 == x]), 1L)
   mode1 <- ix1[which.max(frequency1)]
-  # The present implementation only differs
-  # from the original function in terms
-  # of `NA` handling. Therefore, it returns
-  # `mode1` just like that function does
+  # The present implementation only differs from the original function in terms
+  # of `NA` handling. Therefore, it returns `mode1` just like that function does
   # if there are no missing values:
   if (!anyNA(x)) {
     return(mode1)
   }
-  # What if some values really are missing?
-  # The next few steps determine the number of
-  # instances of `mode1` and the maximum number of
-  # possible instances of the second-most frequent
-  # value (i.e., with the count of all `NA`s added).
-  # The goal is to test whether the latter might
-  # contest `mode1`'s status as the first-appearing
-  # mode:
+  # What if some values really are missing? The next few steps determine the
+  # number of instances of `mode1` and the maximum number of possible instances
+  # of the second-most frequent value (i.e., with the count of all `NA`s added).
+  # The goal is to test whether the latter might contest `mode1`'s status as the
+  # first-appearing mode:
   n_mode1 <- max(frequency1)
   n_mode2_na <- sort(unique(frequency1), decreasing = TRUE)
   if (length(n_mode2_na) > 1L) {
@@ -86,32 +79,24 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
     n_mode2_na <- 0L
   }
   n_mode2_na <- max(n_mode2_na) + length(x[is.na(x)])
-  # Count unique modal values
-  # (see explanation right below):
+  # Count unique modal values (see explanation right below):
   n_modes_unique <- length(unique(ix1[frequency1 == max(frequency1)]))
-  # The highest count -- that of `mode1` --
-  # may decide the outcome right below.
-  # If it's lower than the highest possible
-  # count of any other value (`n_mode2_na`),
-  # it's not known to be the mode. The same is
-  # true if there is more than one unique mode
-  # (because some values are unknown).
-  # Otherwise, if the highest count is higher
-  # than `n_mode2_na`, `mode1` is definitely
-  # the mode. It's also accepted as such if
-  # `first_known = TRUE` because it's known to be
-  # a mode, even if an earlier value is also one:
+  # The highest count -- that of `mode1` -- may decide the outcome right below.
+  # If it's lower than the highest possible count of any other value
+  # (`n_mode2_na`), it's not known to be the mode. The same is true if there is
+  # more than one unique mode (because some values are unknown). Otherwise, if
+  # the highest count is higher than `n_mode2_na`, `mode1` is definitely the
+  # mode. It's also accepted as such if `first_known = TRUE` because it's known
+  # to be a mode, even if an earlier value is also one:
   if (n_mode1 < n_mode2_na || n_modes_unique > 1L) {
     return(x[NA_integer_])
   } else if (n_mode1 > n_mode2_na || first_known) {
     return(mode1)
   }
-  # Check whether there is only a single unique known
-  # value (i.e., `mode1`). If so, and if it's the
-  # first value in `x`, `mode1` is the first mode
-  # (because it's just as frequent as the next-most-
-  # frequent value could possibly be). But if it only
-  # appears after a missing value, it isn't:
+  # Check whether there is only a single unique known value (i.e., `mode1`). If
+  # so, and if it's the first value in `x`, `mode1` is the first mode (because
+  # it's just as frequent as the next-most- frequent value could possibly be).
+  # But if it only appears after a missing value, it isn't:
   if (length(unique(ix1)) == 1L) {
     if (match(mode1, x) == 1L) {
       return(mode1)
@@ -120,16 +105,14 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
     }
   }
   # Get the most frequent known value that is not `mode1`:
-  # frequency2 <- NULL
   x2 <- x[x != mode1]
   ix2 <- x2[!is.na(x2)]
   frequency2 <- vapply(ix2, function(x) length(ix2[ix2 == x]), 1L)
-  # `NA` is returned if either there is no first value
-  # or if `mode1` appears before `mode2` (i.e., if its
-  # index of first occurrence is lower):
+  # `NA` is returned if either there is no first value or if `mode1` appears
+  # before `mode2` (i.e., if its index of first occurrence is lower):
   mode2 <- x2[which.max(frequency2)]
-  # Check whether `mode1` appears before `mode2` --
-  # i.e., whether its index of first occurrence is lower:
+  # Check whether `mode1` appears before `mode2` -- i.e., whether its index of
+  # first occurrence is lower:
   if (match(mode1, x) < match(mode2, x)) {
     mode1
   } else {
@@ -180,40 +163,32 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
 #' mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
 mode_all <- function(x, na.rm = FALSE) {
-  # `NA`s are ignored at this point
-  # because they will receive
-  # special treatment later on:
+  # `NA`s are ignored at this point because they will receive special treatment
+  # later on:
   ix1 <- x[!is.na(x)]
-  # Return `NA` early if required,
-  # or remove `NA`s entirely if desired:
+  # Return `NA` early if required, or remove `NA`s entirely if desired:
   if (length(x) == 0L || all(is.na(x))) {
     return(x[NA_integer_])
   } else if (na.rm) {
     x <- ix1
   }
-  # Determine the frequency of each
-  # unique value in `x`:
+  # Determine the frequency of each unique value in `x`:
   frequency1 <- vapply(ix1, function(x) length(ix1[ix1 == x]), 1L)
-  # Subset the vector of unique known values
-  # at the indices corresponding to the
+  # Subset the vector of unique known values at the indices corresponding to the
   # most frequent known values:
   modes <- unique(ix1[frequency1 == max(frequency1)])
-  # A seemingly unimodal distribution is
-  # still subject to some `NA`-related
-  # caveats. We call a helper function to
-  # adjudicate whether the candidate mode
+  # A seemingly unimodal distribution is still subject to some `NA`-related
+  # caveats. We call a helper function to adjudicate whether the candidate mode
   # is certain to be the actual one or not:
   if (length(modes) == 1L) {
     decide_mode_na(x, unique(ix1), modes)
-    # Any missing value could mask any of the
-    # known values tied for most frequent --
-    # and break the tie. This makes it
-    # impossible to determine the true set
-    # of modes, so the function returns `NA`:
+    # Any missing value could mask any of the known values tied for most
+    # frequent -- and break the tie. This makes it impossible to determine the
+    # true set of modes, so the function returns `NA`:
   } else if (anyNA(x)) {
     x[NA_integer_]
-    # Multimodal distributions without `NA`s
-    # have a clearly determined set of modes:
+    # Multimodal distributions without `NA`s have a clearly determined set of
+    # modes:
   } else {
     modes
   }
@@ -275,33 +250,27 @@ mode_all <- function(x, na.rm = FALSE) {
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
 mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
-  # The `multiple` argument will usually be a string.
-  # It should then be checked against the vector of
-  # possible string shorthands for dealing with
-  # multiple modes, using an intermediate variable
-  # to avoid redundant printing of each string in
-  # case of an error:
+  # The `multiple` argument will usually be a string. It should then be checked
+  # against the vector of possible string shorthands for dealing with multiple
+  # modes, using an intermediate variable to avoid redundant printing of each
+  # string in case of an error:
   if (is.character(multiple)) {
     possible_strings <-
       c("NA", "min", "max", "mean", "median", "first", "last", "random")
     match.arg(multiple, possible_strings)
     rm(possible_strings)
   }
-  # We need to check the number of
-  # modes here, so we call `mode_all()`:
+  # We need to check the number of modes here, so we call `mode_all()`:
   modes <- mode_all(x, na.rm)
-  # As the name says, if the distribution
-  # has a single mode, return that value:
+  # As the name says, if the distribution has a single mode, return that value:
   if (length(modes) == 1L) {
     modes
-    # Multimodal distributions are `NA` by default.
-    # Some users prefer this stricter way of
-    # estimating the mode, or they require it for
-    # their specific use cases.
+    # Multimodal distributions are `NA` by default. Some users prefer this
+    # stricter way of estimating the mode, or they require it for their specific
+    # use cases.
   } else if (is.character(multiple)) {
-    # Execute the user's chosen strategy
-    # for dealing with multiple modes,
-    # or the "NA" default:
+    # Execute the user's chosen strategy for dealing with multiple modes, or the
+    # "NA" default:
     switch(
       multiple,
       "NA"      = x[NA_integer_],
@@ -314,8 +283,8 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
       "random"  = sample(modes, size = 1L)
     )
   } else if (is.numeric(multiple)) {
-    # Index numbers must not be greater than
-    # the number of modes, which is an error:
+    # Index numbers must not be greater than the number of modes, which is an
+    # error:
     if (multiple > length(modes)) {
       msg_error <- paste("`multiple` is", multiple, "but there are only")
       msg_error <- paste(msg_error, length(modes), "modes")
@@ -323,16 +292,11 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
     }
     modes[multiple]
   } else {
-    # The user may also specify `multiple`
-    # as an object that can be interpreted
-    # as a function to manually summarize
-    # `modes`:
+    # The user may also specify `multiple` as an object that can be interpreted
+    # as a function to manually summarize `modes`:
     modes <- as.function(multiple)(modes)
-    # The output of the user-supplied
-    # function has to be of length 1
-    # to keep `mode_single()` true to
-    # itself, or else there will be
-    # an error:
+    # The output of the user-supplied function has to be of length 1 to keep
+    # `mode_single()` true to itself, or else there will be an error:
     if (length(modes) == 1L) {
       modes
     } else {
@@ -379,15 +343,12 @@ mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
 #' mode_frequency(c(1, 1, NA), na.rm = TRUE)
 
 mode_frequency <- function(x, na.rm = FALSE) {
-  # The modal frequency can't be determined if
-  # any values are missing because each of them
-  # might increase the frequency:
+  # The modal frequency can't be determined if any values are missing because
+  # each of them might increase the frequency:
   if (na.rm || !anyNA(x)) {
-    # If the mode can be determined, count
-    # its occurrences among non-`NA` values.
-    # This requires one mode of `x`, so we call
-    # `mode_first()` with `first_known = TRUE`
-    # (because position is irrelevant here):
+    # If the mode can be determined, count its occurrences among non-`NA`
+    # values. This requires one mode of `x`, so we call `mode_first()` with
+    # `first_known = TRUE` (because position is irrelevant here):
     mode <- mode_first(x, na.rm, TRUE)
     length(x[x == mode & !is.na(x)])
   } else {
@@ -501,19 +462,16 @@ mode_count <- function(x, na.rm = FALSE) {
 #' mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA), multiple = TRUE)
 
 mode_possible_min <- function(x, multiple = FALSE) {
-  # Without missing values, the minimal
-  # set of modes is simply the actual one:
+  # Without missing values, the minimal set of modes is simply the actual one:
   n_na <- length(x[is.na(x)])
   if (n_na == 0L) {
     return(mode_all(x, FALSE))
   }
-  # Otherwise, the minimum might be
-  # the set of modes among known values:
+  # Otherwise, the minimum might be the set of modes among known values:
   x <- x[!is.na(x)]
   mode1 <- mode_all(x, FALSE)
   x_without_mode1 <- x[!x %in% mode1]
-  # This is a corner case with just one
-  # known value:
+  # This is a corner case with just one known value:
   if (length(x_without_mode1) == 0L && length(mode1) == 1L) {
     if (length(x[x == mode1[[1L]]]) < n_na) {
       return(x[NA_integer_])
@@ -525,14 +483,10 @@ mode_possible_min <- function(x, multiple = FALSE) {
   mode2 <- mode_all(x_without_mode1)
   n_mode1 <- length(x[x == mode1[[1L]]])
   n_mode2_na <- length(x[x %in% mode2[[1L]]]) + n_na
-  # The next-most-frequent known values
-  # plus `NA`s must not be more frequent
-  # than `mode1`, or the latter isn't
-  # guaranteed to be a minimum of modes.
-  # The same is true if there are two or
-  # more `mode1` values, because `NA`s
-  # can make any of these more frequent
-  # than the others:
+  # The next-most-frequent known values plus `NA`s must not be more frequent
+  # than `mode1`, or the latter isn't guaranteed to be a minimum of modes. The
+  # same is true if there are two or more `mode1` values, because `NA`s can make
+  # any of these more frequent than the others:
   if (n_mode2_na > n_mode1 || (length(mode1) > 1L && !multiple)) {
     x[NA_integer_]
   } else {
@@ -545,43 +499,34 @@ mode_possible_min <- function(x, multiple = FALSE) {
 #' @export
 
 mode_possible_max <- function(x, multiple = FALSE) {
-  # The number of missings determines how far the
-  # count of possible modes will go, and it will
-  # be decremented as the process goes on:
+  # The number of missings determines how far the count of possible modes will
+  # go, and it will be decremented as the process goes on:
   n_nas_left <- length(x[is.na(x)])
   x <- x[!is.na(x)]
-  # No `NA`s mean no ambiguity about any
-  # possible modes below the top level, so
+  # No `NA`s mean no ambiguity about any possible modes below the top level, so
   # the modes from this level are returned:
   modes <- mode_all(x, FALSE)
   if (n_nas_left == 0L) {
     return(modes)
   }
-  # Initialize the vector of mode values.
-  # These will be appended to the vector
-  # from within the loop: one set of
-  # mode values per level of modes.
+  # Initialize the vector of mode values. These will be appended to the vector
+  # from within the loop: one set of mode values per level of modes.
   modes_out <- NULL
-  # Also initialize a vector that will
-  # keep track of the maximum frequency,
-  # and that may resolve a corner case:
+  # Also initialize a vector that will keep track of the maximum frequency, and
+  # that may resolve a corner case:
   n_max <- NULL
-  # Run through the mode levels of `x`
-  # for as long as there is a sufficient
-  # amount of missing values left to fill
-  # the "empty slots" of each lower level:
+  # Run through the mode levels of `x` for as long as there is a sufficient
+  # amount of missing values left to fill the "empty slots" of each lower level:
   while (n_nas_left > 0L) {
     # Determine the modes on the *current* level:
     modes <- mode_all(x, FALSE)
-    # More than one mode per level means
-    # there is a pseudo-tie that can be
-    # broken by `NA`s, so there is no
-    # clear maximum in this case:
+    # More than one mode per level means there is a pseudo-tie that can be
+    # broken by `NA`s, so there is no clear maximum in this case:
     if (length(modes) > 1L && !multiple) {
       return(x[NA_integer_])
     }
-    # This vector will ultimately be returned,
-    # but other values may be added to it:
+    # This vector will ultimately be returned, but other values may be added to
+    # it:
     modes_out <- c(modes_out, unique(x[x %in% modes]))
     # Next *lower* level of modes:
     modes_next_level <- mode_all(x[!x %in% modes], FALSE)
@@ -591,46 +536,38 @@ mode_possible_max <- function(x, multiple = FALSE) {
     n_max <- max(n_max, n_modes)
     x <- x[!x %in% modes]
     n_empty_slots <- length(modes_next_level) * n_diff
-    # In case the remaining `NA`s can't
-    # fill up the empty slots, there
-    # won't be another loop cycle:
+    # In case the remaining `NA`s can't fill up the empty slots, there won't be
+    # another loop cycle:
     if (n_nas_left < n_empty_slots) {
-      # With multiple next-most-frequent values
-      # (which is not accepted by default of `multiple`)
-      # and some `NA`s remaining (but not enough;
-      # see right above) as well as the possibility
-      # that some of the multiples might be actual
-      # modes if combined with all remaining `NA`s,
-      # there is no clear maximum set of modes
-      # because the `NA`s make it unclear which
-      # of the next-most-frequent values might
-      # be as frequent as the top-level ones.
-      # This returns `NA` for the same reason
-      # that `mode_all(c(1, 1, 2, 2, NA))` does.
+      # With multiple next-most-frequent values (which is not accepted by
+      # default of `multiple`) and some `NA`s remaining (but not enough; see
+      # right above) as well as the possibility that some of the multiples might
+      # be actual modes if combined with all remaining `NA`s, there is no clear
+      # maximum set of modes because the `NA`s make it unclear which of the
+      # next-most-frequent values might be as frequent as the top-level ones.
+      # This returns `NA` for the same reason that `mode_all(c(1, 1, 2, 2, NA))`
+      # does.
       if (multiple && n_modes_next_level + n_nas_left >= n_max) {
         next
       } else if (
         length(modes_next_level) > 1L &&
-        # !multiple &&
         n_nas_left > 0L &&
         n_modes_next_level + n_nas_left >= n_max
       ) {
         return(x[NA_integer_])
       } else {
-        # Escape from the loop because
-        # there are not enough `NA`s left:
+        # Escape from the loop because there are not enough `NA`s left:
         break
       }
     } else {
-      # In this case, the empty slots can be filled.
-      # Append lower-level modes to the return vector:
+      # In this case, the empty slots can be filled. Append lower-level modes to
+      # the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
       n_nas_left <- n_nas_left - max(n_empty_slots, 1L)
     }
   }
-  # Finally, return the vector of unique possible modes --
-  # or `NA` if there are none. This will likely only
-  # occur if each input value is `NA`.
+  # Finally, return the vector of unique possible modes -- or `NA` if there are
+  # none. This will likely only occur if each input value is `NA`.
   if (length(modes_out)) {
     unique(modes_out)
   } else {
@@ -692,12 +629,10 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
   rm(n_x)
   if (is.factor(x)) {
     warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_count_range")
-    # Factors should have a `max_unique` value
-    # equal to the length of their levels because
-    # all possible factor values are supposedly known.
-    # Otherwise, there is a warning. If `max_unique` is
-    # not specified, it is assigned that value after the
-    # current chunk.
+    # Factors should have a `max_unique` value equal to the length of their
+    # levels because all possible factor values are supposedly known. Otherwise,
+    # there is a warning. If `max_unique` is not specified, it is assigned that
+    # value after the current chunk.
     if (!is.null(max_unique) && max_unique != length(levels(x))) {
       warn <- paste("factor `x` has", length(levels(x)), "levels but")
       warn <- paste(warn, "`max_unique` is", max_unique)
@@ -706,14 +641,12 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
       max_unique <- length(levels(x))
     }
   }
-  # The minimal and maximal mode counts
-  # are identical if there are no `NA`s:
+  # The minimal and maximal mode counts are identical if there are no `NA`s:
   if (n_na == 0L) {
     n_exact <- mode_count(x, FALSE)
     return(rep(n_exact, times = 2L))
   }
-  # This part works like the helper
-  # `count_slots_empty()`, but it involves
+  # This part works like the helper `count_slots_empty()`, but it involves
   # variables that will be used later on:
   n_unique_x <- length(unique(x))
   if (!is.null(max_unique) && max_unique < n_unique_x) {
@@ -724,8 +657,7 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
   frequency_max <- length(x[x %in% mode_first(x)])
   n_slots_all <- n_unique_x * frequency_max
   n_slots_empty <- n_slots_all - length(x)
-  # Prepare an early return if there is no way
-  # for all known values to be modes:
+  # Prepare an early return if there is no way for all known values to be modes:
   if (n_na < n_slots_empty) {
     tab <- table(x)
     tab_max <- max(tab)
@@ -741,11 +673,11 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
       }
     }
   }
-  # What if the `NA`s cannot represent any values
-  # other than those already known?
+  # What if the `NA`s cannot represent any values other than those already
+  # known?
   if (exclusive || !is.null(max_unique)) {
-    # How many `NA`s remain after filling up
-    # all the empty slots with other `NA`s?
+    # How many `NA`s remain after filling up all the empty slots with other
+    # `NA`s?
     n_na_surplus <- n_na - n_slots_empty
     if (n_na_surplus < 0L) {
       return(c(1L, n_unique_x + n_na_surplus))
@@ -760,9 +692,8 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
       }
       return(c(1L, n_max))
     }
-    # How many `NA`s remain after distributing
-    # as many of them as possible across the
-    # known values?
+    # How many `NA`s remain after distributing as many of them as possible
+    # across the known values?
     remainder <- n_na_surplus %% n_unique_x
     n_max <- if (remainder == 0L) {
       n_unique_x
@@ -773,13 +704,10 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
     }
     return(c(1L, n_max))
   }
-  # How many slots can be filled
-  # at the maximum?
+  # How many slots can be filled at the maximum?
   n_slots_max <- length(x) + n_na
-  # Implicit condition: Some values
-  # are missing, and their number
-  # is greater than or equal to
-  # the number of empty slots.
+  # Implicit condition: Some values are missing, and their number is greater
+  # than or equal to the number of empty slots.
   c(1L, n_slots_max %/% frequency_max)
 }
 
@@ -815,16 +743,13 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
 mode_frequency_range <- function(x) {
   n_x_orig <- length(x)
   x <- x[!is.na(x)]
-  # If all values are missing, the range
-  # is highly uncertain (see docs):
+  # If all values are missing, the range is highly uncertain (see docs):
   if (length(x) == 0L) {
     return(c(1L, n_x_orig))
   }
   n_na <- n_x_orig - length(x)
-  # Minimum modal frequency: exclude all `NA`s
-  # (they were removed above)
-  # Maximum modal frequency: include all `NA`s
-  # (add their count to the minimum)
+  # Minimum modal frequency: exclude all `NA`s (they were removed above) Maximum
+  # modal frequency: include all `NA`s (add their count to the minimum)
   frequency_min <- mode_frequency(x, FALSE)
   frequency_max <- frequency_min + n_na
   c(frequency_min, frequency_max)
@@ -857,11 +782,9 @@ decide_mode_na <- function(x, unique_x, mode1) {
   }
 }
 
-# Count the occurrences that all non-modal
-# values together lack compared to the mode.
-# These "empty slots" would have to be filled
-# by `NA`s in a hypothetical scenario in order
-# for the respective values to be modes:
+# Count the occurrences that all non-modal values together lack compared to the
+# mode. These "empty slots" would have to be filled by `NA`s in a hypothetical
+# scenario in order for the respective values to be modes:
 count_slots_empty <- function(x) {
   x <- x[!is.na(x)]
   frequency_max <- length(x[x %in% mode_first(x)])
@@ -870,9 +793,8 @@ count_slots_empty <- function(x) {
 }
 
 
-# This is a faster version of `mode_all()`
-# that can be used as a helper if and only if
-# no `x` values are missing:
+# This is a faster version of `mode_all()` that can be used as a helper if and
+# only if no `x` values are missing:
 mode_all_if_no_na <- function(x) {
   frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
   unique(x[frequency1 == max(frequency1)])

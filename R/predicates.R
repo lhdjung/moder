@@ -51,8 +51,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   if (na.rm) {
     x <- x[!is.na(x)]
   }
-  # There are some edge cases to check for.
-  # With less than three values, none
+  # There are some edge cases to check for. With less than three values, none
   # can be more frequent than the other:
   if (length(x) < 3L) {
     return(TRUE)
@@ -62,31 +61,23 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   unique_x <- unique(x)
   # A factor-specific warning if `exclusive = FALSE` (the default):
   warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_is_trivial")
-  # If some values are missing
-  # (from a length >= 3 vector) and
-  # all known values are equal, it's
-  # unknown whether there is a value
-  # with a different frequency:
+  # If some values are missing (from a length >= 3 vector) and all known values
+  # are equal, it's unknown whether there is a value with a different frequency:
   if (n_na > 0L && length(unique_x) == 1L) {
     return(NA)
   }
   modes <- mode_all_if_no_na(x)
-  # Special rules apply if all known values are
-  # equally frequent:
-  # -- If there are no `NA`s, there are no values
-  # beyond the known ones, so `TRUE` is returned.
-  # -- If the number of `NA`s can be divided by the
-  # number of unique values (here, the number of
-  # modes), sets of `NA`s may remain, each of the
-  # size of the modal frequency, and form entirely
-  # different values, i.e., different from the known
-  # values in `x`. This latter scenario is far from
-  # certain, but it cannot be ruled out (unless the
-  # user does so by setting `exclusive = TRUE`),
-  # so `NA` is returned.
-  # -- If this is not case but there are still `NA`s,
-  # at least some of these must belong to less
-  # frequent values, so `FALSE` is returned.
+  # Special rules apply if all known values are equally frequent:
+  # -- If there are no `NA`s, there are no values beyond the known ones, so
+  # `TRUE` is returned.
+  # -- If the number of `NA`s can be divided by the number of unique values
+  # (here, the number of modes), sets of `NA`s may remain, each of the size of
+  # the modal frequency, and form entirely different values, i.e., different
+  # from the known values in `x`. This latter scenario is far from certain, but
+  # it cannot be ruled out (unless the user does so by setting `exclusive =
+  # TRUE`), so `NA` is returned.
+  # -- If this is not case but there are still `NA`s, at least some of these
+  # must belong to less frequent values, so `FALSE` is returned.
   if (all(unique_x %in% modes)) {
     if (n_na == 0L) {
       return(TRUE)
@@ -96,26 +87,21 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
       return(FALSE)
     }
   }
-  # Reduce `n_na` to the number of `NA`s
-  # that are left after distributing other `NA`s
-  # among the non-modal values such that they
-  # become modes in a hypothetical scenario:
+  # Reduce `n_na` to the number of `NA`s that are left after distributing other
+  # `NA`s among the non-modal values such that they become modes in a
+  # hypothetical scenario:
   n_na <- n_na - count_slots_empty(x)
-  # (These conditions aim to avoid a costly part,
-  # which is why the returns are redundant:)
-  # -- If their "count" is negative, it means the empty
-  # slots cannot be filled with `NA`s, so `x` values
-  # differ in their true frequencies.
-  # -- If their count (zero or positive) can be divided by
-  # the number of unique values, these `NA`s might fill up
-  # the empty slots, so there is a possibility that all
-  # values are equally frequent. By default (`exclusive
-  # = FALSE`), this allows for separate sets of missing
-  # values and `NA` is returned; see the previous
-  # if-else block.
-  # -- Otherwise, there are some `NA`s that cannot be part
-  # of a group with the modal frequency. They must be
-  # values with a lesser frequency, so there are
+  # (These conditions aim to avoid a costly part, which is why the returns are
+  # redundant:)
+  # -- If their "count" is negative, it means the empty slots cannot be filled
+  # with `NA`s, so `x` values differ in their true frequencies.
+  # -- If their count (zero or positive) can be divided by the number of unique
+  # values, these `NA`s might fill up the empty slots, so there is a possibility
+  # that all values are equally frequent. By default (`exclusive = FALSE`), this
+  # allows for separate sets of missing values and `NA` is returned; see the
+  # previous if-else block.
+  # -- Otherwise, there are some `NA`s that cannot be part of a group with the
+  # modal frequency. They must be values with a lesser frequency, so there are
   # different frequencies among true `x` values.
   if (n_na < 0L) {
     FALSE
