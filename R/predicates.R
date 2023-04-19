@@ -1,4 +1,3 @@
-
 #' Is the mode trivial?
 #'
 #' @description `mode_is_trivial()` checks whether all values in a given vector
