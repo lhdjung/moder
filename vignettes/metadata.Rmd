@@ -53,7 +53,7 @@ mode_count(c(7, 7, 7, 8, 8, NA))
 
 ```
 
-Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes:
+Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes, never returning `NA`:
 
 ```{r}
 mode_count_range(c(7, 7, 7, 8, 8, NA))
@@ -71,16 +71,14 @@ mode_frequency(c(4, 4, 4, 5))
 Missing values are an issue here, even if the mode is obvious. Each `NA` might be another instance of the mode, so the frequency is unknown:
 
 ```{r}
-mode_frequency(c(1, 1, 1, 1, 2, NA))
+mode_frequency(c(1, 1, 1, 1, 2, NA, NA))
 ```
 
-With `mode_frequency_range()`, at least the minimal and maximal frequencies can be determined. There are four instances of `1` without counting the `NA`, and five with counting it:
+With `mode_frequency_range()`, at least the minimal and maximal frequencies can be determined. It never returns `NA`. There are four instances of `1` without counting the `NA`s, and six with counting it:
 
 ```{r}
-mode_frequency_range(c(1, 1, 1, 1, 2, NA))
+mode_frequency_range(c(1, 1, 1, 1, 2, NA, NA))
 ```
-
-Finally, a function that never returns `NA`!
 
 ### Trivial modes
 
