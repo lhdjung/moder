@@ -743,15 +743,16 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
 #' mode_frequency_range(c("a", "b", "c", "c", "d", "d", "e", "e"))
 
 mode_frequency_range <- function(x) {
-  n_x_orig <- length(x)
+  n_x <- length(x)
   x <- x[!is.na(x)]
   # If all values are missing, the range is highly uncertain (see docs):
   if (length(x) == 0L) {
-    return(c(1L, n_x_orig))
+    return(c(1L, n_x))
   }
-  n_na <- n_x_orig - length(x)
-  # Minimum modal frequency: exclude all `NA`s (they were removed above) Maximum
-  # modal frequency: include all `NA`s (add their count to the minimum)
+  n_na <- n_x - length(x)
+  rm(n_x)
+  # -- Minimum frequency: exclude all `NA`s (they were removed above)
+  # -- Maximum frequency: include all `NA`s (add their count to the minimum)
   frequency_min <- mode_frequency(x, FALSE)
   frequency_max <- frequency_min + n_na
   c(frequency_min, frequency_max)
