@@ -765,7 +765,7 @@ mode_frequency_range <- function(x) {
 # Called within `mode_all()`:
 decide_mode_na <- function(x, unique_x, mode1) {
   if (length(unique_x) == 1L) {
-    if (length(x[is.na(x)]) < length(x) / 2) {
+    if (length(x[is.na(x)]) < length(x) / 2L) {
       return(mode1)
     } else {
       return(x[NA_integer_])
@@ -785,22 +785,28 @@ decide_mode_na <- function(x, unique_x, mode1) {
   }
 }
 
-# Count the occurrences that all non-modal values together lack compared to the
-# mode. These "empty slots" would have to be filled by `NA`s in a hypothetical
-# scenario in order for the respective values to be modes:
+# ONLY FOR VECTORS WITHOUT MISSING VALUES! Count the occurrences that all
+# non-modal values together lack compared to the mode. These "empty slots" would
+# have to be filled by `NA`s in a hypothetical scenario in order for the
+# respective values to be modes:
 count_slots_empty <- function(x) {
-  x <- x[!is.na(x)]
-  frequency_max <- length(x[x %in% mode_first(x)])
+  frequency_max <- length(x[x %in% mode_first_if_no_na(x)])
   n_slots_all <- length(unique(x)) * frequency_max
   n_slots_all - length(x)
 }
 
 
-# This is a faster version of `mode_all()` that can be used as a helper if and
-# only if no `x` values are missing:
+# ONLY FOR VECTORS WITHOUT MISSING VALUES! A faster version of `mode_all()`:
 mode_all_if_no_na <- function(x) {
   frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
   unique(x[frequency1 == max(frequency1)])
+}
+
+
+# ONLY FOR VECTORS WITHOUT MISSING VALUES! A faster version of `mode_first()`:
+mode_first_if_no_na <- function(x) {
+  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
+  x[which.max(frequency1)]
 }
 
 
