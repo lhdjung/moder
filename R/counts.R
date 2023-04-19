@@ -125,7 +125,7 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
   }
   # This part works like the helper `count_slots_empty()`, but it involves
   # variables that are used elsewhere in the present function:
-  frequency_max <- length(x[x %in% mode_first(x)])
+  frequency_max <- length(x[x %in% mode_first_if_no_na(x)])
   n_slots_all <- n_unique_x * frequency_max
   n_slots_empty <- n_slots_all - length(x)
   # Prepare an early return if there is no way for all known values to be modes:

@@ -54,13 +54,15 @@
 
 mode_possible_min <- function(x, multiple = FALSE) {
   # Without missing values, the minimal set of modes is simply the actual one:
-  n_na <- length(x[is.na(x)])
+  n_x <- length(x)
+  x <- x[!is.na(x)]
+  n_na <- n_x - length(x)
+  rm(n_x)
   if (n_na == 0L) {
-    return(mode_all(x, FALSE))
+    return(mode_all_if_no_na(x))
   }
   # Otherwise, the minimum might be the set of modes among known values:
-  x <- x[!is.na(x)]
-  mode1 <- mode_all(x, FALSE)
+  mode1 <- mode_all_if_no_na(x)
   x_without_mode1 <- x[!x %in% mode1]
   # This is a corner case with just one known value:
   if (length(x_without_mode1) == 0L && length(mode1) == 1L) {
@@ -92,11 +94,13 @@ mode_possible_min <- function(x, multiple = FALSE) {
 mode_possible_max <- function(x, multiple = FALSE) {
   # The number of missings determines how far the count of possible modes will
   # go, and it will be decremented as the process goes on:
-  n_nas_left <- length(x[is.na(x)])
+  n_x <- length(x)
   x <- x[!is.na(x)]
+  n_nas_left <- n_x - length(x)
+  rm(n_x)
   # No `NA`s mean no ambiguity about any possible modes below the top level, so
   # the modes from this level are returned:
-  modes <- mode_all(x, FALSE)
+  modes <- mode_all_if_no_na(x)
   if (n_nas_left == 0L) {
     return(modes)
   }
@@ -109,7 +113,9 @@ mode_possible_max <- function(x, multiple = FALSE) {
   # Run through the mode levels of `x` for as long as there is a sufficient
   # amount of missing values left to fill the "empty slots" of each lower level:
   while (n_nas_left > 0L) {
-    # Determine the modes on the *current* level:
+    # Determine the modes on the *current* level. This requires `mode_all()`
+    # because the faster `mode_all_if_no_na()` can't take `numeric(0)`
+    # arguments, which might occur here.
     modes <- mode_all(x, FALSE)
     # More than one mode per level means there is a pseudo-tie that can be
     # broken by `NA`s, so there is no clear maximum in this case:

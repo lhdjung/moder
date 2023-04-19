@@ -62,14 +62,16 @@ count_slots_empty <- function(x) {
 }
 
 
-# ONLY FOR VECTORS WITHOUT MISSING VALUES! A faster version of `mode_all()`:
+# ONLY FOR VECTORS WITHOUT MISSING VALUES, AND WITHOUT ARGUMENTS LIKE
+# `numeric(0)`! A faster version of `mode_all()`:
 mode_all_if_no_na <- function(x) {
   frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
   unique(x[frequency1 == max(frequency1)])
 }
 
 
-# ONLY FOR VECTORS WITHOUT MISSING VALUES! A faster version of `mode_first()`:
+# ONLY FOR VECTORS WITHOUT MISSING VALUES, AND WITHOUT ARGUMENTS LIKE
+# `numeric(0)`! A faster version of `mode_first()`:
 mode_first_if_no_na <- function(x) {
   frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
   x[which.max(frequency1)]
