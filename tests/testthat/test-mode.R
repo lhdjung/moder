@@ -430,10 +430,10 @@ test_that("`mode_count_range()` works correctly with non-`NULL` `max_unique`", {
 test_that("the warnings for factors in `mode_count_range()` work correctly", {
   x <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
   expect_warning(mode_count_range(as.factor(x), max_unique = 3))
-  # These two check for the presence of absence of multiple warnings; hence the
-  # nested expectations:
+  # These two tests check for the presence of absence of multiple warnings (and,
+  # in the second test, an error); hence the nested expectations:
   expect_no_warning(expect_warning(mode_count_range(as.factor(x), max_unique = 3)))
-  expect_warning(expect_warning(mode_count_range(as.factor(x), max_unique = 1)))
+  expect_error(expect_warning(expect_warning(mode_count_range(as.factor(x), max_unique = 1))))
 })
 
 # 4. `mode_frequency_range()`

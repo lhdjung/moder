@@ -637,9 +637,17 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
       warn <- paste("factor `x` has", length(levels(x)), "levels but")
       warn <- paste(warn, "`max_unique` is", max_unique)
       warning(warn)
+      rm(warn)
     } else {
       max_unique <- length(levels(x))
     }
+  }
+  n_unique_x <- length(unique(x))
+  # Throw an error if `max_unique` was specified as too low a number:
+  if (!is.null(max_unique) && max_unique < n_unique_x) {
+    msg_error <- paste("`max_unique` is", max_unique, "but there are")
+    msg_error <- paste(msg_error, n_unique_x, "values in `x`")
+    stop(msg_error)
   }
   # The minimal and maximal mode counts are identical if there are no `NA`s:
   if (n_na == 0L) {
@@ -647,34 +655,28 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
     return(rep(n_exact, times = 2L))
   }
   # This part works like the helper `count_slots_empty()`, but it involves
-  # variables that will be used later on:
-  n_unique_x <- length(unique(x))
-  if (!is.null(max_unique) && max_unique < n_unique_x) {
-    msg_error <- paste("`max_unique` is", max_unique, "but there are")
-    msg_error <- paste(msg_error, n_unique_x, "values in `x`")
-    stop(msg_error)
-  }
+  # variables that are used elsewhere in the present function:
   frequency_max <- length(x[x %in% mode_first(x)])
   n_slots_all <- n_unique_x * frequency_max
   n_slots_empty <- n_slots_all - length(x)
   # Prepare an early return if there is no way for all known values to be modes:
   if (n_na < n_slots_empty) {
-    tab <- table(x)
-    tab_max <- max(tab)
-    for (i in seq_along(tab)) {
-      if (tab[i] < tab_max) {
-        diff_to_max <- tab_max - tab[i]
+    frequency_all <- table(x)
+    for (i in seq_along(frequency_all)) {
+      if (frequency_all[i] < frequency_max) {
+        diff_to_max <- frequency_max - frequency_all[i]
         if (n_na < diff_to_max) {
-          return(c(1L, length(tab[tab == tab_max])))
+          return(c(1L, length(frequency_all[frequency_all == frequency_max])))
         } else {
-          tab[i] <- tab_max
+          frequency_all[i] <- frequency_max
           n_na <- n_na - diff_to_max
         }
       }
     }
   }
   # What if the `NA`s cannot represent any values other than those already
-  # known?
+  # known, or if there is a known limit to the number of values they can
+  # represent?
   if (exclusive || !is.null(max_unique)) {
     # How many `NA`s remain after filling up all the empty slots with other
     # `NA`s?
@@ -683,12 +685,12 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
       return(c(1L, n_unique_x + n_na_surplus))
     } else if (!is.null(max_unique)) {
       n_na_new_vals <- (max_unique - n_unique_x) * frequency_max
-      if (n_na_new_vals < n_na_surplus) {
-        n_max <- (n_na_surplus - n_na_new_vals) %% max_unique
+      n_max <- if (n_na_new_vals < n_na_surplus) {
+        (n_na_surplus - n_na_new_vals) %% max_unique
       } else if (n_na_new_vals == n_na_surplus) {
-        n_max <- max_unique
+        max_unique
       } else {
-        n_max <- n_unique_x + n_na_new_vals %/% frequency_max
+        n_unique_x + n_na_new_vals %/% frequency_max
       }
       return(c(1L, n_max))
     }
