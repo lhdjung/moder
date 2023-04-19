@@ -417,6 +417,25 @@ test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
   expect_equal(mode_count_range(x17, TRUE), c(1L, 2L))
 })
 
+test_that("`mode_count_range()` works correctly with non-`NULL` `max_unique`", {
+  x <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+  expect_equal(mode_count_range(c(x, rep(NA, 10L))), c(1L, 6L))
+  expect_equal(mode_count_range(c(x, rep(NA, 10L)), max_unique = 5), c(1L, 4L))
+  expect_equal(mode_count_range(c(x, rep(NA,  9L)), max_unique = 5), c(1L, 3L))
+  expect_equal(mode_count_range(c(x, rep(NA,  8L)), max_unique = 5), c(1L, 2L))
+  expect_equal(mode_count_range(c(x, rep(NA,  7L)), max_unique = 5), c(1L, 1L))
+  expect_equal(mode_count_range(c(x, rep(NA,  6L)), max_unique = 5), c(1L, 5L))
+})
+
+test_that("the warnings for factors in `mode_count_range()` work correctly", {
+  x <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+  expect_warning(mode_count_range(as.factor(x), max_unique = 3))
+  # These two check for the presence of absence of multiple warnings; hence the
+  # nested expectations:
+  expect_no_warning(expect_warning(mode_count_range(as.factor(x), max_unique = 3)))
+  expect_warning(expect_warning(mode_count_range(as.factor(x), max_unique = 1)))
+})
+
 # 4. `mode_frequency_range()`
 
 test_that("`mode_frequency_range()` works correctly", {

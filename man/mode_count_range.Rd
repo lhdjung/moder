@@ -4,7 +4,7 @@
 \alias{mode_count_range}
 \title{Modal count range}
 \usage{
-mode_count_range(x, exclusive = FALSE)
+mode_count_range(x, exclusive = FALSE, max_unique = NULL)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
@@ -13,6 +13,9 @@ mode_count_range(x, exclusive = FALSE)
 \code{exclusive} to \code{TRUE} if you are certain that there are no other values
 behind the \code{NA}s, such that each \code{NA} masks one of the known values.
 Default is \code{FALSE}.}
+
+\item{max_unique}{Integer. Maximum number of distinct values in \code{x}. Default
+is \code{NULL}, which assumes no maximum.}
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
@@ -21,6 +24,13 @@ for most frequent) in \code{x}.
 \description{
 \code{mode_count_range()} determines the minimal and maximal number
 of modes given the number of missing values.
+}
+\details{
+If \code{x} is a factor, \code{max_unique} is automatically set to the number
+of levels in \code{x}. If the user sets \code{max_unique} to another value, it isn't
+reset automatically but there is a warning. This is because a factor's
+levels are supposed to be all of its possible values. For the same reason,
+there is a warning if \code{x} is a factor and \code{exclusive} is \code{FALSE}.
 }
 \examples{
 # If `NA` is `7` or `8`, that number is
