@@ -15,7 +15,8 @@ Suggests:
     knitr,
     rmarkdown,
     stats,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    utils
 Config/testthat/edition: 3
 URL: https://github.com/lhdjung/moder,
     https://lhdjung.github.io/moder/
