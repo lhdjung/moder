@@ -92,3 +92,80 @@ warn_if_factor_not_exclusive <- function(x, exclusive, n_na, fn_name) {
   }
 }
 
+
+count_modes_max_with_spec <- function(n_na, n_slots_empty, max_unique) {
+  # How many `NA`s remain after filling up all the empty slots with other
+  # `NA`s?
+  n_na_surplus <- n_na - n_slots_empty
+  if (n_na_surplus < 0L) {
+    return(n_unique_x + n_na_surplus)
+  } else if (!is.null(max_unique)) {
+    n_na_new_vals <- (max_unique - n_unique_x) * frequency_max
+    if (n_na_new_vals < n_na_surplus) {
+      return((n_na_surplus - n_na_new_vals) %% max_unique)
+    } else if (n_na_new_vals == n_na_surplus) {
+      return(max_unique)
+    } else {
+      return(n_unique_x + n_na_new_vals %/% frequency_max)
+    }
+  }
+  # How many `NA`s remain after distributing as many of them as possible
+  # across the known values?
+  remainder <- n_na_surplus %% n_unique_x
+  if (remainder == 0L) {
+    return(n_unique_x)
+  } else if (remainder < 0L) {
+    return(n_unique_x - remainder)
+  } else {
+    return(remainder)
+  }
+}
+
+
+print_example_x <- function() {
+  cat(paste0("x", 1:17, "\n"))
+}
+
+
+check_factor_max_unique <- function(x, n_na, fn_name) {
+  if (is.factor(x)) {
+    msg_warn <- paste0("In `", fn_name, "()`, `max_unique` should be \"known\"")
+    msg_warn <- paste(msg_warn, "if `x` is a factor (the presumption is")
+    msg_warn <- paste(msg_warn, "that all factor levels are known).")
+    # Calculate the modal frequency, which can put the issue in perspective if
+    # it's high enough:
+    if (n_na < max(vapply(x, function(y) length(x[x == y]), 1L))) {
+      msg_warn <- paste(msg_warn, "\nIt won't matter in this particular case")
+      msg_warn <- paste(msg_warn, "because there are not enough `NA`s to")
+      msg_warn <- paste(msg_warn, "form any new modes.")
+    }
+    warning(msg_warn)
+  }
+}
+
+
+# Call this helper in each function that has a `max_unique` argument, but only
+# if the user overrode the default of `max_unique = NULL`:
+handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
+  if (is.character(max_unique) && max_unique == "known") {
+    return(n_unique_x)
+  } else {
+    check_factor_max_unique(x, n_na, fn_name)
+  }
+  # Throw an error if `max_unique` is misspecified. Else, return `max_unique` so
+  # that it will be reassigned on the level of the caller function:
+  if (is.character(max_unique)) {
+    msg_error <- paste0("In `", fn_name, "()`, `max_unique` is \"", max_unique)
+    msg_error <- paste0(msg_error, "\". If it's a string, `max_unique` should")
+    msg_error <- paste(msg_error, "be \"known\".")
+    stop(msg_error)
+  } else if (max_unique < n_unique_x) {
+    msg_error <- paste0("In `", fn_name, "()`, ", "`max_unique` is ")
+    msg_error <- paste(msg_error, max_unique, "but there are", n_unique_x)
+    msg_error <- paste(msg_error, "unique values in `x`.")
+    stop(msg_error)
+  } else {
+    return(max_unique)
+  }
+}
+

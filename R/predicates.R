@@ -46,7 +46,7 @@
 #' # because `1` is more frequent than `2`:
 #' mode_is_trivial(c(1, 1, 2))
 
-mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
+mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   if (na.rm) {
     x <- x[!is.na(x)]
   }
@@ -55,11 +55,19 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   if (length(x) < 3L) {
     return(TRUE)
   }
-  n_na <- length(x[is.na(x)])
+  n_x <- length(x)
   x <- x[!is.na(x)]
+  n_na <- n_x - length(x)
+  rm(n_x)
   unique_x <- unique(x)
-  # A factor-specific warning if `exclusive = FALSE` (the default):
-  warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_is_trivial")
+  # This chunk should be part of each function that has a `max_unique` argument:
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, "mode_is_trivial")
+  } else {
+    max_unique <- handle_max_unique_input(
+      x, max_unique, length(unique_x), n_na, "mode_is_trivial"
+    )
+  }
   # If some values are missing (from a length >= 3 vector) and all known values
   # are equal, it's unknown whether there is a value with a different frequency:
   if (n_na > 0L && length(unique_x) == 1L) {
@@ -89,7 +97,24 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   # Reduce `n_na` to the number of `NA`s that are left after distributing other
   # `NA`s among the non-modal values such that they become modes in a
   # hypothetical scenario:
-  n_na <- n_na - count_slots_empty(x)
+  n_slots_empty <- count_slots_empty(x)
+  n_na_surplus <- n_na - n_slots_empty
+
+  # TO DO: CHECK IF THIS IS EVEN REMOTELY CORRECT! OTHERWISE, CUT ALL ABOUT
+  # `max_unique` FROM THIS FUNCTION!
+  if (!is.null(max_unique) && n_na > 0L) {
+    frequency_max <- length(x[x %in% modes[[1L]]])
+    n_unique_new_vals <- max_unique - length(unique_x)
+    n_na_new_vals <- n_unique_new_vals * frequency_max
+    if (n_na_new_vals < n_na_surplus) {
+      return((n_na_surplus - n_na_new_vals) %% max_unique == 0L)
+    } else if (n_na_new_vals == n_na_surplus) {
+      return(TRUE)
+    } else {
+      return((length(unique_x) + n_unique_new_vals) %% frequency_max == 0L)
+    }
+  }
+
   # (These conditions aim to avoid a costly part, which is why the returns are
   # redundant:)
   # -- If their "count" is negative, it means the empty slots cannot be filled
@@ -102,11 +127,11 @@ mode_is_trivial <- function(x, na.rm = FALSE, exclusive = FALSE) {
   # -- Otherwise, there are some `NA`s that cannot be part of a group with the
   # modal frequency. They must be values with a lesser frequency, so there are
   # different frequencies among true `x` values.
-  if (n_na < 0L) {
+  if (n_na_surplus < 0L) {
     FALSE
   } else if (
-    n_na == 0L ||
-    (!exclusive && n_na %% length(unique_x) == 0L)
+    n_na_surplus == 0L ||
+    (is.null(max_unique) && n_na_surplus %% length(unique_x) == 0L)
   ) {
     NA
   } else {
