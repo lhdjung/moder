@@ -81,8 +81,8 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # (here, the number of modes), sets of `NA`s may remain, each of the size of
   # the modal frequency, and form entirely different values, i.e., different
   # from the known values in `x`. This latter scenario is far from certain, but
-  # it cannot be ruled out (unless the user does so by setting `exclusive =
-  # TRUE`), so `NA` is returned. This is also true in one case that is not
+  # it cannot be ruled out (unless the user does so by setting `max_unique` to
+  # `"known"`), so `NA` is returned. This is also true in one case that is not
   # captured by the modulo: Both the number of missing values and the modal
   # frequency are exactly 1.
   # -- If this is not case but there are still `NA`s, at least some of these
@@ -104,7 +104,6 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # hypothetical scenario:
   n_slots_empty <- count_slots_empty(x)
   n_na_surplus <- n_na - n_slots_empty
-
   # Some more special rules, this time concerning user-imposed restrictions on
   # the number of unique values in `x`:
   if (!is.null(max_unique) && n_na > 0L) {
@@ -122,18 +121,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
     } else {
       return(FALSE)
     }
-
-    if (n_slots_new_vals < n_na_surplus) {
-      return((n_na_surplus - n_slots_new_vals) %% max_unique == 0L)
-    } else if (n_slots_new_vals == n_na_surplus) {
-      return(TRUE)
-    } else if ((length(unique_x) + n_unique_new_vals) %% frequency_max == 0L) {
-      return(NA)
-    } else {
-      return(FALSE)
-    }
   }
-
   # (These conditions aim to avoid a costly part, which is why the returns are
   # redundant:)
   # -- If their "count" is negative, it means the empty slots cannot be filled
