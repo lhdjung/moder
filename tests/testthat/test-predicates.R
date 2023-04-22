@@ -23,13 +23,16 @@ test_that("`mode_is_trivial()` works correctly", {
   expect_equal(mode_is_trivial(c(1, 2, NA)), NA)
   expect_equal(mode_is_trivial(c("a", "b", "b", NA)), NA)
   expect_equal(mode_is_trivial(c("a", "a", "b", "b", NA)), FALSE)
+  # Other issue:
+  expect_equal(mode_is_trivial(c(1, 1, 1, 2, rep(NA, 5))), NA)
 })
 
 
-test_that("`mode_is_trivial()` works correctly", {
+test_that("`mode_is_trivial()` works correctly with non-`NULL` `max_unique", {
   expect_equal(mode_is_trivial(x1 , max_unique = 3), FALSE)
   expect_equal(mode_is_trivial(x2 , max_unique = 3), NA)
   expect_equal(mode_is_trivial(c(x2, NA), max_unique = 3), FALSE)
   expect_equal(mode_is_trivial(c(x2, NA, NA), max_unique = 3), NA)
+  expect_equal(mode_is_trivial(c(1, 1, 1, 2, rep(NA, 5)), max_unique = "known"), FALSE)
 })
 

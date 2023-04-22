@@ -4,10 +4,11 @@
 #'   are equally frequent. The mode is not too informative in such cases.
 #'
 #' @inheritParams mode_all
-#' @param exclusive Boolean. Can `NA`s only represent known values? Set
-#'   `exclusive` to `TRUE` if you are certain that there are no other values
-#'   behind the `NA`s, such that each `NA` masks one of the known values.
-#'   Default is `FALSE`.
+#' @param max_unique Numeric or string. If the maximum number of unique values
+#'   in `x` is known, set `max_unique` to that number. This rules out that `NA`s
+#'   represent more values (see examples). Set it to `"known"` instead if no
+#'   values beyond those already known can occur. Default is `NULL`, which
+#'   assumes no maximum.
 #'
 #' @details The function returns `TRUE` whenever `x` has length < 3 because no
 #'   value is more frequent than another one. Otherwise, it returns `NA` in
@@ -20,10 +21,13 @@
 #'   of values that are not among the known values, and the number of missing
 #'   values is divisible by the number of unique known values (even after
 #'   "filling up" the non-modal values with `NA`s so that they are
-#'   hypothetically modes). Suppress this behavior by setting `exclusive` to
-#'   `TRUE` if you are certain that there are no values in `x` other than those
-#'   already known to occur. The function will then return `FALSE` instead of
-#'   `NA`.
+#'   hypothetically modes).
+#'   - As before, there are `NA`s left after "filling up", but they may
+#'   represent values beyond the known ones, and the number of `NA`s is
+#'   divisible by the modal frequency so that all (partly hypothetical) values
+#'   might be equally frequent. You can limit the number of such hypothetical
+#'   values by specifying `max_unique`. This can make the function return
+#'   `FALSE` instead of `NA`.
 #'
 #' @return Boolean (length 1).
 #'
@@ -45,6 +49,18 @@
 #' # Here, the mode is nontrivial
 #' # because `1` is more frequent than `2`:
 #' mode_is_trivial(c(1, 1, 2))
+#'
+#' # Two of the `NA`s might be `8`s, and
+#' # the other three might represent a value
+#' # different from both `7` and `8`. Thus,
+#' # it's possible that all three distinct
+#' # values are equally frequent:
+#' mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)))
+#'
+#' # The same is not true if all values,
+#' # even the missing ones, must represent
+#' # one of the known values:
+#' mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)), max_unique = "known")
 
 mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   if (na.rm) {
@@ -82,9 +98,9 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # the modal frequency, and form entirely different values, i.e., different
   # from the known values in `x`. This latter scenario is far from certain, but
   # it cannot be ruled out (unless the user does so by setting `max_unique` to
-  # `"known"`), so `NA` is returned. This is also true in one case that is not
-  # captured by the modulo: Both the number of missing values and the modal
-  # frequency are exactly 1.
+  # `"known"`, which doesn't matter here), so `NA` is returned. This is also
+  # true in one case that is not captured by the modulo: Both the number of
+  # missing values and the modal frequency are exactly 1.
   # -- If this is not case but there are still `NA`s, at least some of these
   # must belong to less frequent values, so `FALSE` is returned.
   if (all(unique_x %in% modes)) {
@@ -104,12 +120,19 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # hypothetical scenario:
   n_slots_empty <- count_slots_empty(x)
   n_na_surplus <- n_na - n_slots_empty
+  frequency_max <- length(x[x %in% modes[[1L]]])
   # Some more special rules, this time concerning user-imposed restrictions on
   # the number of unique values in `x`:
   if (!is.null(max_unique) && n_na > 0L) {
-    frequency_max <- length(x[x %in% modes[[1L]]])
     n_slots_known_vals <- frequency_max * length(unique_x)
     n_slots_new_vals <- frequency_max * (max_unique - length(unique_x))
+    if (n_slots_new_vals == 0L) {
+      if (n_na_surplus %% length(unique_x) == 0L) {
+        return(NA)
+      } else {
+        return(FALSE)
+      }
+    }
     n_slots_all <- n_slots_known_vals + n_slots_new_vals
     n_na_super_surplus <- n_na_surplus - n_slots_new_vals
     if (
@@ -124,22 +147,20 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   }
   # (These conditions aim to avoid a costly part, which is why the returns are
   # redundant:)
-  # -- If their "count" is negative, it means the empty slots cannot be filled
-  # with `NA`s, so `x` values differ in their true frequencies.
+  # -- If the "count" of missing values is negative after attempting to fill up
+  # the empty slots, it means the empty slots cannot be filled with `NA`s, so
+  # the `x` values must differ in their true frequencies.
   # -- If their count (zero or positive) can be divided by the number of unique
   # values, these `NA`s might fill up the empty slots, so there is a possibility
-  # that all values are equally frequent. By default (`exclusive = FALSE`), this
-  # allows for separate sets of missing values and `NA` is returned; see the
-  # previous if-else block.
+  # that all values are equally frequent. The same is true if the count of
+  # remaining `NA`s can be divided by the modal frequency because they might
+  # represent values beyond the known ones; see above.
   # -- Otherwise, there are some `NA`s that cannot be part of a group with the
   # modal frequency. They must be values with a lesser frequency, so there are
   # different frequencies among true `x` values.
   if (n_na_surplus < 0L) {
     FALSE
-  } else if (
-    n_na_surplus == 0L ||
-    (is.null(max_unique) && n_na_surplus %% length(unique_x) == 0L)
-  ) {
+  } else if (any(n_na_surplus %% c(length(unique_x), frequency_max) == 0L)) {
     NA
   } else {
     FALSE

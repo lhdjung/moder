@@ -12,10 +12,11 @@ mode_is_trivial(x, na.rm = FALSE, max_unique = NULL)
 \item{na.rm}{Boolean. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
-\item{exclusive}{Boolean. Can \code{NA}s only represent known values? Set
-\code{exclusive} to \code{TRUE} if you are certain that there are no other values
-behind the \code{NA}s, such that each \code{NA} masks one of the known values.
-Default is \code{FALSE}.}
+\item{max_unique}{Numeric or string. If the maximum number of unique values
+in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
+represent more values (see examples). Set it to \code{"known"} instead if no
+values beyond those already known can occur. Default is \code{NULL}, which
+assumes no maximum.}
 }
 \value{
 Boolean (length 1).
@@ -37,10 +38,13 @@ exactly, i.e., without any \code{NA}s remaining.
 of values that are not among the known values, and the number of missing
 values is divisible by the number of unique known values (even after
 "filling up" the non-modal values with \code{NA}s so that they are
-hypothetically modes). Suppress this behavior by setting \code{exclusive} to
-\code{TRUE} if you are certain that there are no values in \code{x} other than those
-already known to occur. The function will then return \code{FALSE} instead of
-\code{NA}.
+hypothetically modes).
+\item As before, there are \code{NA}s left after "filling up", but they may
+represent values beyond the known ones, and the number of \code{NA}s is
+divisible by the modal frequency so that all (partly hypothetical) values
+might be equally frequent. You can limit the number of such hypothetical
+values by specifying \code{max_unique}. This can make the function return
+\code{FALSE} instead of \code{NA}.
 }
 }
 \examples{
@@ -59,4 +63,16 @@ mode_is_trivial(c(1, 2, 3))
 # Here, the mode is nontrivial
 # because `1` is more frequent than `2`:
 mode_is_trivial(c(1, 1, 2))
+
+# Two of the `NA`s might be `8`s, and
+# the other three might represent a value
+# different from both `7` and `8`. Thus,
+# it's possible that all three distinct
+# values are equally frequent:
+mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)))
+
+# The same is not true if all values,
+# even the missing ones, must represent
+# one of the known values:
+mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)), max_unique = "known")
 }
