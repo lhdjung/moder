@@ -100,18 +100,36 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_slots_empty <- count_slots_empty(x)
   n_na_surplus <- n_na - n_slots_empty
 
-  # TO DO: CHECK IF THIS IS EVEN REMOTELY CORRECT! OTHERWISE, CUT ALL ABOUT
-  # `max_unique` FROM THIS FUNCTION!
+  # TO DO: FIX THIS!
   if (!is.null(max_unique) && n_na > 0L) {
     frequency_max <- length(x[x %in% modes[[1L]]])
-    n_unique_new_vals <- max_unique - length(unique_x)
-    n_na_new_vals <- n_unique_new_vals * frequency_max
-    if (n_na_new_vals < n_na_surplus) {
-      return((n_na_surplus - n_na_new_vals) %% max_unique == 0L)
-    } else if (n_na_new_vals == n_na_surplus) {
-      return(TRUE)
+    n_slots_known_vals <- frequency_max * length(unique_x)
+    n_slots_new_vals <- frequency_max * (max_unique - length(unique_x))
+    n_slots_all <- n_slots_known_vals + n_slots_new_vals
+    # Better don't do this... or do?
+    n_na_super_surplus <- n_na_surplus - n_slots_new_vals
+    # # Used to be a condition:
+    # any(c(n_slots_known_vals, n_slots_all) %% n_na_super_surplus == 0L)
+    if (
+      n_na_super_surplus == 0L ||
+      (n_na_super_surplus > 0L && n_slots_all %% n_na_super_surplus == 0L) ||
+      (n_na_surplus > 0L && n_slots_known_vals %% n_na_surplus == 0L)
+    ) {
+      return(NA)
     } else {
-      return((length(unique_x) + n_unique_new_vals) %% frequency_max == 0L)
+      return(FALSE)
+    }
+
+    # else if (n_slots_known_vals == n_na_surplus) {}
+
+    if (n_slots_new_vals < n_na_surplus) {
+      return((n_na_surplus - n_slots_new_vals) %% max_unique == 0L)
+    } else if (n_slots_new_vals == n_na_surplus) {
+      return(TRUE)
+    } else if ((length(unique_x) + n_unique_new_vals) %% frequency_max == 0L) {
+      return(NA)
+    } else {
+      return(FALSE)
     }
   }
 

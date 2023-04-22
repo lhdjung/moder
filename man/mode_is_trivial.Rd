@@ -4,7 +4,7 @@
 \alias{mode_is_trivial}
 \title{Is the mode trivial?}
 \usage{
-mode_is_trivial(x, na.rm = FALSE, exclusive = FALSE)
+mode_is_trivial(x, na.rm = FALSE, max_unique = NULL)
 }
 \arguments{
 \item{x}{A vector to search for its modes.}
