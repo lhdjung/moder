@@ -82,13 +82,18 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # the modal frequency, and form entirely different values, i.e., different
   # from the known values in `x`. This latter scenario is far from certain, but
   # it cannot be ruled out (unless the user does so by setting `exclusive =
-  # TRUE`), so `NA` is returned.
+  # TRUE`), so `NA` is returned. This is also true in one case that is not
+  # captured by the modulo: Both the number of missing values and the modal
+  # frequency are exactly 1.
   # -- If this is not case but there are still `NA`s, at least some of these
   # must belong to less frequent values, so `FALSE` is returned.
   if (all(unique_x %in% modes)) {
     if (n_na == 0L) {
       return(TRUE)
-    } else if (n_na %% length(modes) == 0L) {
+    } else if (
+      n_na %% length(modes) == 0L ||
+      (n_na == 1L && length(x) == length(unique_x))
+    ) {
       return(NA)
     } else {
       return(FALSE)

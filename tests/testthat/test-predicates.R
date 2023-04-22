@@ -19,6 +19,10 @@ test_that("`mode_is_trivial()` works correctly", {
   expect_equal(mode_is_trivial(x15), NA)
   expect_equal(mode_is_trivial(x16), FALSE)
   expect_equal(mode_is_trivial(x17), NA)
+  # Check variants of `x5`:
+  expect_equal(mode_is_trivial(c(1, 2, NA)), NA)
+  expect_equal(mode_is_trivial(c("a", "b", "b", NA)), NA)
+  expect_equal(mode_is_trivial(c("a", "a", "b", "b", NA)), FALSE)
 })
 
 
