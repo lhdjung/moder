@@ -1,4 +1,7 @@
-# moder (development version)
+# moder 0.1.1
+
+-   Fixed incongruencies in the documentation and in some warnings.
+-   Established ⁠`R CMD check` with Github Actions.
 
 # moder 0.1.0
 
