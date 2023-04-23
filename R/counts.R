@@ -94,10 +94,10 @@ mode_count_range <- function(x, max_unique = NULL) {
   rm(n_x)
   n_unique_x <- length(unique(x))
   if (is.null(max_unique)) {
-    check_factor_max_unique(x, n_na, "mode_is_trivial")
+    check_factor_max_unique(x, n_na, "mode_count_range")
   } else {
     max_unique <- handle_max_unique_input(
-      x, max_unique, n_unique_x, n_na, "mode_is_trivial"
+      x, max_unique, n_unique_x, n_na, "mode_count_range"
     )
   }
   # Throw an error if `max_unique` was specified as too low a number:
