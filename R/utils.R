@@ -93,35 +93,6 @@ warn_if_factor_not_exclusive <- function(x, exclusive, n_na, fn_name) {
 }
 
 
-count_modes_max_with_spec <- function(n_na, n_slots_empty, max_unique) {
-  # How many `NA`s remain after filling up all the empty slots with other
-  # `NA`s?
-  n_na_surplus <- n_na - n_slots_empty
-  if (n_na_surplus < 0L) {
-    return(n_unique_x + n_na_surplus)
-  } else if (!is.null(max_unique)) {
-    n_na_new_vals <- (max_unique - n_unique_x) * frequency_max
-    if (n_na_new_vals < n_na_surplus) {
-      return((n_na_surplus - n_na_new_vals) %% max_unique)
-    } else if (n_na_new_vals == n_na_surplus) {
-      return(max_unique)
-    } else {
-      return(n_unique_x + n_na_new_vals %/% frequency_max)
-    }
-  }
-  # How many `NA`s remain after distributing as many of them as possible
-  # across the known values?
-  remainder <- n_na_surplus %% n_unique_x
-  if (remainder == 0L) {
-    return(n_unique_x)
-  } else if (remainder < 0L) {
-    return(n_unique_x - remainder)
-  } else {
-    return(remainder)
-  }
-}
-
-
 print_example_x <- function() {
   cat(paste0("x", 1:17, "\n"))
 }
