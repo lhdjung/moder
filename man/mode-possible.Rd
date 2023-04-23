@@ -23,8 +23,8 @@ modes, but all values that \emph{might} be part of those sets.}
 \value{
 By default, a vector with the minimal or maximal possible sets of
 modes (values tied for most frequent) in \code{x}. If the functions can't
-determine these possible modes because of missing values, they return \code{NA}
-by default (\code{multiple = FALSE}).
+determine these possible modes because of missing values, they return
+\code{NA} by default (\code{multiple = FALSE}).
 }
 \description{
 \code{mode_possible_min()} and \code{mode_possible_max()} determine the

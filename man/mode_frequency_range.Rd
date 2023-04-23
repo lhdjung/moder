@@ -10,15 +10,17 @@ mode_frequency_range(x)
 \item{x}{A vector to check for its modal frequency.}
 }
 \value{
-Integer (length 2). If there are no \code{NA}s in \code{x}, the two return
-values are identical. If all \code{x} values are \code{NA}, the return values are \code{1}
-(no two \code{x} values are the same) and the total number of values (all \code{x}
-values are the same).
+Integer (length 2).
 }
 \description{
 \code{mode_frequency_range()} determines the minimum and maximum
 number of times that a vector's mode appears in the vector. The minimum
 assumes that no \code{NA}s are the mode; the maximum assumes that all \code{NA}s are.
+}
+\details{
+If there are no \code{NA}s in \code{x}, the two return values are identical.
+If all \code{x} values are \code{NA}, the return values are \code{1} (no two \code{x} values
+are the same) and the total number of values (all \code{x} values are the same).
 }
 \examples{
 # The mode is `7`. It appears four or

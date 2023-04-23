@@ -55,10 +55,11 @@ mode_frequency <- function(x, na.rm = FALSE) {
 #'
 #' @inheritParams mode_frequency
 #'
-#' @return Integer (length 2). If there are no `NA`s in `x`, the two return
-#'   values are identical. If all `x` values are `NA`, the return values are `1`
-#'   (no two `x` values are the same) and the total number of values (all `x`
-#'   values are the same).
+#' @details If there are no `NA`s in `x`, the two return values are identical.
+#'   If all `x` values are `NA`, the return values are `1` (no two `x` values
+#'   are the same) and the total number of values (all `x` values are the same).
+#'
+#' @return Integer (length 2).
 #'
 #' @export
 #'

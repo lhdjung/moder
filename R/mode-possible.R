@@ -14,8 +14,8 @@
 #'
 #' @return By default, a vector with the minimal or maximal possible sets of
 #'   modes (values tied for most frequent) in `x`. If the functions can't
-#'   determine these possible modes because of missing values, they return `NA`
-#'   by default (`multiple = FALSE`).
+#'   determine these possible modes because of missing values, they return
+#'   `NA` by default (`multiple = FALSE`).
 #'
 #' @export
 #'

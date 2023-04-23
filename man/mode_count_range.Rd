@@ -11,9 +11,9 @@ mode_count_range(x, max_unique = NULL)
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
 in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent more values (see examples). Set it to \code{"known"} instead if no
-values beyond those already known can occur. Default is \code{NULL}, which
-assumes no maximum.}
+represent values beyond that number (see examples). Set it to \code{"known"}
+instead if no values beyond those already known can occur. Default is
+\code{NULL}, which assumes no maximum.}
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
@@ -24,11 +24,9 @@ for most frequent) in \code{x}.
 of modes given the number of missing values.
 }
 \details{
-If \code{x} is a factor, \code{max_unique} is automatically set to the number
-of levels in \code{x}. If the user sets \code{max_unique} to another value, it isn't
-reset automatically but there is a warning. This is because a factor's
-levels are supposed to be all of its possible values. For the same reason,
-there is a warning if \code{x} is a factor and \code{exclusive} is \code{FALSE}.
+If \code{x} is a factor, \code{max_unique} should be \code{"known"} or there is a
+warning. This is because a factor's levels are supposed to include all of
+its possible values.
 }
 \examples{
 # If `NA` is `7` or `8`, that number is

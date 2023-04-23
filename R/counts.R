@@ -53,11 +53,9 @@ mode_count <- function(x, na.rm = FALSE) {
 #' @inheritParams mode-possible
 #' @inheritParams mode_is_trivial
 #'
-#' @details If `x` is a factor, `max_unique` is automatically set to the number
-#'   of levels in `x`. If the user sets `max_unique` to another value, it isn't
-#'   reset automatically but there is a warning. This is because a factor's
-#'   levels are supposed to be all of its possible values. For the same reason,
-#'   there is a warning if `x` is a factor and `exclusive` is `FALSE`.
+#' @details If `x` is a factor, `max_unique` should be `"known"` or there is a
+#'   warning. This is because a factor's levels are supposed to include all of
+#'   its possible values.
 #'
 #' @return Integer (length 2). Minimal and maximal number of modes (values tied
 #'   for most frequent) in `x`.

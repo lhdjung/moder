@@ -60,7 +60,8 @@ test_that("`mode_count_range()` works correctly", {
   expect_equal(mode_count_range(x17), c(1L, 3L))
 })
 
-test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
+test_that("`mode_count_range()` works correctly with
+          `max_unique = \"known\"`", {
   expect_equal(mode_count_range(x1 , max_unique = "known"), c(1L, 1L))
   expect_equal(mode_count_range(x2 , max_unique = "known"), c(1L, 2L))
   expect_equal(mode_count_range(x3 , max_unique = "known"), c(1L, 1L))
@@ -73,8 +74,8 @@ test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
   expect_equal(mode_count_range(x8 , max_unique = "known"), c(1L, 2L))
   expect_equal(mode_count_range(x9 , max_unique = "known"), c(1L, 2L))
   expect_equal(mode_count_range(x10, max_unique = "known"), c(1L, 1L))
-  # `x11` has only one known value, so if it's exclusive, the `NA` must
-  # represent that value, as well:
+  # `x11` has only one known value, so if it's exclusive to the known values,
+  # the `NA` must represent that value, as well:
   expect_equal(mode_count_range(x11, max_unique = "known"), c(1L, 1L))
   expect_equal(mode_count_range(x12, max_unique = "known"), c(1L, 2L))
   # (See `x11`.)

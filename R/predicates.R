@@ -6,9 +6,9 @@
 #' @inheritParams mode_all
 #' @param max_unique Numeric or string. If the maximum number of unique values
 #'   in `x` is known, set `max_unique` to that number. This rules out that `NA`s
-#'   represent more values (see examples). Set it to `"known"` instead if no
-#'   values beyond those already known can occur. Default is `NULL`, which
-#'   assumes no maximum.
+#'   represent values beyond that number (see examples). Set it to `"known"`
+#'   instead if no values beyond those already known can occur. Default is
+#'   `NULL`, which assumes no maximum.
 #'
 #' @details The function returns `TRUE` whenever `x` has length < 3 because no
 #'   value is more frequent than another one. Otherwise, it returns `NA` in

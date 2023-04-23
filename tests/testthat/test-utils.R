@@ -39,7 +39,7 @@ test_that("`check_factor_max_unique()` and `handle_max_unique_input()`
   # Also check that the warning does *not* include the extra part; i.e., it ends
   # on the basic part:
   expect_warning(mode_count_range(x17_factor), "are known).$")
-  # No warning should be thrown if `exclusive` was set to `TRUE`:
+  # No warning should be thrown if `max_unique` was set to `"known"`:
   expect_no_warning(mode_count_range(x12_factor, max_unique = "known"))
   expect_no_warning(mode_count_range(x17_factor, max_unique = "known"))
 })
