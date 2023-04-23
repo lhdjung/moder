@@ -1,22 +1,3 @@
-# # Test vectors:
-# x1 <- c(7, 8, 8, 9, 9, 9)
-# x2 <- c(1, 1, 2, 2, 2, 2, NA, NA, NA, NA)
-# x3 <- c(7, 7, 7, 7, 8, 8, NA)
-# x4 <- c("a", "a", "b", "b", "c", "d", "e")
-# x5 <- c(1, 1, 2, 2, NA)
-# x6 <- c(3, 4, 4, 5, 5, 5)
-# x7 <- c("x", "y", "y", "z", "z")
-# x8 <- c(1, 1, 2, NA)
-# x9 <- c(2, 1, 1, NA)
-# x10 <- c(1, 1, NA)
-# x11 <- c(1, NA)
-# x12 <- c("a", "a", "a", "b", "b", "c", "d", "e", NA)
-# x13 <- c(NA, 1)
-# x14 <- c(1, 1, 2, 2, 3, NA)
-# x15 <- c(1, NA, NA)
-# x16 <- c(1, 1, 1, 2, 2, 3, 3, NA)
-# x17 <- c(1, 1, 2, 2, NA, NA)
-
 
 test_that("`mode_frequency()` is right when no `NA`s are present", {
   expect_equal(mode_frequency(x1), 3L)
