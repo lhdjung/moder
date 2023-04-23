@@ -1,10 +1,4 @@
 url: https://lhdjung.github.io/moder/
-
-# URL reset via:
-# git remote set-url origin https://github.com/lhdjung/moder
-# Updated credentials (new PAT with more permissions!) via:
-# gitcreds::gitcreds_set()
-
 lang: en
 home:
   title: Mode estimation in R

@@ -1,6 +1,5 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-# Might also be relevant for build failures: https://github.com/trilbymedia/grav-plugin-git-sync/issues/39#issuecomment-546016249
 on:
   push:
     branches: [main, master]
@@ -12,11 +11,6 @@ on:
 
 name: pkgdown
 
-# Fix for build failure from:
-# https://github.com/actions/checkout/issues/254#issuecomment-899182888
-permissions:
-  contents: read
-
 jobs:
   pkgdown:
     runs-on: ubuntu-latest
@@ -25,6 +19,8 @@ jobs:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
