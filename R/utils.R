@@ -78,21 +78,6 @@ mode_first_if_no_na <- function(x) {
 }
 
 
-warn_if_factor_not_exclusive <- function(x, exclusive, n_na, fn_name) {
-  if (is.factor(x) && !exclusive) {
-    warn <- paste0("In `", fn_name, "()`, `exclusive` should be `TRUE` if `x`")
-    warn <- paste(warn, "is a factor (the presumption is that all factor")
-    warn <- paste(warn, "levels are known).")
-    frequency_max <- max(vapply(x, function(y) length(x[x == y]), 1L))
-    if (n_na < frequency_max) {
-      warn <- paste(warn, "\nIt won't matter in this particular case because")
-      warn <- paste(warn, "there are not enough `NA`s to form any new modes.")
-    }
-    warning(warn)
-  }
-}
-
-
 print_example_x <- function() {
   cat(paste0("x", 1:17, "\n"))
 }
