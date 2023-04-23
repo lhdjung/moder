@@ -4,18 +4,16 @@
 \alias{mode_count_range}
 \title{Modal count range}
 \usage{
-mode_count_range(x, exclusive = FALSE, max_unique = NULL)
+mode_count_range(x, max_unique = NULL)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
 
-\item{exclusive}{Boolean. Can \code{NA}s only represent known values? Set
-\code{exclusive} to \code{TRUE} if you are certain that there are no other values
-behind the \code{NA}s, such that each \code{NA} masks one of the known values.
-Default is \code{FALSE}.}
-
-\item{max_unique}{Integer. Maximum number of distinct values in \code{x}. Default
-is \code{NULL}, which assumes no maximum.}
+\item{max_unique}{Numeric or string. If the maximum number of unique values
+in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
+represent more values (see examples). Set it to \code{"known"} instead if no
+values beyond those already known can occur. Default is \code{NULL}, which
+assumes no maximum.}
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
@@ -54,6 +52,6 @@ mode_count_range(c(7, 7, 8, 8, NA, NA))
 # However, if there can be no values beyond
 # those already known -- `7` and `8` --
 # the `NA`s can't form a new mode.
-# Specify this with `exclusive = TRUE`:
-mode_count_range(c(7, 7, 8, 8, NA, NA), exclusive = TRUE)
+# Specify this with `max_unique = "known"`:
+mode_count_range(c(7, 7, 8, 8, NA, NA), max_unique = "known")
 }

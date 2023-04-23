@@ -52,8 +52,6 @@ mode_count <- function(x, na.rm = FALSE) {
 #'
 #' @inheritParams mode-possible
 #' @inheritParams mode_is_trivial
-#' @param max_unique Integer. Maximum number of distinct values in `x`. Default
-#'   is `NULL`, which assumes no maximum.
 #'
 #' @details If `x` is a factor, `max_unique` is automatically set to the number
 #'   of levels in `x`. If the user sets `max_unique` to another value, it isn't
@@ -88,30 +86,22 @@ mode_count <- function(x, na.rm = FALSE) {
 #' # However, if there can be no values beyond
 #' # those already known -- `7` and `8` --
 #' # the `NA`s can't form a new mode.
-#' # Specify this with `exclusive = TRUE`:
-#' mode_count_range(c(7, 7, 8, 8, NA, NA), exclusive = TRUE)
+#' # Specify this with `max_unique = "known"`:
+#' mode_count_range(c(7, 7, 8, 8, NA, NA), max_unique = "known")
 
-mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
+mode_count_range <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
   rm(n_x)
-  if (is.factor(x)) {
-    warn_if_factor_not_exclusive(x, exclusive, n_na, "mode_count_range")
-    # Factors should have a `max_unique` value equal to the length of their
-    # levels because all possible factor values are supposedly known. Otherwise,
-    # there is a warning. If `max_unique` is not specified, it is assigned that
-    # value after the current chunk.
-    if (!is.null(max_unique) && max_unique != length(levels(x))) {
-      warn <- paste("factor `x` has", length(levels(x)), "levels but")
-      warn <- paste(warn, "`max_unique` is", max_unique)
-      warning(warn)
-      rm(warn)
-    } else {
-      max_unique <- length(levels(x))
-    }
-  }
   n_unique_x <- length(unique(x))
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, "mode_is_trivial")
+  } else {
+    max_unique <- handle_max_unique_input(
+      x, max_unique, n_unique_x, n_na, "mode_is_trivial"
+    )
+  }
   # Throw an error if `max_unique` was specified as too low a number:
   if (!is.null(max_unique) && max_unique < n_unique_x) {
     msg_error <- paste("`max_unique` is", max_unique, "but there are")
@@ -146,34 +136,23 @@ mode_count_range <- function(x, exclusive = FALSE, max_unique = NULL) {
   # What if the `NA`s cannot represent any values other than those already
   # known, or if there is a known limit to the number of values they can
   # represent?
-  if (exclusive || !is.null(max_unique)) {
+  if (!is.null(max_unique)) {
     # How many `NA`s remain after filling up all the empty slots with other
     # `NA`s?
     n_na_surplus <- n_na - n_slots_empty
     if (n_na_surplus < 0L) {
       return(c(1L, n_unique_x + n_na_surplus))
-    } else if (!is.null(max_unique)) {
-      n_na_new_vals <- (max_unique - n_unique_x) * frequency_max
-      n_max <- if (n_na_new_vals < n_na_surplus) {
-        (n_na_surplus - n_na_new_vals) %% max_unique
-      } else if (n_na_new_vals == n_na_surplus) {
-        max_unique
-      } else {
-        n_unique_x + n_na_new_vals %/% frequency_max
-      }
-      return(c(1L, n_max))
     }
-    # How many `NA`s remain after distributing as many of them as possible
-    # across the known values?
-    remainder <- n_na_surplus %% n_unique_x
-    n_max <- if (remainder == 0L) {
-      n_unique_x
-    } else if (remainder < 0L) {
-      n_unique_x - remainder
+    n_na_new_vals <- frequency_max * (max_unique - n_unique_x)
+    if (n_na_new_vals < frequency_max && n_na_surplus %% n_unique_x == 0L) {
+      return(c(1L, n_unique_x))
+    } else if (n_na_new_vals < n_na_surplus) {
+      return(c(1L, (n_na_surplus - n_na_new_vals) %% max_unique))
+    } else if (n_na_new_vals == n_na_surplus) {
+      return(c(1L, max_unique))
     } else {
-      remainder
+      return(c(1L, n_unique_x + n_na_new_vals %/% frequency_max))
     }
-    return(c(1L, n_max))
   }
   # How many slots can be filled at the maximum?
   n_slots_max <- length(x) + n_na

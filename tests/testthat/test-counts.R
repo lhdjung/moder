@@ -80,31 +80,31 @@ test_that("`mode_count_range()` works correctly", {
 })
 
 test_that("`mode_count_range()` works correctly with `exclusive = TRUE`", {
-  expect_equal(mode_count_range(x1 , TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x2 , TRUE), c(1L, 2L))
-  expect_equal(mode_count_range(x3 , TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x4 , TRUE), c(2L, 2L))
+  expect_equal(mode_count_range(x1 , max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x2 , max_unique = "known"), c(1L, 2L))
+  expect_equal(mode_count_range(x3 , max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x4 , max_unique = "known"), c(2L, 2L))
   # `x5` has a different expectation here: Since the `NA` is known to be either
   # `1` or `2`, it must tip the balance either way, leading to a single mode!
-  expect_equal(mode_count_range(x5 , TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x6 , TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x7 , TRUE), c(2L, 2L))
-  expect_equal(mode_count_range(x8 , TRUE), c(1L, 2L))
-  expect_equal(mode_count_range(x9 , TRUE), c(1L, 2L))
-  expect_equal(mode_count_range(x10, TRUE), c(1L, 1L))
+  expect_equal(mode_count_range(x5 , max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x6 , max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x7 , max_unique = "known"), c(2L, 2L))
+  expect_equal(mode_count_range(x8 , max_unique = "known"), c(1L, 2L))
+  expect_equal(mode_count_range(x9 , max_unique = "known"), c(1L, 2L))
+  expect_equal(mode_count_range(x10, max_unique = "known"), c(1L, 1L))
   # `x11` has only one known value, so if it's exclusive, the `NA` must
   # represent that value, as well:
-  expect_equal(mode_count_range(x11, TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x12, TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x11, max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x12, max_unique = "known"), c(1L, 2L))
   # (See `x11`.)
-  expect_equal(mode_count_range(x13, TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x14, TRUE), c(1L, 3L))
+  expect_equal(mode_count_range(x13, max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x14, max_unique = "known"), c(1L, 3L))
   # (See `x11`.)
-  expect_equal(mode_count_range(x15, TRUE), c(1L, 1L))
-  expect_equal(mode_count_range(x16, TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x15, max_unique = "known"), c(1L, 1L))
+  expect_equal(mode_count_range(x16, max_unique = "known"), c(1L, 2L))
   # As in `x11`, except there are two known values, so the `NA`s must be
   # fully distributed across them instead of forming a new mode:
-  expect_equal(mode_count_range(x17, TRUE), c(1L, 2L))
+  expect_equal(mode_count_range(x17, max_unique = "known"), c(1L, 2L))
 })
 
 test_that("`mode_count_range()` works correctly with non-`NULL` `max_unique`", {
