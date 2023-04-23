@@ -60,16 +60,14 @@ mode_first(c(1, 1, 2, NA, NA, NA), na.rm = TRUE)
 #> [1] 1
 ```
 
-This distribution is different:
+The next example is different. Even if the `NA` stands in for `8`, there
+will only be three instances of `8` but four instances of `7`. The mode
+is `7`, independent of the true value behind `NA`.
 
 ``` r
 mode_first(c(7, 7, 7, 7, 8, 8, NA))
 #> [1] 7
 ```
-
-Even if the `NA` stands in for `8`, there will only be three instances
-of `8` but four instances of `7`. The mode is `7`, independent of the
-true value behind `NA`.
 
 ### Find all modes with `mode_all()`
 
