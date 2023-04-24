@@ -44,19 +44,18 @@ mode_first(c(7, 8, 8, 9, 9, 9))
 
 But what if some values are missing? Maybe there are so many missings
 that it’s impossible to tell which value is the most frequent one. If
-all `NA`s in the next example are secretly `2`, this value is the
-(first) mode. Otherwise, `1` is. The mode is unclear, so the function
-returns `NA`:
+both `NA`s below are secretly `2`, then `2` is the (first) mode.
+Otherwise, `1` is. The mode is unclear, so the function returns `NA`:
 
 ``` r
-mode_first(c(1, 1, 2, NA, NA, NA))
+mode_first(c(1, 1, 2, NA, NA))
 #> [1] NA
 ```
 
 Ignore `NA`s using `na.rm = TRUE` if there is a strong rationale for it:
 
 ``` r
-mode_first(c(1, 1, 2, NA, NA, NA), na.rm = TRUE)
+mode_first(c(1, 1, 2, NA, NA), na.rm = TRUE)
 #> [1] 1
 ```
 
