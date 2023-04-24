@@ -34,17 +34,15 @@ these cases:
 unknown whether there is a value with a different frequency.
 \item All known values are modes if the \code{NA}s "fill up" the non-modal values
 exactly, i.e., without any \code{NA}s remaining.
+\item Some \code{NA}s remain after "filling up" the non-modal values with \code{NA}s (so
+that they are hypothetically modes), and the number of remaining \code{NA}s is
+divisible by the number of unique known values.
 \item There are so many missing values that they might form mode-sized groups
-of values that are not among the known values, and the number of missing
-values is divisible by the number of unique known values (even after
-"filling up" the non-modal values with \code{NA}s so that they are
-hypothetically modes).
-\item As before, there are \code{NA}s left after "filling up", but they may
-represent values beyond the known ones, and the number of \code{NA}s is
+of values that are not among the known values, and the number of \code{NA}s is
 divisible by the modal frequency so that all (partly hypothetical) values
 might be equally frequent. You can limit the number of such hypothetical
-values by specifying \code{max_unique}. This can make the function return
-\code{FALSE} instead of \code{NA}.
+values by specifying \code{max_unique}. The function might then return \code{FALSE}
+instead of \code{NA}.
 }
 }
 \examples{
