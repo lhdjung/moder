@@ -6,7 +6,7 @@ home:
     The moder package determines single or multiple modes
     (most frequent values). By default, its functions check whether
     missing values make this impossible, and return `NA` in this case.
-    Dependency-free.
+    They have no dependencies.
 template:
   bootstrap: 5
   bootswatch: flatly

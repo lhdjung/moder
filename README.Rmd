@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The moder package determines single or multiple modes (most frequent values). By default, its functions check whether missing values make this impossible, and return `NA` in this case. Its source code has no dependencies.
+The moder package determines single or multiple modes (most frequent values). By default, its functions check whether missing values make this impossible, and return `NA` in this case. They have no dependencies.
 
 Mode functions fill a gap in measures of central tendency in R. `mean()` and `median()` are built into the standard library, but there is a lack of properly `NA`-sensitive functions for calculating the mode. Use moder for this!
 
