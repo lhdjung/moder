@@ -23,7 +23,7 @@ What makes moder special is the way it handles missing values. It has two main g
 1.  Mode functions should return `NA` if and only if the data cannot answer the user's question.
 2.  Any deviation from point 1 should be the result of an explicit choice by the user.
 
-Both points directly follow from R's general approach towards missing values. This vignette explains them in some detail. I recommend reading "Get started" first if you haven't already.
+Both points directly follow from R's general approach towards missing values. This vignette explains them in some detail. I recommend reading ["Get started"](https://lhdjung.github.io/moder/index.html#get-started) first if you haven't already.
 
 ## 1. Return `NA` only if question can't be answered
 
