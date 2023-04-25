@@ -143,8 +143,6 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
       return(FALSE)
     }
   }
-  # (These conditions aim to avoid a costly part, which is why the returns are
-  # redundant:)
   # -- If the "count" of missing values is negative after attempting to fill up
   # the empty slots, it means the empty slots cannot be filled with `NA`s, so
   # the `x` values must differ in their true frequencies.
@@ -156,9 +154,10 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   # -- Otherwise, there are some `NA`s that cannot be part of a group with the
   # modal frequency. They must be values with a lesser frequency, so there are
   # different frequencies among true `x` values.
-  if (n_na_surplus < 0L) {
-    FALSE
-  } else if (any(n_na_surplus %% c(length(unique_x), frequency_max) == 0L)) {
+  if (
+    n_na_surplus >= 0L &&
+    any(n_na_surplus %% c(length(unique_x), frequency_max) == 0L)
+  ) {
     NA
   } else {
     FALSE
