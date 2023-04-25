@@ -1,5 +1,7 @@
 # moder (development version)
 
+-   Further improvements to the documentation, including vignettes.
+
 # moder 0.1.1
 
 -   Fixed incongruencies in the documentation and in some warnings.

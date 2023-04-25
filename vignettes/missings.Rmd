@@ -98,6 +98,30 @@ mode_possible_max(x1)
 mode_possible_max(c(x1, 7))
 ```
 
+### Maximal number of unique values
+
+Two functions, `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
+
+Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
+
+Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
+
+```{r}
+x3 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
+mode_is_trivial(x3)
+mode_count_range(x3)
+```
+
+The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the mode nontrivial. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
+
+```{r}
+x3
+mode_is_trivial(x3, max_unique = "known")
+mode_count_range(x3, max_unique = "known")
+```
+
+In the future, other metadata functions such as `mode_count()` might get a `max_unique` argument because this kind of information is relevant for them, as well.
+
 ### Taking `NA`s seriously enough
 
 Some earlier mode functions for R treat `NA` like a known and constant value. This is suboptimal because `NA` means that a value is missing. Such an approach effectively assumes that all `NA`s represent the same unknown value, and that it's different from all known values (although I'm sure this was not the intention).
@@ -144,9 +168,9 @@ This approach makes sure to inform the user if the data can't answer their quest
 `mode_first()` has a Boolean `first_known` argument that is `FALSE` by default. If set to `TRUE`, the function will pick the first value known to be a mode. This means it won't strictly look for the first-appearing value that is a mode, but accept the first value that is a mode without counting `NA`s in its favor:
 
 ```{r}
-x3 <- c(6, 4, 4, 4, NA, NA, 1)
-mode_first(x3)
-mode_first(x3, first_known = TRUE)
+x4 <- c(6, 4, 4, 4, NA, NA, 1)
+mode_first(x4)
+mode_first(x4, first_known = TRUE)
 ```
 
 The `NA`s might both be `6`, and a known `6` appears at the very start, so this might be the first mode. It's unclear, so we get `NA` by default. However, `4` is the first value that we *know* is a mode. Setting `first_known` to `TRUE` makes the function pragmatically accept `4` --- we want to find a mode, after all, and we know one.
