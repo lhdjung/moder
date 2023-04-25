@@ -122,7 +122,7 @@ mode_is_trivial(x3, max_unique = "known")
 mode_count_range(x3, max_unique = "known")
 ```
 
-In the future, other metadata functions such as `mode_count()` might get a `max_unique` argument because this kind of information is relevant for them, as well.
+In the future, other metadata functions such as `mode_frequency()` might get a `max_unique` argument because this kind of information is relevant for them, as well.
 
 ### Taking `NA`s seriously enough
 
