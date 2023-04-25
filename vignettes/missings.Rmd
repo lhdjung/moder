@@ -104,6 +104,8 @@ Two functions, `mode_is_trivial()` and `mode_count_range()`, have a `max_unique`
 
 Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
 
+Note that this argument does not represent an analytical decision but simply conveys your knowledge of the data to the computer. There is no meaningful choice to make: If the maximum number of unique values is known, you must specify `max_unique`; if not, you must not do so. Otherwise, you risk incorrect results if any values are missing. The default is `NULL` because the baseline assumption is always that nothing is known about missing values except for their number.
+
 Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
 
 ```{r}
