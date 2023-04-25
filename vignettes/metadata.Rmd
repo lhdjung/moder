@@ -23,13 +23,11 @@ knitr::opts_chunk$set(
 library(moder)
 ```
 
-In addition to finding a vector's mode(s), you might be interested in some metadata about them:
+In addition to finding a vector's modes, you might be interested in some metadata about them:
 
 -   A vector's modal **count** is the number of its modes.
 
--   A vector's modal **frequency** is the number of times that a vector's mode appears in the vector.
-
-This vignette briefly presents moder's tools for determining these quantities.
+-   A vector's modal **frequency** is the number of times that any single mode appears in the vector.
 
 ## Modal count
 
@@ -46,14 +44,14 @@ Even with missing values, the number of modes is sometimes known. It can only be
 mode_count(c("a", "a", "a", "b", NA))
 ```
 
-All this only works if the full set of modes can be determined. Below, `NA` could secretly be `7`, `8`, or any other value. If it's `8`, both numbers are equally frequent. Otherwise, `7` is the only mode. Since we lack this information, the number of modes is unknown.
+All of this only works if the full set of modes can be determined. Below, `NA` could secretly be `7`, `8`, or any other value. If it's `8`, both numbers are equally frequent. Otherwise, `7` is the only mode. Since we lack this information, the number of modes is unknown.
 
 ```{r}
 mode_count(c(7, 7, 7, 8, 8, NA))
 
 ```
 
-Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes, never returning `NA`:
+Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes, never returning `NA`. (For more on `mode_count_range()`, see `vignette("missings")`, section *Maximal number of unique values*.)
 
 ```{r}
 mode_count_range(c(7, 7, 7, 8, 8, NA))
@@ -74,7 +72,7 @@ Missing values are an issue here, even if the mode is obvious. Each `NA` might b
 mode_frequency(c(1, 1, 1, 1, 2, NA, NA))
 ```
 
-With `mode_frequency_range()`, at least the minimal and maximal frequencies can be determined. It never returns `NA`. There are four instances of `1` without counting the `NA`s, and six with counting it:
+With `mode_frequency_range()`, at least the minimal and maximal frequencies can be determined. It never returns `NA`. The minimum frequency supposes that no `NA`s represent the mode; the maximum frequency supposes that all of them do. In this way, there are four instances of `1` without counting the `NA`s, and six with counting them:
 
 ```{r}
 mode_frequency_range(c(1, 1, 1, 1, 2, NA, NA))
