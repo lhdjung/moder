@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,8 @@ choice by the user.</li>
 </ol>
 <p>Both points directly follow from R’s general approach towards missing
 values. This vignette explains them in some detail. I recommend reading
-“Get started” first if you haven’t already.</p>
+<a href="https://lhdjung.github.io/moder/index.html#get-started">“Get
+started”</a> first if you haven’t already.</p>
 <div class="section level2">
 <h2 id="return-na-only-if-question-cant-be-answered">1. Return <code>NA</code> only if question can’t be answered<a class="anchor" aria-label="anchor" href="#return-na-only-if-question-cant-be-answered"></a>
 </h2>
@@ -203,6 +204,56 @@ anyways:</p>
 <span><span class="co">#&gt; [1] 7</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="maximal-number-of-unique-values">Maximal number of unique values<a class="anchor" aria-label="anchor" href="#maximal-number-of-unique-values"></a>
+</h3>
+<p>Two functions, <code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code> and
+<code><a href="../reference/mode_count_range.html">mode_count_range()</a></code>, have a <code>max_unique</code>
+argument. It allows you to state how many unique values your data can
+have at the maximum. Why is this important? The two functions care about
+possible modes beyond the known values. In other words, their results
+might depend on whether or not the <code>NA</code>s can mask modal
+values that don’t even occur among the known values! If that is
+possible, it presents an additional source of uncertainty.</p>
+<p>Conversely, <code>max_unique</code> limits the possible number of
+such wildcard modes. Specify it as an integer that is the maximal number
+of unique values. If there can be no other values than those already
+known, specify <code>max_unique</code> as <code>"known"</code> instead.
+Always use <code>"known"</code> if you have factor data or you will get
+a warning. (The idea behind factors is that all possible values are
+known at the outset.)</p>
+<p>Below is an example. If two of the <code>NA</code>s represent
+<code>8</code> and the other three stand for a third value, all values
+appear with the same frequency. In this case, all values would trivially
+be modes in the sense of <code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code>. This scenario
+is not certain at all, but it can’t be ruled out either, so the function
+returns <code>NA</code>. As <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code> shows, there
+could be three modes at most. (The minimum is always one if any values
+are missing.)</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 3</span></span></code></pre></div>
+<p>The picture is different if we know that each missing value must
+represent a known value, i.e., <code>7</code> or <code>8</code>. Even if
+two <code>NA</code>s stand for <code>8</code>, the other three can’t be
+evenly distributed across <code>7</code> and <code>8</code>, so one of
+these values must be more frequent than the other one. This makes the
+mode nontrivial. Also, there can only be one mode, so both the minimal
+and maximal mode counts are <code>1</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x3</span></span>
+<span><span class="co">#&gt; [1]  7  7  7  8 NA NA NA NA NA</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 1</span></span></code></pre></div>
+<p>In the future, other metadata functions such as
+<code><a href="../reference/mode_count.html">mode_count()</a></code> might get a <code>max_unique</code> argument
+because this kind of information is relevant for them, as well.</p>
+</div>
+<div class="section level3">
 <h3 id="taking-nas-seriously-enough">Taking <code>NA</code>s seriously enough<a class="anchor" aria-label="anchor" href="#taking-nas-seriously-enough"></a>
 </h3>
 <p>Some earlier mode functions for R treat <code>NA</code> like a known
@@ -287,7 +338,7 @@ user<a class="anchor" aria-label="anchor" href="#still-return-non-na-value-only-
 <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> and <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code>: It’s <code>FALSE</code>
 by default, but if the user sets it to <code>TRUE</code>, missing values
 are removed from <code>x</code> before the statistic is computed.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x1</span></span>
 <span><span class="co">#&gt; [1]  7  7  7  8  8  9  9 NA</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x1</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -314,11 +365,11 @@ argument that is <code>FALSE</code> by default. If set to
 mode. This means it won’t strictly look for the first-appearing value
 that is a mode, but accept the first value that is a mode without
 counting <code>NA</code>s in its favor:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
-<span><span class="fu"><a href="../reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="va">x3</span>, first_known <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="va">x4</span>, first_known <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
 <p>The <code>NA</code>s might both be <code>6</code>, and a known
 <code>6</code> appears at the very start, so this might be the first

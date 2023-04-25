@@ -8,7 +8,7 @@
 <meta name="description" content="The moder package determines single or multiple modes
 (most frequent values). By default, its functions check whether
 missing values make this impossible, and return `NA` in this case.
-Dependency-free.
+They have no dependencies.
 ">
 <title>Mode estimation in R • moder</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,7 +19,7 @@ Dependency-free.
 <meta property="og:description" content="The moder package determines single or multiple modes
 (most frequent values). By default, its functions check whether
 missing values make this impossible, and return `NA` in this case.
-Dependency-free.
+They have no dependencies.
 ">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -34,7 +34,7 @@ Dependency-free.
     
     <a class="navbar-brand me-2" href="index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ Dependency-free.
 <!-- badges: start -->
 
 <!-- badges: end -->
-<p>The moder package determines single or multiple modes (most frequent values). By default, its functions check whether missing values make this impossible, and return <code>NA</code> in this case. Its source code has no dependencies.</p>
+<p>The moder package determines single or multiple modes (most frequent values). By default, its functions check whether missing values make this impossible, and return <code>NA</code> in this case. They have no dependencies.</p>
 <p>Mode functions fill a gap in measures of central tendency in R. <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code> and <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code> are built into the standard library, but there is a lack of properly <code>NA</code>-sensitive functions for calculating the mode. Use moder for this!</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -104,13 +104,13 @@ Dependency-free.
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="fl">9</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 9</span></span></code></pre></div>
-<p>But what if some values are missing? Maybe there are so many missings that it’s impossible to tell which value is the most frequent one. If all <code>NA</code>s in the next example are secretly <code>2</code>, this value is the (first) mode. Otherwise, <code>1</code> is. The mode is unclear, so the function returns <code>NA</code>:</p>
+<p>But what if some values are missing? Maybe there are so many missings that it’s impossible to tell which value is the most frequent one. If both <code>NA</code>s below are secretly <code>2</code>, then <code>2</code> is the (first) mode. Otherwise, <code>1</code> is. The mode is unclear, so the function returns <code>NA</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>Ignore <code>NA</code>s using <code>na.rm = TRUE</code> if there is a strong rationale for it:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/mode_first.html">mode_first</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>The next example is different. Even if the <code>NA</code> stands in for <code>8</code>, there will only be three instances of <code>8</code> but four instances of <code>7</code>. The mode is <code>7</code>, independent of the true value behind <code>NA</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">

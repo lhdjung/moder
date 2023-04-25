@@ -12,7 +12,7 @@ are equally frequent. The mode is not too informative in such cases."><!-- mathj
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,17 +98,15 @@ these cases:</p><ul><li><p>Some <code>x</code> values are missing and all known 
 unknown whether there is a value with a different frequency.</p></li>
 <li><p>All known values are modes if the <code>NA</code>s "fill up" the non-modal values
 exactly, i.e., without any <code>NA</code>s remaining.</p></li>
+<li><p>Some <code>NA</code>s remain after "filling up" the non-modal values with <code>NA</code>s (so
+that they are hypothetically modes), and the number of remaining <code>NA</code>s is
+divisible by the number of unique known values.</p></li>
 <li><p>There are so many missing values that they might form mode-sized groups
-of values that are not among the known values, and the number of missing
-values is divisible by the number of unique known values (even after
-"filling up" the non-modal values with <code>NA</code>s so that they are
-hypothetically modes).</p></li>
-<li><p>As before, there are <code>NA</code>s left after "filling up", but they may
-represent values beyond the known ones, and the number of <code>NA</code>s is
+of values that are not among the known values, and the number of <code>NA</code>s is
 divisible by the modal frequency so that all (partly hypothetical) values
 might be equally frequent. You can limit the number of such hypothetical
-values by specifying <code>max_unique</code>. This can make the function return
-<code>FALSE</code> instead of <code>NA</code>.</p></li>
+values by specifying <code>max_unique</code>. The function might then return <code>FALSE</code>
+instead of <code>NA</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
