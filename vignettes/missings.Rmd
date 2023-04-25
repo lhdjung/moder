@@ -136,7 +136,7 @@ All choices about imputation will then be left to the user. In this way, moder f
 
 Certain other mode implementations return `NA` whenever the input vector contains any `NA`s at all. This is not necessary --- in fact, it's overly conservative. We have seen above that a distribution may have a clear set of modes even if some of its values are missing. This is a marked difference to `mean()`, where any missings really do make estimation impossible.
 
-It all depends on the relation between counts: Is the most frequent known value at least as frequent as the sum of the counts of the second-most-frequent known value and all missing values? If so, this value is known to be the mode. Note that `mode_all()` doesn't allow for ties among known values if any other values are missing (it returns `NA`). That is because missings may secretly count for any "tied" known value, which would break the tie.
+It all depends on the relation between counts: Is the most frequent known value at least as frequent as the sum of the counts of the second-most-frequent known value and all missing values? If so, this value is known to be the mode. Note that `mode_first()`, `mode_all()` and `mode_single()` don't allow for ties among known values if any other values are missing (they return `NA`). That is because missings may secretly count for any "tied" known value, which would break the tie.
 
 In a vector like `c(1, 1, NA)`, the mode is clearly `1`, no matter what the `NA` stands for. It is just as clear as in `c(1, 1, 2)`. A mode function that returns `NA` instead of `1` would be incorrect for `c(1, 1, 2)`, so it would be just as incorrect for `c(1, 1, NA)`.
 
