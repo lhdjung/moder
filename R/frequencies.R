@@ -43,7 +43,9 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
     # If the mode can be determined, count its occurrences among non-`NA`
     # values. This requires one mode of `x`, so we call `mode_first()` with
     # `first_known = TRUE` (because position is irrelevant here):
-    check_factor_max_unique(x, n_na, "mode_frequency")
+    if (is.null(max_unique)) {
+      check_factor_max_unique(x, n_na, "mode_frequency")
+    }
     mode <- mode_first(x, na.rm, TRUE)
     return(length(x[x == mode]))
   } else if (is.null(max_unique)) {
@@ -94,18 +96,34 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
 #' # and each of them appears twice:
 #' mode_frequency_range(c("a", "b", "c", "c", "d", "d", "e", "e"))
 
-mode_frequency_range <- function(x) {
+mode_frequency_range <- function(x, max_unique = NULL) {
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, "mode_frequency_range")
+  }
   n_x <- length(x)
   x <- x[!is.na(x)]
+  n_na <- n_x - length(x)
+  rm(n_x)
   # If all values are missing, the range is highly uncertain (see docs):
   if (length(x) == 0L) {
     return(c(1L, n_x))
   }
-  n_na <- n_x - length(x)
-  rm(n_x)
+  if (!is.null(max_unique)) {
+    unique_x <- unique(x)
+    max_unique <- handle_max_unique_input(
+      x, max_unique, length(unique_x), n_na, "mode_frequency_range"
+    )
+    if (
+      any(c(n_na, length(unique_x)) == 1L) &&
+      max_unique == length(unique_x) &&
+      all(unique_x %in% mode_all_if_no_na(x))
+    ) {
+      return(c(1L, 1L))
+    }
+  }
   # -- Minimum frequency: exclude all `NA`s (they were removed above)
   # -- Maximum frequency: include all `NA`s (add their count to the minimum)
-  frequency_min <- mode_frequency(x, FALSE)
+  frequency_min <- mode_frequency(x)
   frequency_max <- frequency_min + n_na
   c(frequency_min, frequency_max)
 }

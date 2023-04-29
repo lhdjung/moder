@@ -84,3 +84,23 @@ test_that("`mode_frequency_range()` works correctly", {
   expect_equal(mode_frequency_range(x17), c(2L, 4L))
 })
 
+test_that("`mode_frequency_range()` works correctly with `max_unique = TRUE`", {
+  expect_equal(mode_frequency_range(x1 , max_unique = "known"), c(3L, 3L))
+  expect_equal(mode_frequency_range(x2 , max_unique = "known"), c(4L, 8L))
+  expect_equal(mode_frequency_range(x3 , max_unique = "known"), c(4L, 5L))
+  expect_equal(mode_frequency_range(x4 , max_unique = "known"), c(2L, 2L))
+  expect_equal(mode_frequency_range(x5 , max_unique = "known"), c(1L, 1L)) # diff
+  expect_equal(mode_frequency_range(x6 , max_unique = "known"), c(3L, 3L))
+  expect_equal(mode_frequency_range(x7 , max_unique = "known"), c(2L, 2L))
+  expect_equal(mode_frequency_range(x8 , max_unique = "known"), c(2L, 3L))
+  expect_equal(mode_frequency_range(x9 , max_unique = "known"), c(2L, 3L))
+  expect_equal(mode_frequency_range(x10, max_unique = "known"), c(1L, 1L)) # diff
+  expect_equal(mode_frequency_range(x11, max_unique = "known"), c(1L, 1L)) # diff
+  expect_equal(mode_frequency_range(x12, max_unique = "known"), c(3L, 4L))
+  expect_equal(mode_frequency_range(x13, max_unique = "known"), c(1L, 1L)) # diff
+  expect_equal(mode_frequency_range(x14, max_unique = "known"), c(2L, 3L))
+  expect_equal(mode_frequency_range(x15, max_unique = "known"), c(1L, 1L)) # diff
+  expect_equal(mode_frequency_range(x16, max_unique = "known"), c(3L, 4L))
+  expect_equal(mode_frequency_range(x17, max_unique = "known"), c(2L, 4L))
+})
+
