@@ -4,10 +4,16 @@
 \alias{mode_frequency_range}
 \title{Modal frequency range}
 \usage{
-mode_frequency_range(x)
+mode_frequency_range(x, max_unique = NULL)
 }
 \arguments{
 \item{x}{A vector to check for its modal frequency.}
+
+\item{max_unique}{Numeric or string. If the maximum number of unique values
+in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
+represent values beyond that number (see examples). Set it to \code{"known"}
+instead if no values beyond those already known can occur. Default is
+\code{NULL}, which assumes no maximum.}
 }
 \value{
 Integer (length 2).

@@ -4,6 +4,7 @@
 #' [`mode_all()`].
 #'
 #' @inheritParams mode_all
+#' @inheritParams mode_is_trivial
 #'
 #' @return Integer. Number of modes (values tied for most frequent) in `x`. If
 #'   the modes can't be determined because of missing values,
