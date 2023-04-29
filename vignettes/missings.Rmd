@@ -100,7 +100,7 @@ mode_possible_max(c(x1, 7))
 
 ### Maximal number of unique values
 
-Two functions, `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
+Some functions, like `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
 
 Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
 
@@ -122,7 +122,7 @@ mode_is_trivial(x3, max_unique = "known")
 mode_count_range(x3, max_unique = "known")
 ```
 
-In the future, other metadata functions such as `mode_frequency()` might get a `max_unique` argument because this kind of information is relevant for them, as well.
+Three more functions have a `max_unique` parameter: `mode_count()`, `mode_frequency()`, and `mode_frequency_range()`. However, this only matters for corner cases. See [this Github issue](https://github.com/lhdjung/moder/issues/1).
 
 ### Taking `NA`s seriously enough
 
