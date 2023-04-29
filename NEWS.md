@@ -1,4 +1,4 @@
-# moder (development version)
+# moder 0.2.0
 
 -   All metadata functions now have a `max_unique` argument, allowing users to encode knowledge about missing values in the analysis.
 -   Further improvements to the documentation, including vignettes.
