@@ -23,7 +23,7 @@ What makes moder special is the way it handles missing values. It has two main g
 1.  Mode functions should return `NA` if and only if the data cannot answer the user's question.
 2.  Any deviation from point 1 should be the result of an explicit choice by the user.
 
-Both points directly follow from R's general approach towards missing values. This vignette explains them in some detail. I recommend reading ["Get started"](https://lhdjung.github.io/moder/index.html#get-started) first if you haven't already.
+Both points directly follow from R's general approach towards missing values. This vignette explains them in some detail. Finally, it spells out the underlying theory. I recommend reading ["Get started"](https://lhdjung.github.io/moder/index.html#get-started) first if you haven't already.
 
 ## 1. Return `NA` only if question can't be answered
 
@@ -58,6 +58,12 @@ mode_all(x2)
 ```
 
 Where is `mode_single()` in all of this? It calls `mode_all()` internally, so it handles missing values just like this function does. Differences only occur if `mode_all()` returns multiple modes.
+
+### Modal metadata
+
+All of these functions attempt to find modal values. However, moder also has some functions that are not concerned about any particular modes but only assess metadata, such as the modal frequency. This is why they can sometimes obtain useful information where `mode_first()` and friends would only return `NA`. Even if the number or frequency of modes can't be determined, at least a range for them can be given. See `vignette("metadata")` to learn more.
+
+In particular, all the metadata functions have a `max_unique` argument. It allows you to encode some knowledge you might have about the missing values in your data. See `vignette("metadata")`, section *Maximal number of unique values*.
 
 ### Possible (minimal and maximal) sets of modes
 
@@ -98,56 +104,6 @@ mode_possible_max(x1)
 mode_possible_max(c(x1, 7))
 ```
 
-### Maximal number of unique values
-
-Some functions, like `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
-
-Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
-
-Note that this argument does not represent an analytical decision but simply conveys your knowledge of the data to the computer. There is no meaningful choice to make: If the maximum number of unique values is known, you must specify `max_unique`; if not, you must not do so. Otherwise, you risk incorrect results if any values are missing. The default is `NULL` because the baseline assumption is always that nothing is known about missing values except for their number.
-
-Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
-
-```{r}
-x3 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
-mode_is_trivial(x3)
-mode_count_range(x3)
-```
-
-The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the mode nontrivial. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
-
-```{r}
-x3
-mode_is_trivial(x3, max_unique = "known")
-mode_count_range(x3, max_unique = "known")
-```
-
-Three more functions have a `max_unique` parameter: `mode_count()`, `mode_frequency()`, and `mode_frequency_range()`. However, this only matters for corner cases. See [this Github issue](https://github.com/lhdjung/moder/issues/1).
-
-### Taking `NA`s seriously enough
-
-Some earlier mode functions for R treat `NA` like a known and constant value. This is suboptimal because `NA` means that a value is missing. Such an approach effectively assumes that all `NA`s represent the same unknown value, and that it's different from all known values (although I'm sure this was not the intention).
-
-Rather than forming a distinct and cohesive group, however, the `NA`s may represent one or more known or unknown values, so this procedure can distort the data. Consider that `NA == NA` returns `NA`: If any two values are unknown, it's also unknown whether they are equal (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)).
-
-What's more, categorizing missing values as a separate group is actually an imputation strategy --- and perhaps not a very wise one. I think imputation by default is not the job of operations that are supposed to simply determine a statistic. All moder functions treat `NA`s as genuinely missing values, just like `mean()`, `median()`, and language primitives such as `==` do. Sometimes, this means the functions can just ignore them because a known value is more frequent than the next-most-frequent value and all `NA`s taken together. They will only return `NA` if the user's question cannot possibly be answered by the data.
-
-All choices about imputation will then be left to the user. In this way, moder functions draw a clear line between estimation and imputation.
-
-### Not taking `NA`s too seriously
-
-Certain other mode implementations return `NA` whenever the input vector contains any `NA`s at all. This is not necessary --- in fact, it's overly conservative. We have seen above that a distribution may have a clear set of modes even if some of its values are missing. This is a marked difference to `mean()`, where any missings really do make estimation impossible.
-
-It all depends on the relation between counts: Is the most frequent known value at least as frequent as the sum of the counts of the second-most-frequent known value and all missing values? If so, this value is known to be the mode. Note that `mode_first()`, `mode_all()` and `mode_single()` don't allow for ties among known values if any other values are missing (they return `NA`). That is because missings may secretly count for any "tied" known value, which would break the tie.
-
-In a vector like `c(1, 1, NA)`, the mode is clearly `1`, no matter what the `NA` stands for. It is just as clear as in `c(1, 1, 2)`. A mode function that returns `NA` instead of `1` would be incorrect for `c(1, 1, 2)`, so it would be just as incorrect for `c(1, 1, NA)`.
-
-Again, think of the parallels to base R. `NA ^ 2` returns `NA`, but `NA ^ 0` returns `1`. In the second case, we don't need to know the true value behind `NA` to determine the result. Such knowledge is built into R (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)), and I think function design should emulate this pattern to keep the semantics of `NA` consistent across contexts.
-
-### `NA` return types
-
-If a function that is supposed to return one or more modes returns `NA` instead, this `NA` has the same type as the input vector, `x`. Functions that attempt to count modes or to determine their frequency only ever return these integers or `NA_integer_`, i.e., a missing value of type integer. However, the differences between `NA` types are not very important (and perhaps not widely known). They can usually be disregarded.
-
 ## 2. Still return non-`NA` value only if chosen by user
 
 ### Ignoring `NA`s
@@ -176,6 +132,32 @@ mode_first(x4, first_known = TRUE)
 ```
 
 The `NA`s might both be `6`, and a known `6` appears at the very start, so this might be the first mode. It's unclear, so we get `NA` by default. However, `4` is the first value that we *know* is a mode. Setting `first_known` to `TRUE` makes the function pragmatically accept `4` --- we want to find a mode, after all, and we know one.
+
+## Theory
+
+### Taking `NA`s seriously enough
+
+Some earlier mode functions for R treat `NA` like a known and constant value. This is suboptimal because `NA` means that a value is missing. Such an approach effectively assumes that all `NA`s represent the same unknown value, and that it's different from all known values (although I'm sure this was not the intention).
+
+Rather than forming a distinct and cohesive group, however, the `NA`s may represent one or more known or unknown values, so this procedure can distort the data. Consider that `NA == NA` returns `NA`: If any two values are unknown, it's also unknown whether they are equal (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)).
+
+What's more, categorizing missing values as a separate group is actually an imputation strategy --- and perhaps not a very wise one. I think imputation by default is not the job of operations that are supposed to simply determine a statistic. All moder functions treat `NA`s as genuinely missing values, just like `mean()`, `median()`, and language primitives such as `==` do. Sometimes, this means the functions can just ignore them because a known value is more frequent than the next-most-frequent value and all `NA`s taken together. They will only return `NA` if the user's question cannot possibly be answered by the data.
+
+All choices about imputation will then be left to the user. In this way, moder functions draw a clear line between estimation and imputation.
+
+### Not taking `NA`s too seriously
+
+Certain other mode implementations return `NA` whenever the input vector contains any `NA`s at all. This is not necessary --- in fact, it's overly conservative. We have seen above that a distribution may have a clear set of modes even if some of its values are missing. This is a marked difference to `mean()`, where any missings really do make estimation impossible.
+
+It all depends on the relation between counts: Is the most frequent known value at least as frequent as the sum of the counts of the second-most-frequent known value and all missing values? If so, this value is known to be the mode. Note that `mode_first()`, `mode_all()` and `mode_single()` don't allow for ties among known values if any other values are missing (they return `NA`). That is because missings may secretly count for any "tied" known value, which would break the tie.
+
+In a vector like `c(1, 1, NA)`, the mode is clearly `1`, no matter what the `NA` stands for. It is just as clear as in `c(1, 1, 2)`. A mode function that returns `NA` instead of `1` would be incorrect for `c(1, 1, 2)`, so it would be just as incorrect for `c(1, 1, NA)`.
+
+Again, think of the parallels to base R. `NA ^ 2` returns `NA`, but `NA ^ 0` returns `1`. In the second case, we don't need to know the true value behind `NA` to determine the result. Such knowledge is built into R (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)), and I think function design should emulate this pattern to keep the semantics of `NA` consistent across contexts.
+
+### `NA` return types
+
+If a function that is supposed to return one or more modes returns `NA` instead, this `NA` has the same type as the input vector, `x`. Functions that attempt to count modes or to determine their frequency only ever return these integers or `NA_integer_`, i.e., a missing value of type integer. However, the differences between `NA` types are not very important (and perhaps not widely known). They can usually be disregarded.
 
 ## References
 

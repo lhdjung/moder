@@ -29,6 +29,8 @@ In addition to finding a vector's modes, you might be interested in some metadat
 
 -   A vector's modal **frequency** is the number of times that any single mode appears in the vector.
 
+This vignette lays out all the functions for modal metadata. In the end, it talks about a special feature of these functions, the `max_unique` argument.
+
 ## Modal count
 
 `mode_count()` computes the number of modes:
@@ -48,10 +50,9 @@ All of this only works if the full set of modes can be determined. Below, `NA` c
 
 ```{r}
 mode_count(c(7, 7, 7, 8, 8, NA))
-
 ```
 
-Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes, never returning `NA`. (For more on `mode_count_range()`, see `vignette("missings")`, section *Maximal number of unique values*.)
+Use `mode_count_range()` in such cases. It will determine the minimal and maximal number of modes, never returning `NA`. For more on `mode_count_range()`, see below, section *Maximal number of unique values*.
 
 ```{r}
 mode_count_range(c(7, 7, 7, 8, 8, NA))
@@ -87,3 +88,29 @@ mode_is_trivial(c("a", "b", "c"))
 mode_is_trivial(c(1, 1, 2, 2, 3, 3))
 mode_is_trivial(c(1, 1, 1, 2, 3))
 ```
+
+## Maximal number of unique values
+
+All of moder's functions for metadata, such as `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
+
+Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
+
+Note that this argument does not represent an analytical decision but simply conveys your knowledge of the data to the computer. There is no meaningful choice to make: If the maximum number of unique values is known, you must specify `max_unique`; if not, you must not do so. Otherwise, you risk incorrect results if any values are missing. The default is `NULL` because the baseline assumption is always that nothing is known about missing values except for their number.
+
+Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
+
+```{r}
+x3 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
+mode_is_trivial(x3)
+mode_count_range(x3)
+```
+
+The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the mode nontrivial. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
+
+```{r}
+x3
+mode_is_trivial(x3, max_unique = "known")
+mode_count_range(x3, max_unique = "known")
+```
+
+Three more functions have a `max_unique` parameter: `mode_count()`, `mode_frequency()`, and `mode_frequency_range()`. However, this only matters for corner cases. See [this Github issue](https://github.com/lhdjung/moder/issues/1).
