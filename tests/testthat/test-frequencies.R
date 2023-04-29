@@ -31,6 +31,23 @@ test_that("`mode_frequency()` is right with some `NA` input and `NA` output", {
   expect_equal(mode_frequency(x17), NA_integer_)
 })
 
+
+test_that("`mode_frequency()` is right with max_unique = \"known\"", {
+  expect_equal(mode_frequency(x2 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x3 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x5 , max_unique = "known"), 3L)
+  expect_equal(mode_frequency(x8 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x9 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x10, max_unique = "known"), 3L)
+  expect_equal(mode_frequency(x11, max_unique = "known"), 2L)
+  expect_equal(mode_frequency(x12, max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x13, max_unique = "known"), 2L)
+  expect_equal(mode_frequency(x14, max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x15, max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x16, max_unique = "known"), NA_integer_)
+  expect_equal(mode_frequency(x17, max_unique = "known"), NA_integer_)
+})
+
 test_that("`mode_frequency()` is right with some `NA` input
           and `na.rm = TRUE`", {
   expect_equal(mode_frequency(x2 , na.rm = TRUE), 4L)
