@@ -1,5 +1,5 @@
 Package: moder
-Title: Mode estimation in R
+Title: Mode Estimation in R
 Version: 0.1.1.9000
 Authors@R: 
     person("Lukas", "Jung", , "jung-lukas@gmx.net", role = c("aut", "cre"))
