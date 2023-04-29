@@ -35,8 +35,32 @@
 #' mode_count(c(8, 8, 9, NA), na.rm = TRUE)
 #' mode_count(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
-mode_count <- function(x, na.rm = FALSE) {
-  modes <- mode_all(x, na.rm)
+mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
+  if (na.rm) {
+    x <- x[!is.na(x)]
+  }
+  n_x <- length(x)
+  x <- x[!is.na(x)]
+  n_na <- n_x - length(x)
+  rm(n_x)
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, "mode_count")
+  } else {
+    unique_x <- unique(x)
+    max_unique <- handle_max_unique_input(
+      x, max_unique, length(unique_x), n_na, "mode_count"
+    )
+    if (n_na == 1L && all(unique_x %in% mode_all_if_no_na(x))) {
+      if (max_unique == length(unique_x)) {
+        return(1L)
+      } else {
+        return(NA_integer_)
+      }
+    } else {
+      rm(unique_x, max_unique, na.rm)
+    }
+  }
+  modes <- mode_all(c(x, rep(x[NA_integer_], times = n_na)))
   if (length(modes) == 1L && is.na(modes)) {
     NA_integer_
   } else {
@@ -108,7 +132,7 @@ mode_count_range <- function(x, max_unique = NULL) {
   }
   # The minimal and maximal mode counts are identical if there are no `NA`s:
   if (n_na == 0L) {
-    n_exact <- mode_count(x, FALSE)
+    n_exact <- suppressWarnings(mode_count(x, FALSE))
     return(rep(n_exact, times = 2L))
   }
   # This part works like the helper `count_slots_empty()`, but it involves

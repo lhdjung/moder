@@ -39,6 +39,14 @@ test_that("`mode_count()` is right with some `NA` input and `na.rm = TRUE`", {
   expect_equal(mode_count(x17, na.rm = TRUE), 2L)
 })
 
+test_that("`mode_count()` is right with some `max_unique = \"known\"`", {
+  expect_equal(mode_count(x2 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_count(x5 , max_unique = "known"), 1L)
+  expect_equal(mode_count(x8 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_count(x9 , max_unique = "known"), NA_integer_)
+  expect_equal(mode_count(x17, max_unique = "known"), NA_integer_)
+})
+
 
 test_that("`mode_count_range()` works correctly", {
   expect_equal(mode_count_range(x1 ), c(1L, 1L))
