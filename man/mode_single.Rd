@@ -4,7 +4,7 @@
 \alias{mode_single}
 \title{The single mode}
 \usage{
-mode_single(x, na.rm = FALSE, accept = TRUE, multiple = "NA")
+mode_single(x, na.rm = FALSE, accept = FALSE, multiple = "NA")
 }
 \arguments{
 \item{x}{A vector to search for its mode.}
@@ -12,9 +12,9 @@ mode_single(x, na.rm = FALSE, accept = TRUE, multiple = "NA")
 \item{na.rm}{Boolean. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
-\item{accept}{Boolean. Should the minimum set of modes be accepted (to select
-the single mode from)? If set to \code{FALSE}, insists on the complete set and
-returns \code{NA} if it can't be determined. Default is \code{TRUE}.}
+\item{accept}{Boolean. Should the minimum set of modes be accepted to check
+for a single mode? If \code{FALSE} (the default), insists on the complete set
+and returns \code{NA} if it can't be determined.}
 
 \item{multiple}{String or integer (length 1), or a function. What to do if
 \code{x} has multiple modes. The default returns \code{NA}. All other options rely on
@@ -32,11 +32,10 @@ also returned if there are multiple modes (\code{multiple = "NA"}).
 modes, it returns \code{NA} by default.
 }
 \details{
-If \code{accept} is set to \code{FALSE}, the set of modes is obtained via
-\code{mode_all()} instead of the default \code{mode_possible_min()}. The purpose of
-the default is to avoid returning \code{NA} when some, though not all modes are
-known. Set it to \code{FALSE} if it's important to select the single mode from
-the complete set of modes.
+If \code{accept} is \code{FALSE} (the default), the set of modes is obtained
+via \code{mode_all()} instead of \code{mode_possible_min()}. Set it to \code{TRUE} to
+avoid returning \code{NA} when some, though not all modes are known. The purpose
+of the default is to insist on a single mode.
 
 If \code{x} is a string vector and \code{multiple} is \code{"min"} or \code{"max"}, the mode is
 selected lexically, just like \code{min(letters)} returns \code{"a"}. The \code{"mean"}

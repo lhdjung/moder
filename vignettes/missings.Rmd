@@ -135,15 +135,13 @@ The `NA`s might both be `6`, and a known `6` appears at the very start, so this 
 
 ### Minimum and complete sets of modes
 
-In `mode_single()`, `accept` is `TRUE` by default. This avoids returning `NA` when some, but not all modes are known. Set it to `FALSE` if it's important to draw the single mode from the complete set of modes, not from the minimum that just so happens to be known. If the complete set can't be determined, the function returns `NA`:
+In `mode_single()` as well, `accept` is `FALSE` by default. The purpose is to check whether there is exactly one mode by using the complete set of modes, not the minimum set that just so happens to be known. Set `accept` to `TRUE` to avoid returning `NA` when one mode is known, but not all modes are:
 
 ```{r}
 x5 <- c(4, 4, 4, 7, 7, NA)
 mode_single(x5)
-mode_single(x5, accept = FALSE)
+mode_single(x5, accept = TRUE)
 ```
-
-Why is this different from `mode_first()` with its `accept = FALSE` default? The latter function specifically asks for the first mode, so the default should be to get that or `NA`. However, `mode_single()` just wants one mode, so it's fine to accept any one by default even if not all modes are known.
 
 ## Theory
 

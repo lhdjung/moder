@@ -134,32 +134,18 @@ test_that("`mode_single()` is right with some `NA` input but non-`NA` output", {
 })
 
 test_that("`mode_single()` is right with some `NA` input and `accept = TRUE`", {
-  expect_equal(mode_single(x2) , NA_real_)
-  expect_equal(mode_single(x5) , NA_real_)
-  expect_equal(mode_single(x8) , 1)
-  expect_equal(mode_single(x9) , 1)
-  expect_equal(mode_single(x11), 1)
-  expect_equal(mode_single(x12), "a")
-  expect_equal(mode_single(x13), 1)
-  expect_equal(mode_single(x14), NA_real_)
-  expect_equal(mode_single(x15), NA_real_)
-  expect_equal(mode_single(x16), 1)
-  expect_equal(mode_single(x17), NA_real_)
-})
-
-test_that("`mode_single()` is right with some `NA` input and `NA` output
-          due to `accept = FALSE`", {
-  expect_equal(mode_single(x2 , accept = FALSE), NA_real_)
-  expect_equal(mode_single(x5 , accept = FALSE), NA_real_)
-  expect_equal(mode_single(x8 , accept = FALSE), NA_real_)
-  expect_equal(mode_single(x9 , accept = FALSE), NA_real_)
-  expect_equal(mode_single(x11, accept = FALSE), NA_real_)
-  expect_equal(mode_single(x12, accept = FALSE), NA_character_)
-  expect_equal(mode_single(x13, accept = FALSE), NA_real_)
-  expect_equal(mode_single(x14, accept = FALSE), NA_real_)
-  expect_equal(mode_single(x15, accept = FALSE), NA_real_)
-  expect_equal(mode_single(x16, accept = FALSE), NA_real_)
-  expect_equal(mode_single(x17, accept = FALSE), NA_real_)
+  expect_equal(mode_single(x2 , accept = TRUE), NA_real_)
+  # # Weird crossover with `x5` from missings.Rmd can occur here:
+  expect_equal(mode_single(x5 , accept = TRUE), NA_real_)
+  expect_equal(mode_single(x8 , accept = TRUE), 1)
+  expect_equal(mode_single(x9 , accept = TRUE), 1)
+  expect_equal(mode_single(x11, accept = TRUE), 1)
+  expect_equal(mode_single(x12, accept = TRUE), "a")
+  expect_equal(mode_single(x13, accept = TRUE), 1)
+  expect_equal(mode_single(x14, accept = TRUE), NA_real_)
+  expect_equal(mode_single(x15, accept = TRUE), NA_real_)
+  expect_equal(mode_single(x16, accept = TRUE), 1)
+  expect_equal(mode_single(x17, accept = TRUE), NA_real_)
 })
 
 test_that("`mode_single()` is right with some `NA` input and `na.rm = TRUE`

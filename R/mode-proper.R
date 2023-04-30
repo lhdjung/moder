@@ -197,9 +197,9 @@ mode_all <- function(x, na.rm = FALSE) {
 #' modes, it returns `NA` by default.
 #'
 #' @param x A vector to search for its mode.
-#' @param accept Boolean. Should the minimum set of modes be accepted (to select
-#'   the single mode from)? If set to `FALSE`, insists on the complete set and
-#'   returns `NA` if it can't be determined. Default is `TRUE`.
+#' @param accept Boolean. Should the minimum set of modes be accepted to check
+#'   for a single mode? If `FALSE` (the default), insists on the complete set
+#'   and returns `NA` if it can't be determined.
 #' @param multiple String or integer (length 1), or a function. What to do if
 #'   `x` has multiple modes. The default returns `NA`. All other options rely on
 #'   the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
@@ -211,11 +211,10 @@ mode_all <- function(x, na.rm = FALSE) {
 #'   because of missing values, `NA` is returned instead. By default, `NA` is
 #'   also returned if there are multiple modes (`multiple = "NA"`).
 #'
-#' @details If `accept` is set to `FALSE`, the set of modes is obtained via
-#'   `mode_all()` instead of the default `mode_possible_min()`. The purpose of
-#'   the default is to avoid returning `NA` when some, though not all modes are
-#'   known. Set it to `FALSE` if it's important to select the single mode from
-#'   the complete set of modes.
+#' @details If `accept` is `FALSE` (the default), the set of modes is obtained
+#'   via `mode_all()` instead of `mode_possible_min()`. Set it to `TRUE` to
+#'   avoid returning `NA` when some, though not all modes are known. The purpose
+#'   of the default is to insist on a single mode.
 #'
 #'   If `x` is a string vector and `multiple` is `"min"` or `"max"`, the mode is
 #'   selected lexically, just like `min(letters)` returns `"a"`. The `"mean"`
@@ -259,7 +258,7 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, na.rm = FALSE, accept = TRUE, multiple = "NA") {
+mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
   if (na.rm) {
     x <- x[!is.na(x)]
   }
