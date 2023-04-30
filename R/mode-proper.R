@@ -198,6 +198,9 @@ mode_all <- function(x, na.rm = FALSE) {
 #' modes, it returns `NA` by default.
 #'
 #' @param x A vector to search for its mode.
+#' @param accept Boolean. Should the minimum set of modes be accepted (to select
+#'   the single mode from)? If set to `FALSE`, insists on the complete set and
+#'   returns `NA` if it can't be determined. Default is `TRUE`.
 #' @param multiple String or integer (length 1), or a function. What to do if
 #'   `x` has multiple modes. The default returns `NA`. All other options rely on
 #'   the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
@@ -209,11 +212,17 @@ mode_all <- function(x, na.rm = FALSE) {
 #'   because of missing values, `NA` is returned instead. By default, `NA` is
 #'   also returned if there are multiple modes (`multiple = "NA"`).
 #'
-#' @details If `x` is a string vector and `multiple` is `"min"` or `"max"`, the
-#'   mode is selected lexically, just like `min(letters)` returns `"a"`. The
-#'   `"mean"` and `"median"` options return `NA` with a warning. For factors,
-#'   `"min"`, `"max"`, and `"median"` are errors, but `"mean"` returns `NA` with
-#'   a warning. These are inconsistencies in base R.
+#' @details If `accept` is set to `FALSE`, the set of modes is obtained via
+#'   `mode_all()` instead of the default `mode_possible_min()`. The purpose of
+#'   the default is to avoid returning `NA` when some, though not all modes are
+#'   known. Set it to `FALSE` if it's important to select the single mode from
+#'   the complete set of modes.
+#'
+#'   If `x` is a string vector and `multiple` is `"min"` or `"max"`, the mode is
+#'   selected lexically, just like `min(letters)` returns `"a"`. The `"mean"`
+#'   and `"median"` options return `NA` with a warning. For factors, `"min"`,
+#'   `"max"`, and `"median"` are errors, but `"mean"` returns `NA` with a
+#'   warning. These are inconsistencies in base R.
 #'
 #'   The `multiple` options `"first"` and `"last"` always select the mode that
 #'   appears first or last in `x`. Index numbers, like `multiple = 2`, allow you
@@ -224,7 +233,8 @@ mode_all <- function(x, na.rm = FALSE) {
 #'
 #' @seealso
 #' - [mode_first()] for the first-appearing mode.
-#' - [mode_all()] for the full set of modes.
+#' - [mode_all()] for the complete set of modes.
+#' - [mode_possible_min()] for the minimal set of modes.
 #'
 #' @examples
 #' # `8` is the only mode:
@@ -238,6 +248,10 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # `9` might be another mode:
 #' mode_single(c(8, 8, 9, NA))
 #'
+#' # Accept `8` anyways if it's
+#' # sufficient to just have any mode:
+#' mode_single(c(8, 8, 9, NA), accept = TRUE)
+#'
 #' # `1` is the most frequent value,
 #' # no matter what `NA` stands for:
 #' mode_single(c(1, 1, 1, 2, NA))
@@ -246,19 +260,23 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, na.rm = FALSE, multiple = "NA") {
-  # The `multiple` argument will usually be a string. It should then be checked
-  # against the vector of possible string shorthands for dealing with multiple
-  # modes, using an intermediate variable to avoid redundant printing of each
-  # string in case of an error:
-  if (is.character(multiple)) {
-    possible_strings <-
-      c("NA", "min", "max", "mean", "median", "first", "last", "random")
-    match.arg(multiple, possible_strings)
-    rm(possible_strings)
+mode_single <- function(x, na.rm = FALSE, accept = TRUE, multiple = "NA") {
+  if (na.rm) {
+    x <- x[!is.na(x)]
   }
-  # We need to check the number of modes here, so we call `mode_all()`:
-  modes <- mode_all(x, na.rm)
+  if (is.character(multiple)) {
+    match.arg(
+      multiple,
+      c("NA", "min", "max", "mean", "median", "first", "last", "random")
+    )
+  }
+  # By default (`accept = TRUE`), it is sufficient that at least one mode is
+  # known, as opposed to all modes:
+  modes <- if (accept) {
+    mode_possible_min(x)
+  } else {
+    mode_all(x)
+  }
   # As the name says, if the distribution has a single mode, return that value:
   if (length(modes) == 1L) {
     modes

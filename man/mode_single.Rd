@@ -4,13 +4,17 @@
 \alias{mode_single}
 \title{The single mode}
 \usage{
-mode_single(x, na.rm = FALSE, multiple = "NA")
+mode_single(x, na.rm = FALSE, accept = TRUE, multiple = "NA")
 }
 \arguments{
 \item{x}{A vector to search for its mode.}
 
 \item{na.rm}{Boolean. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
+
+\item{accept}{Boolean. Should the minimum set of modes be accepted (to select
+the single mode from)? If set to \code{FALSE}, insists on the complete set and
+returns \code{NA} if it can't be determined. Default is \code{TRUE}.}
 
 \item{multiple}{String or integer (length 1), or a function. What to do if
 \code{x} has multiple modes. The default returns \code{NA}. All other options rely on
@@ -28,11 +32,17 @@ also returned if there are multiple modes (\code{multiple = "NA"}).
 modes, it returns \code{NA} by default.
 }
 \details{
-If \code{x} is a string vector and \code{multiple} is \code{"min"} or \code{"max"}, the
-mode is selected lexically, just like \code{min(letters)} returns \code{"a"}. The
-\code{"mean"} and \code{"median"} options return \code{NA} with a warning. For factors,
-\code{"min"}, \code{"max"}, and \code{"median"} are errors, but \code{"mean"} returns \code{NA} with
-a warning. These are inconsistencies in base R.
+If \code{accept} is set to \code{FALSE}, the set of modes is obtained via
+\code{mode_all()} instead of the default \code{mode_possible_min()}. The purpose of
+the default is to avoid returning \code{NA} when some, though not all modes are
+known. Set it to \code{FALSE} if it's important to select the single mode from
+the complete set of modes.
+
+If \code{x} is a string vector and \code{multiple} is \code{"min"} or \code{"max"}, the mode is
+selected lexically, just like \code{min(letters)} returns \code{"a"}. The \code{"mean"}
+and \code{"median"} options return \code{NA} with a warning. For factors, \code{"min"},
+\code{"max"}, and \code{"median"} are errors, but \code{"mean"} returns \code{NA} with a
+warning. These are inconsistencies in base R.
 
 The \code{multiple} options \code{"first"} and \code{"last"} always select the mode that
 appears first or last in \code{x}. Index numbers, like \code{multiple = 2}, allow you
@@ -51,6 +61,10 @@ mode_single(c(1, 2, 3, 3, 4, 4))
 # `9` might be another mode:
 mode_single(c(8, 8, 9, NA))
 
+# Accept `8` anyways if it's
+# sufficient to just have any mode:
+mode_single(c(8, 8, 9, NA), accept = TRUE)
+
 # `1` is the most frequent value,
 # no matter what `NA` stands for:
 mode_single(c(1, 1, 1, 2, NA))
@@ -62,6 +76,7 @@ mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 \seealso{
 \itemize{
 \item \code{\link[=mode_first]{mode_first()}} for the first-appearing mode.
-\item \code{\link[=mode_all]{mode_all()}} for the full set of modes.
+\item \code{\link[=mode_all]{mode_all()}} for the complete set of modes.
+\item \code{\link[=mode_possible_min]{mode_possible_min()}} for the minimal set of modes.
 }
 }
