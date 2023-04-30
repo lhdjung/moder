@@ -6,9 +6,9 @@
 #' @param x A vector to search for its first mode.
 #' @param na.rm Boolean. Should missing values in `x` be removed before
 #'   computation proceeds? Default is `FALSE`.
-#' @param first_known Boolean. Should the first-appearing value known to be a
-#'   mode be accepted? If `FALSE` (the default), returns `NA` if a value that
-#'   appears earlier might be another mode due to missing values.
+#' @param accept Boolean. Should the first-appearing value known to be a mode be
+#'   accepted? If `FALSE` (the default), returns `NA` if a value that appears
+#'   earlier might be another mode due to missing values.
 #'
 #' @return The first mode (most frequent value) in `x`. If it can't be
 #'   determined because of missing values, returns `NA` instead.
@@ -42,11 +42,10 @@
 #' # earlier value might be a mode, too:
 #' mode_first(c(1, 2, 2, NA))
 #'
-#' # Accept the first-known mode with
-#' # `first_known = TRUE`:
-#' mode_first(c(1, 2, 2, NA), first_known = TRUE)
+#' # You may accept the first-known mode:
+#' mode_first(c(1, 2, 2, NA), accept = TRUE)
 
-mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
+mode_first <- function(x, na.rm = FALSE, accept = FALSE) {
   # Iteration in the for loop will only proceed on known `x` values:
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required, or remove `NA`s entirely if desired:
@@ -83,11 +82,11 @@ mode_first <- function(x, na.rm = FALSE, first_known = FALSE) {
   # (`n_mode2_na`), it's not known to be the mode. The same is true if there is
   # more than one unique mode (because some values are unknown). Otherwise, if
   # the highest count is higher than `n_mode2_na`, `mode1` is definitely the
-  # mode. It's also accepted as such if `first_known = TRUE` because it's known
+  # mode. It's also accepted as such if `accept = TRUE` because it's known
   # to be a mode, even if an earlier value is also one:
   if (n_mode1 < n_mode2_na || n_modes_unique > 1L) {
     return(x[NA_integer_])
-  } else if (n_mode1 > n_mode2_na || first_known) {
+  } else if (n_mode1 > n_mode2_na || accept) {
     return(mode1)
   }
   # Check whether there is only a single unique known value (i.e., `mode1`). If

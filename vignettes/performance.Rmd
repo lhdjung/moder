@@ -30,7 +30,7 @@ x <- c(2, 4, 6, NA, 3, 1, 1, 8, 1, 7)
 
 # Profiling `mode_first()`:
 na.rm <- FALSE
-first_known <- FALSE
+accept <- FALSE
 
 profvis(purrr::map(
   .x = rep(list(x), 100000),

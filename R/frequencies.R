@@ -43,7 +43,7 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
   if (na.rm || n_na == 0L) {
     # If the mode can be determined, count its occurrences among non-`NA`
     # values. This requires one mode of `x`, so we call `mode_first()` with
-    # `first_known = TRUE` (because position is irrelevant here):
+    # `accept = TRUE` (because position is irrelevant here):
     if (is.null(max_unique)) {
       check_factor_max_unique(x, n_na, "mode_frequency")
     }
