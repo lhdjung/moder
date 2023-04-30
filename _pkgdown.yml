@@ -28,11 +28,13 @@ reference:
   - mode_first
   - mode_all
   - mode_single
-  - mode_is_trivial
-  - mode_count
-  - mode_frequency
 - title: Possible modes
 - contents:
   - mode_possible_max
+- title: Metadata
+- contents:
+  - mode_count
   - mode_count_range
+  - mode_frequency
   - mode_frequency_range
+  - mode_is_trivial
