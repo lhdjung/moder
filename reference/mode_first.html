@@ -12,7 +12,7 @@ any other modes."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ any other modes.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mode_first</span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span>, first_known <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mode_first</span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span>, accept <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,10 +76,10 @@ any other modes.</p>
 computation proceeds? Default is <code>FALSE</code>.</p></dd>
 
 
-<dt>first_known</dt>
-<dd><p>Boolean. Should the first-appearing value known to be a
-mode be accepted? If <code>FALSE</code> (the default), returns <code>NA</code> if a value that
-appears earlier might be another mode due to missing values.</p></dd>
+<dt>accept</dt>
+<dd><p>Boolean. Should the first-appearing value known to be a mode be
+accepted? If <code>FALSE</code> (the default), returns <code>NA</code> if a value that appears
+earlier might be another mode due to missing values.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -126,9 +126,8 @@ determined because of missing values, returns <code>NA</code> instead.</p>
 <span class="r-in"><span><span class="fu">mode_first</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Accept the first-known mode with</span></span></span>
-<span class="r-in"><span><span class="co"># `first_known = TRUE`:</span></span></span>
-<span class="r-in"><span><span class="fu">mode_first</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span>, first_known <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># You may accept the first-known mode:</span></span></span>
+<span class="r-in"><span><span class="fu">mode_first</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="cn">NA</span><span class="op">)</span>, accept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 </code></pre></div>
     </div>

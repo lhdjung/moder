@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,8 +53,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="moder-development-version">moder (development version)<a class="anchor" aria-label="anchor" href="#moder-development-version"></a></h2>
-<ul><li>Further improvements to the documentation, including vignettes.</li>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="moder-020">moder 0.2.0<a class="anchor" aria-label="anchor" href="#moder-020"></a></h2>
+<ul><li>By default, <code><a href="../reference/mode_single.html">mode_single()</a></code> now returns a mode whenever it can find one (<code>accept = TRUE</code>).</li>
+<li>
+<code><a href="../reference/mode_first.html">mode_first()</a></code> had its <code>first_known</code> argument renamed to <code>accept</code> for consistency with <code><a href="../reference/mode_single.html">mode_single()</a></code>.</li>
+<li>
+<code><a href="../reference/mode_count.html">mode_count()</a></code> and all other metadata functions now have a <code>max_unique</code> argument, allowing users to encode knowledge about missing values in the analysis.</li>
+<li>Further improvements to the documentation, including vignettes.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="moder-011">moder 0.1.1<a class="anchor" aria-label="anchor" href="#moder-011"></a></h2>

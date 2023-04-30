@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,16 +84,17 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lhdjung/moder" class="external-link">moder</a></span><span class="op">)</span></span></code></pre></div>
-<p>In addition to finding a vector’s mode(s), you might be interested in
+<p>In addition to finding a vector’s modes, you might be interested in
 some metadata about them:</p>
 <ul>
 <li><p>A vector’s modal <strong>count</strong> is the number of its
 modes.</p></li>
 <li><p>A vector’s modal <strong>frequency</strong> is the number of
-times that a vector’s mode appears in the vector.</p></li>
+times that any single mode appears in the vector.</p></li>
 </ul>
-<p>This vignette briefly presents moder’s tools for determining these
-quantities.</p>
+<p>This vignette lays out all the functions for modal metadata. In the
+end, it talks about a special feature of these functions, the
+<code>max_unique</code> argument.</p>
 <div class="section level2">
 <h2 id="modal-count">Modal count<a class="anchor" aria-label="anchor" href="#modal-count"></a>
 </h2>
@@ -110,7 +111,7 @@ can only be 1 here because even if the <code>NA</code> is secretly
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_count.html">mode_count</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>All this only works if the full set of modes can be determined.
+<p>All of this only works if the full set of modes can be determined.
 Below, <code>NA</code> could secretly be <code>7</code>, <code>8</code>,
 or any other value. If it’s <code>8</code>, both numbers are equally
 frequent. Otherwise, <code>7</code> is the only mode. Since we lack this
@@ -120,7 +121,8 @@ information, the number of modes is unknown.</p>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>Use <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code> in such cases. It will determine
 the minimal and maximal number of modes, never returning
-<code>NA</code>:</p>
+<code>NA</code>. For more on <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code>, see below,
+section <em>Maximal number of unique values</em>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2</span></span></code></pre></div>
@@ -143,8 +145,10 @@ is unknown:</p>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>With <code><a href="../reference/mode_frequency_range.html">mode_frequency_range()</a></code>, at least the minimal and
 maximal frequencies can be determined. It never returns <code>NA</code>.
-There are four instances of <code>1</code> without counting the
-<code>NA</code>s, and six with counting it:</p>
+The minimum frequency supposes that no <code>NA</code>s represent the
+mode; the maximum frequency supposes that all of them do. In this way,
+there are four instances of <code>1</code> without counting the
+<code>NA</code>s, and six with counting them:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_frequency_range.html">mode_frequency_range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 6</span></span></code></pre></div>
@@ -164,6 +168,66 @@ others.</p>
 <span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="maximal-number-of-unique-values">Maximal number of unique values<a class="anchor" aria-label="anchor" href="#maximal-number-of-unique-values"></a>
+</h2>
+<p>All of moder’s functions for metadata, such as
+<code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code> and <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code>, have
+a <code>max_unique</code> argument. It allows you to state how many
+unique values your data can have at the maximum. Why is this important?
+The two functions care about possible modes beyond the known values. In
+other words, their results might depend on whether or not the
+<code>NA</code>s can mask modal values that don’t even occur among the
+known values! If that is possible, it presents an additional source of
+uncertainty.</p>
+<p>Conversely, <code>max_unique</code> limits the possible number of
+such wildcard modes. Specify it as an integer that is the maximal number
+of unique values. If there can be no other values than those already
+known, specify <code>max_unique</code> as <code>"known"</code> instead.
+Always use <code>"known"</code> if you have factor data or you will get
+a warning. (The idea behind factors is that all possible values are
+known at the outset.)</p>
+<p>Note that this argument does not represent an analytical decision but
+simply conveys your knowledge of the data to the computer. There is no
+meaningful choice to make: If the maximum number of unique values is
+known, you must specify <code>max_unique</code>; if not, you must not do
+so. Otherwise, you risk incorrect results if any values are missing. The
+default is <code>NULL</code> because the baseline assumption is always
+that nothing is known about missing values except for their number.</p>
+<p>Below is an example. If two of the <code>NA</code>s represent
+<code>8</code> and the other three stand for a third value, all values
+appear with the same frequency. In this case, all values would trivially
+be modes in the sense of <code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code>. This scenario
+is not certain at all, but it can’t be ruled out either, so the function
+returns <code>NA</code>. As <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code> shows, there
+could be three modes at most. (The minimum is always one if any values
+are missing.)</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 3</span></span></code></pre></div>
+<p>The picture is different if we know that each missing value must
+represent a known value, i.e., <code>7</code> or <code>8</code>. Even if
+two <code>NA</code>s stand for <code>8</code>, the other three can’t be
+evenly distributed across <code>7</code> and <code>8</code>, so one of
+these values must be more frequent than the other one. This makes the
+mode nontrivial. Also, there can only be one mode, so both the minimal
+and maximal mode counts are <code>1</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x3</span></span>
+<span><span class="co">#&gt; [1]  7  7  7  8 NA NA NA NA NA</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1 1</span></span></code></pre></div>
+<p>Three more functions have a <code>max_unique</code> parameter:
+<code><a href="../reference/mode_count.html">mode_count()</a></code>, <code><a href="../reference/mode_frequency.html">mode_frequency()</a></code>, and
+<code><a href="../reference/mode_frequency_range.html">mode_frequency_range()</a></code>. However, this only matters for
+corner cases. See <a href="https://github.com/lhdjung/moder/issues/1" class="external-link">this Github
+issue</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

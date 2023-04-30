@@ -12,7 +12,7 @@ modes, it returns NA by default."><!-- mathjax --><script src="https://cdnjs.clo
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ modes, it returns <code>NA</code> by default.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mode_single</span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span>, multiple <span class="op">=</span> <span class="st">"NA"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mode_single</span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span>, accept <span class="op">=</span> <span class="cn">TRUE</span>, multiple <span class="op">=</span> <span class="st">"NA"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,6 +74,12 @@ modes, it returns <code>NA</code> by default.</p>
 <dt>na.rm</dt>
 <dd><p>Boolean. Should missing values in <code>x</code> be removed before
 computation proceeds? Default is <code>FALSE</code>.</p></dd>
+
+
+<dt>accept</dt>
+<dd><p>Boolean. Should the minimum set of modes be accepted (to select
+the single mode from)? If set to <code>FALSE</code>, insists on the complete set and
+returns <code>NA</code> if it can't be determined. Default is <code>TRUE</code>.</p></dd>
 
 
 <dt>multiple</dt>
@@ -94,11 +100,16 @@ also returned if there are multiple modes (<code>multiple = "NA"</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>If <code>x</code> is a string vector and <code>multiple</code> is <code>"min"</code> or <code>"max"</code>, the
-mode is selected lexically, just like <code>min(letters)</code> returns <code>"a"</code>. The
-<code>"mean"</code> and <code>"median"</code> options return <code>NA</code> with a warning. For factors,
-<code>"min"</code>, <code>"max"</code>, and <code>"median"</code> are errors, but <code>"mean"</code> returns <code>NA</code> with
-a warning. These are inconsistencies in base R.</p>
+    <p>If <code>accept</code> is set to <code>FALSE</code>, the set of modes is obtained via
+<code><a href="mode_all.html">mode_all()</a></code> instead of the default <code><a href="mode-possible.html">mode_possible_min()</a></code>. The purpose of
+the default is to avoid returning <code>NA</code> when some, though not all modes are
+known. Set it to <code>FALSE</code> if it's important to select the single mode from
+the complete set of modes.</p>
+<p>If <code>x</code> is a string vector and <code>multiple</code> is <code>"min"</code> or <code>"max"</code>, the mode is
+selected lexically, just like <code>min(letters)</code> returns <code>"a"</code>. The <code>"mean"</code>
+and <code>"median"</code> options return <code>NA</code> with a warning. For factors, <code>"min"</code>,
+<code>"max"</code>, and <code>"median"</code> are errors, but <code>"mean"</code> returns <code>NA</code> with a
+warning. These are inconsistencies in base R.</p>
 <p>The <code>multiple</code> options <code>"first"</code> and <code>"last"</code> always select the mode that
 appears first or last in <code>x</code>. Index numbers, like <code>multiple = 2</code>, allow you
 to select more flexibly. If <code>multiple</code> is a function, its output must be
@@ -108,7 +119,8 @@ length 1.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index">
 <ul><li><p><code><a href="mode_first.html">mode_first()</a></code> for the first-appearing mode.</p></li>
-<li><p><code><a href="mode_all.html">mode_all()</a></code> for the full set of modes.</p></li>
+<li><p><code><a href="mode_all.html">mode_all()</a></code> for the complete set of modes.</p></li>
+<li><p><code><a href="mode-possible.html">mode_possible_min()</a></code> for the minimal set of modes.</p></li>
 </ul></div>
     </div>
 
@@ -126,7 +138,12 @@ length 1.</p>
 <span class="r-in"><span><span class="co"># Can't determine the modes here --</span></span></span>
 <span class="r-in"><span><span class="co"># `9` might be another mode:</span></span></span>
 <span class="r-in"><span><span class="fu">mode_single</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Accept `8` anyways if it's</span></span></span>
+<span class="r-in"><span><span class="co"># sufficient to just have any mode:</span></span></span>
+<span class="r-in"><span><span class="fu">mode_single</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">8</span>, <span class="fl">9</span>, <span class="cn">NA</span><span class="op">)</span>, accept <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># `1` is the most frequent value,</span></span></span>
 <span class="r-in"><span><span class="co"># no matter what `NA` stands for:</span></span></span>
