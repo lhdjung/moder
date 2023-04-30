@@ -37,9 +37,9 @@ mean(x1)
 median(x1)
 ```
 
-We don't know the true value behind `NA`, so we don't know how it would influence the mean or the median. This is always true for the mean (but not for the median).[^1] The mode is a little different: Missing values will sometimes, but not always, render it unknown. Therefore, mode implementations require special care and nuance.
+We don't know the true value behind `NA`, so we don't know how it would influence the mean or the median. This is always true for the mean (but not for the median).[^1] What about the mode? Missing values will sometimes, but not always, render it unknown. Therefore, mode implementations require special care and nuance.
 
-[^1]: Strictly speaking, the median has some of the same complexities as the mode. The median of a vector like `c(1, 1, NA)` or even `c(1, 1, 1, 1, 2, 2, NA)` is known to be `1`, regardless of the value behind `NA`. This raises some questions about the way `stats::median.default()` handles missing values.
+[^1]: The median has some of the same complexities as the mode. In a vector like `c(1, 1, NA)` or even `c(1, 1, 1, 1, 2, 2, NA)`, the median is known to be `1`, regardless of the value behind `NA`. This raises some questions about the way `stats::median.default()` handles missing values. See the [naidem](https://github.com/lhdjung/naidem) package for a solution to this issue.
 
 In `x1`, we know that `7` is a mode. It appears three times, and even if the `NA` was actually an `8` or a `9`, that value would only appear three times, as well. This means we know one mode, but not necessarily the whole set of modes. `mode_first()` is happy to return `7`, but `mode_all()` insists on the complete set of modes. It can't be determined, so the function returns `NA`:
 
@@ -123,15 +123,27 @@ This approach makes sure to inform the user if the data can't answer their quest
 
 ### The first known mode
 
-`mode_first()` has a Boolean `first_known` argument that is `FALSE` by default. If set to `TRUE`, the function will pick the first value known to be a mode. This means it won't strictly look for the first-appearing value that is a mode, but accept the first value that is a mode without counting `NA`s in its favor:
+`mode_first()` has a Boolean `accept` argument that is `FALSE` by default. If set to `TRUE`, the function will pick the first value known to be a mode. This means it won't strictly look for the first-appearing value that is a mode, but accept the first value that is a mode without counting `NA`s in its favor:
 
 ```{r}
 x4 <- c(6, 4, 4, 4, NA, NA, 1)
 mode_first(x4)
-mode_first(x4, first_known = TRUE)
+mode_first(x4, accept = TRUE)
 ```
 
-The `NA`s might both be `6`, and a known `6` appears at the very start, so this might be the first mode. It's unclear, so we get `NA` by default. However, `4` is the first value that we *know* is a mode. Setting `first_known` to `TRUE` makes the function pragmatically accept `4` --- we want to find a mode, after all, and we know one.
+The `NA`s might both be `6`, and a known `6` appears at the very start, so this might be the first mode. It's unclear, so we get `NA` by default. However, `4` is the first value that we *know* is a mode. Setting `accept` to `TRUE` makes the function pragmatically accept `4` --- we want to find a mode, after all, and we know one.
+
+### Minimum and complete sets of modes
+
+In `mode_single()`, `accept` is `TRUE` by default. This avoids returning `NA` when some, but not all modes are known. Set it to `FALSE` if it's important to draw the single mode from the complete set of modes, not from the minimum that just so happens to be known. If the complete set can't be determined, the function returns `NA`:
+
+```{r}
+x5 <- c(4, 4, 4, 7, 7, NA)
+mode_single(x5)
+mode_single(x5, accept = FALSE)
+```
+
+Why is this different from `mode_first()` with its `accept = FALSE` default? The latter function specifically asks for the first mode, so the default should be to get that or `NA`. However, `mode_single()` just wants one mode, so it's fine to accept any one by default even if not all modes are known.
 
 ## Theory
 
