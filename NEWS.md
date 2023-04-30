@@ -1,6 +1,8 @@
 # moder 0.2.0
 
--   All metadata functions now have a `max_unique` argument, allowing users to encode knowledge about missing values in the analysis.
+-   By default, `mode_single()` now returns a mode whenever it can find one (`accept = TRUE`).
+-   `mode_first()` had its `first_known` argument renamed to `accept` for consistency with `mode_single()`.
+-   `mode_count()` and all other metadata functions now have a `max_unique` argument, allowing users to encode knowledge about missing values in the analysis.
 -   Further improvements to the documentation, including vignettes.
 
 # moder 0.1.1
