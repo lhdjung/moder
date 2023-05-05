@@ -1,3 +1,5 @@
+# moder (development version)
+
 # moder 0.2.1
 
 Patch for CRAN submission.
