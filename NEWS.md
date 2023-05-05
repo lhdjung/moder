@@ -1,3 +1,7 @@
+# moder 0.2.1
+
+Patch for CRAN submission.
+
 # moder 0.2.0
 
 -   `mode_count()` and all other metadata functions now have a `max_unique` argument, allowing users to encode knowledge about missing values in the analysis.
