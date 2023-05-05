@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Modal counts and frequencies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
 ```{r, include=FALSE}
@@ -89,6 +90,8 @@ mode_is_trivial(c(1, 1, 2, 2, 3, 3))
 mode_is_trivial(c(1, 1, 1, 2, 3))
 ```
 
+The mode is clearly not a useful concept in the first two cases [cf. @härdle2015, p. 40]. Some authors say that the mode is not defined if each value appears only once [@manikandan2011, p. 214]. However, it is certainly possible for the maximal frequency to be 1, so the only way for such distributions not to have any modal values would be a specific exception in the definition of the mode. The same applies to uniformly distributed data in general. No such exception appears in any definition that I am aware of. Even if it were to be suggested, I think the more elegant solution would be to accept all values of uniformly distributed data as trivially modal.
+
 ## Maximal number of unique values
 
 All of moder's functions for metadata, such as `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
@@ -114,3 +117,5 @@ mode_count_range(x3, max_unique = "known")
 ```
 
 Three more functions have a `max_unique` parameter: `mode_count()`, `mode_frequency()`, and `mode_frequency_range()`. However, this only matters for corner cases. See [this Github issue](https://github.com/lhdjung/moder/issues/1).
+
+# References
