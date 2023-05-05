@@ -1,11 +1,12 @@
 Package: moder
-Title: Mode Estimation in R
+Title: Mode Estimation
 Version: 0.2.0
 Authors@R: 
     person("Lukas", "Jung", , "jung-lukas@gmx.net", role = c("aut", "cre"))
 Description: Determines single or multiple modes (most frequent values).
-    Checks if missing values make this impossible, and returns `NA`
-    in this case. Dependency-free source code.
+    Checks if missing values make this impossible, and returns 'NA'
+    in this case. Dependency-free source code. See Franzese and Iuliano (2019)
+    <doi:10.1016/B978-0-12-809633-8.20354-3>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
