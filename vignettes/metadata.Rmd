@@ -103,17 +103,17 @@ Note that this argument does not represent an analytical decision but simply con
 Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
 
 ```{r}
-x3 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
-mode_is_trivial(x3)
-mode_count_range(x3)
+x1 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
+mode_is_trivial(x1)
+mode_count_range(x1)
 ```
 
 The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the mode nontrivial. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
 
 ```{r}
-x3
-mode_is_trivial(x3, max_unique = "known")
-mode_count_range(x3, max_unique = "known")
+x1
+mode_is_trivial(x1, max_unique = "known")
+mode_count_range(x1, max_unique = "known")
 ```
 
 Three more functions have a `max_unique` parameter: `mode_count()`, `mode_frequency()`, and `mode_frequency_range()`. However, this only matters for corner cases. See [this Github issue](https://github.com/lhdjung/moder/issues/1).
