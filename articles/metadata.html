@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">moder</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,9 +95,9 @@ times that any single mode appears in the vector.</p></li>
 <p>This vignette lays out all the functions for modal metadata. In the
 end, it talks about a special feature of these functions, the
 <code>max_unique</code> argument.</p>
-<div class="section level2">
-<h2 id="modal-count">Modal count<a class="anchor" aria-label="anchor" href="#modal-count"></a>
-</h2>
+<div class="section level3">
+<h3 id="modal-count">Modal count<a class="anchor" aria-label="anchor" href="#modal-count"></a>
+</h3>
 <p><code><a href="../reference/mode_count.html">mode_count()</a></code> computes the number of modes:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_count.html">mode_count</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
@@ -127,9 +127,9 @@ section <em>Maximal number of unique values</em>.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">8</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="modal-frequency">Modal frequency<a class="anchor" aria-label="anchor" href="#modal-frequency"></a>
-</h2>
+<div class="section level3">
+<h3 id="modal-frequency">Modal frequency<a class="anchor" aria-label="anchor" href="#modal-frequency"></a>
+</h3>
 <p><code><a href="../reference/mode_frequency.html">mode_frequency()</a></code> counts the instances of a vector’s
 modes in the vector:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -152,9 +152,9 @@ there are four instances of <code>1</code> without counting the
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/mode_frequency_range.html">mode_frequency_range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4 6</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="trivial-modes">Trivial modes<a class="anchor" aria-label="anchor" href="#trivial-modes"></a>
-</h3>
+<div class="section level4">
+<h4 id="trivial-modes">Trivial modes<a class="anchor" aria-label="anchor" href="#trivial-modes"></a>
+</h4>
 <p>Related to frequencies, <code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code> flags cases
 where the mode is not meaningful. It returns <code>TRUE</code> if all
 values are equally frequent. Modality is trivial in this case because it
@@ -167,11 +167,21 @@ others.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<p>The mode is clearly not a useful concept in the first two cases <span class="citation">(cf. Härdle, Klinke, and Rönz 2015, 40)</span>. Some
+authors say that the mode is not defined if each value appears only once
+<span class="citation">(Manikandan 2011, 214)</span>. However, it is
+certainly possible for the maximal frequency to be 1, so the only way
+for such distributions not to have any modal values would be a specific
+exception in the definition of the mode. The same applies to uniformly
+distributed data in general. No such exception appears in any definition
+that I am aware of. Even if it were to be suggested, I think the more
+elegant solution would be to accept all values of uniformly distributed
+data as trivially modal.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="maximal-number-of-unique-values">Maximal number of unique values<a class="anchor" aria-label="anchor" href="#maximal-number-of-unique-values"></a>
-</h2>
+<div class="section level3">
+<h3 id="maximal-number-of-unique-values">Maximal number of unique values<a class="anchor" aria-label="anchor" href="#maximal-number-of-unique-values"></a>
+</h3>
 <p>All of moder’s functions for metadata, such as
 <code><a href="../reference/mode_is_trivial.html">mode_is_trivial()</a></code> and <code><a href="../reference/mode_count_range.html">mode_count_range()</a></code>, have
 a <code>max_unique</code> argument. It allows you to state how many
@@ -204,10 +214,10 @@ returns <code>NA</code>. As <code><a href="../reference/mode_count_range.html">m
 could be three modes at most. (The minimum is always one if any values
 are missing.)</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] NA</span></span>
-<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 3</span></span></code></pre></div>
 <p>The picture is different if we know that each missing value must
 represent a known value, i.e., <code>7</code> or <code>8</code>. Even if
@@ -217,17 +227,33 @@ these values must be more frequent than the other one. This makes the
 mode nontrivial. Also, there can only be one mode, so both the minimal
 and maximal mode counts are <code>1</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x3</span></span>
+<code class="sourceCode R"><span><span class="va">x1</span></span>
 <span><span class="co">#&gt; [1]  7  7  7  8 NA NA NA NA NA</span></span>
-<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_is_trivial.html">mode_is_trivial</a></span><span class="op">(</span><span class="va">x1</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
-<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x3</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mode_count_range.html">mode_count_range</a></span><span class="op">(</span><span class="va">x1</span>, max_unique <span class="op">=</span> <span class="st">"known"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 1</span></span></code></pre></div>
 <p>Three more functions have a <code>max_unique</code> parameter:
 <code><a href="../reference/mode_count.html">mode_count()</a></code>, <code><a href="../reference/mode_frequency.html">mode_frequency()</a></code>, and
 <code><a href="../reference/mode_frequency_range.html">mode_frequency_range()</a></code>. However, this only matters for
 corner cases. See <a href="https://github.com/lhdjung/moder/issues/1" class="external-link">this Github
 issue</a>.</p>
+</div>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-härdle2015" class="csl-entry">
+Härdle, Wolfgang Karl, Sigbert Klinke, and Bernd Rönz. 2015.
+<em>Introduction to Statistics: Using Interactive MM*Stat Elements</em>.
+Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-17704-5" class="external-link">https://doi.org/10.1007/978-3-319-17704-5</a>.
+</div>
+<div id="ref-manikandan2011" class="csl-entry">
+Manikandan, S. 2011. <span>“Measures of Central Tendency: Median and
+Mode.”</span> <em>Journal of Pharmacology and Pharmacotherapeutics</em>
+2 (3): 214–15. <a href="https://doi.org/10.4103/0976-500X.83300" class="external-link">https://doi.org/10.4103/0976-500X.83300</a>.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
