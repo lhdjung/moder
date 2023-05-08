@@ -21,10 +21,10 @@ for this!
 
 ## Installation
 
-You can install the development version of moder like so:
+You can install moder like so:
 
 ``` r
-remotes::install_github("lhdjung/moder")
+install.packages("moder")
 ```
 
 ## Get started

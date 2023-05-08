@@ -27,10 +27,10 @@ Mode functions fill a gap in measures of central tendency in R. `mean()` and `me
 
 ## Installation
 
-You can install the development version of moder like so:
+You can install moder like so:
 
 ``` r
-remotes::install_github("lhdjung/moder")
+install.packages("moder")
 ```
 
 ## Get started
