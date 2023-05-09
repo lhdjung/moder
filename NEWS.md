@@ -1,5 +1,7 @@
 # moder (development version)
 
+-   Fixed a bug in mode_count_range() that displayed a maximum of 0 for certain kinds of input.
+
 # moder 0.2.1
 
 Patch for CRAN submission.

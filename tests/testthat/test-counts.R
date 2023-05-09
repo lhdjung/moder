@@ -105,6 +105,7 @@ test_that("`mode_count_range()` works correctly with non-`NULL` `max_unique`", {
   expect_equal(mode_count_range(c(x, rep(NA,  8L)), max_unique = 5), c(1L, 2L))
   expect_equal(mode_count_range(c(x, rep(NA,  7L)), max_unique = 5), c(1L, 1L))
   expect_equal(mode_count_range(c(x, rep(NA,  6L)), max_unique = 5), c(1L, 5L))
+  expect_equal(mode_count_range(c(1, 1, NA, NA, NA, NA), max_unique = 2), c(1L, 2L))
 })
 
 test_that("the warnings for factors in `mode_count_range()` work correctly", {

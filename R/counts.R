@@ -170,7 +170,12 @@ mode_count_range <- function(x, max_unique = NULL) {
     if (n_na_new_vals < frequency_max && n_na_surplus %% n_unique_x == 0L) {
       return(c(1L, n_unique_x))
     } else if (n_na_new_vals < n_na_surplus) {
-      return(c(1L, (n_na_surplus - n_na_new_vals) %% max_unique))
+      n_na_beyond_new_vals <- (n_na_surplus - n_na_new_vals) %% max_unique
+      if (n_na_beyond_new_vals == 0L) {
+        return(c(1L, n_unique_x + (n_na_new_vals / frequency_max)))
+      } else {
+        return(c(1L, n_na_beyond_new_vals))
+      }
     } else if (n_na_new_vals == n_na_surplus) {
       return(c(1L, max_unique))
     } else {
