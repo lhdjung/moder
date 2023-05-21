@@ -13,7 +13,9 @@
 #' @details The function returns `TRUE` whenever `x` has length < 3 because no
 #'   value is more frequent than another one. Otherwise, it returns `NA` in
 #'   these cases:
-#'   - Some `x` values are missing and all known values are equal. Thus, it is
+#'   - Some `x` values are missing, all known values are equal, and the number
+#'   of missing values is divisible by the number of unique known values. Thus,
+#'   the missings don't necessarily break the tie among known values, and it is
 #'   unknown whether there is a value with a different frequency.
 #'   - All known values are modes if the `NA`s "fill up" the non-modal values
 #'   exactly, i.e., without any `NA`s remaining.
