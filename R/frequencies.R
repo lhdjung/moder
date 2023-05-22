@@ -38,33 +38,33 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
   rm(n_x)
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, "mode_frequency")
+  }
   # The modal frequency can't be determined if any values are missing because
   # each of them might increase the frequency:
   if (na.rm || n_na == 0L) {
     # If the mode can be determined, count its occurrences among non-`NA`
     # values. This requires one mode of `x`, so we call `mode_first()` with
     # `accept = TRUE` (because position is irrelevant here):
-    if (is.null(max_unique)) {
-      check_factor_max_unique(x, n_na, "mode_frequency")
-    }
     mode <- mode_first(x, na.rm, TRUE)
     return(length(x[x == mode]))
   } else if (is.null(max_unique)) {
-    check_factor_max_unique(x, n_na, "mode_frequency")
     return(NA_integer_)
   }
   unique_x <- unique(x)
   max_unique <- handle_max_unique_input(
     x, max_unique, length(unique_x), n_na, "mode_frequency"
   )
-  if (n_na == 1L && all(unique_x %in% mode_all_if_no_na(x))) {
-    if (max_unique == length(unique_x)) {
-      return(as.integer(length(x) / length(unique_x) + 1))
-    } else {
-      return(NA_integer_)
-    }
+  if (
+    n_na == 1L &&
+    max_unique == length(unique_x) &&
+    all(unique_x %in% mode_all_if_no_na(x))
+  ) {
+    as.integer(length(x) / length(unique_x) + 1)
+  } else {
+    NA_integer_
   }
-  NA_integer_
 }
 
 
