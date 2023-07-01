@@ -98,7 +98,7 @@ mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
 #' # there are two modes:
 #' mode_count_range(c(7, 7, 7, 8, 8, NA))
 #'
-#' # But now, there is now way for `8` to be
+#' # But now, there is no way for `8` to be
 #' # as frequent as `7`:
 #' mode_count_range(c(7, 7, 7, 7, 8, 8, NA))
 #'
