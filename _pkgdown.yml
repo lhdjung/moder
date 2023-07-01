@@ -4,7 +4,7 @@ home:
   title: Mode estimation in R
   description: |
     The moder package determines single or multiple modes
-    (most frequent values). By default, its functions check whether
+    (most frequent values). By default, its 'mode_' functions check whether
     missing values make this impossible, and return `NA` in this case.
     They have no dependencies.
 template:
@@ -38,3 +38,7 @@ reference:
   - mode_frequency
   - mode_frequency_range
   - mode_is_trivial
+- title: Frequency grids
+- contents:
+  - frequency_grid_df
+  - frequency_grid_plot

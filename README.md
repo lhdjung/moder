@@ -10,8 +10,8 @@
 <!-- badges: end -->
 
 The moder package determines single or multiple modes (most frequent
-values). By default, its functions check whether missing values make
-this impossible, and return `NA` in this case. They have no
+values). By default, its `mode_` functions check whether missing values
+make this impossible, and return `NA` in this case. They have no
 dependencies.
 
 Mode functions fill a gap in measures of central tendency in R. `mean()`

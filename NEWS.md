@@ -1,6 +1,7 @@
 # moder (development version)
 
--   Fixed a bug in mode_count_range() that displayed a maximum of 0 for certain kinds of input.
+-   New functions `frequency_grid_df()` and `frequency_grid_plot()` to analyze and visualize possible frequency distributions given missing values.
+-   Fixed a bug in `mode_count_range()` that displayed a maximum of 0 for certain kinds of input.
 
 # moder 0.2.1
 
