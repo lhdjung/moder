@@ -76,14 +76,10 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_na <- n_x - length(x)
   rm(n_x)
   unique_x <- unique(x)
-  # This chunk should be part of each function that has a `max_unique` argument:
-  if (is.null(max_unique)) {
-    check_factor_max_unique(x, n_na, "mode_is_trivial")
-  } else {
-    max_unique <- handle_max_unique_input(
-      x, max_unique, length(unique_x), n_na, "mode_is_trivial"
-    )
-  }
+  max_unique <- handle_max_unique_input(
+    x, max_unique, length(unique_x), n_na, "mode_is_trivial"
+  )
+
   # If some values are missing (from a length >= 3 vector) and all known values
   # are equal, it's unknown whether there is a value with a different frequency:
   if (n_na > 0L && length(unique_x) == 1L) {
