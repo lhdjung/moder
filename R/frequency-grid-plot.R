@@ -93,7 +93,6 @@ frequency_grid_plot <- function(x,
     # `freq_max_known` is the modal frequency among known values:
     if (any(freq_table$is_supermodal)) {
       freq_max_known <- which(freq_table$is_supermodal)[1L] - 1L
-      # plot_out <- plot_out +
       ggplot2::geom_hline(yintercept = freq_max_known + 0.5, linetype = 2)
     } else {
       warning(paste(
@@ -106,11 +105,11 @@ frequency_grid_plot <- function(x,
     NULL
   }
 
-  # Build the plot:
+  # Build and return the plot:
   ggplot2::ggplot(freq_table, ggplot2::aes(x = x, y = freq)) +
     ggplot2::geom_point(
       shape = ifelse(freq_table$is_missing, shape_missing, shape_non_missing),
-      size  = ifelse(freq_table$is_missing, size_missing,  size_non_missing),
+      size  = ifelse(freq_table$is_missing, size_missing , size_non_missing),
       color = ifelse(freq_table$is_missing, color_missing, color_non_missing),
       alpha = ifelse(freq_table$is_missing, alpha_missing, alpha_non_missing)
     ) +
