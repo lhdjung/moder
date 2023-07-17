@@ -165,6 +165,10 @@ In a vector like `c(1, 1, NA)`, the mode is clearly `1`, no matter what the `NA`
 
 Again, think of the parallels to base R. `NA ^ 2` returns `NA`, but `NA ^ 0` returns `1`. In the second case, we don't need to know the true value behind `NA` to determine the result. Such knowledge is built into R (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)), and I think function design should emulate this pattern to keep the semantics of `NA` consistent across contexts.
 
+It's not just R that works this way: [SQL](https://modern-sql.com/concept/three-valued-logic#logical-operations), [Python (pandas)](https://pandas.pydata.org/docs/user_guide/missing_data.html#propagation-in-arithmetic-and-comparison-operations) and, to a large degree, [Julia](https://docs.julialang.org/en/v1/manual/missing/#Logical-operators)[^2] implement the same system of logic, called [Kleene logic](https://en.wikipedia.org/wiki/Three-valued_logic#Kleene_and_Priest_logics).
+
+[^2]: In Julia, `missing^0` returns `missing` instead of `1`. This doesn't correspond to Kleene logic, but nor does R's `median()` function. See footnote 1.
+
 ### `NA` return types
 
 If a function that is supposed to return one or more modes returns `NA` instead, this `NA` has the same type as the input vector, `x`. Functions that attempt to count modes or to determine their frequency only ever return these integers or `NA_integer_`, i.e., a missing value of type integer. However, the differences between `NA` types are not very important (and perhaps not widely known). They can usually be disregarded.
