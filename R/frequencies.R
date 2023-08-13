@@ -104,11 +104,11 @@ mode_frequency_range <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  rm(n_x)
   # If all values are missing, the range is highly uncertain (see docs):
   if (length(x) == 0L) {
     return(c(1L, n_x))
   }
+  rm(n_x)
   if (!is.null(max_unique)) {
     unique_x <- unique(x)
     max_unique <- handle_max_unique_input(
