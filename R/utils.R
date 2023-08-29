@@ -129,3 +129,14 @@ handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
   }
 }
 
+
+# Warning after deprecation check in `mode_possible_min()` and
+# `mode_possible_max()`:
+mode_possible_warn_multiple <- function() {
+  warning(paste(
+    "The `multiple` argument was renamed to `accept` in moder 0.3.0.",
+    "`multiple` no longer has any effect. It will be removed in",
+    "a future version."
+  ))
+}
+
