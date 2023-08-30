@@ -13,15 +13,16 @@
 #' @details If `accept = TRUE`, the functions return multiple values that may or
 #'   may not be modes depending on the true values behind `NA`s. Why is this
 #'   disabled by default? In cases where multiple unique values would be modes
-#'   if and only if one or more missing values represented them, any values that
-#'   are not represented by enough `NA`s would not be modes. This makes it
-#'   unclear which unique values are part of the minimal and maximal sets of
-#'   modes, so the default is to return `NA` in these cases.
+#'   if and only if one or more missing values represented them but there are
+#'   not enough missing values to represent all of them, any values that are not
+#'   represented by enough `NA`s would not be modes. This makes it unclear which
+#'   unique values are part of the minimal and maximal sets of modes, so the
+#'   default of `accept` is to return `NA` in these cases.
 #'
-#' @return By default, a vector with the minimal or maximal possible sets of
-#'   modes (values tied for most frequent) in `x`. If the functions can't
-#'   determine these possible modes because of missing values, they return `NA`
-#'   by default (`accept = FALSE`).
+#' @return Vector of the same type as `x`. By default, it contains the minimal
+#'   or maximal possible sets of modes (values tied for most frequent) in `x`.
+#'   If the functions can't determine these possible modes because of missing
+#'   values, they return `NA`.
 #'
 #' @export
 #'
@@ -131,11 +132,6 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
     # because the faster `mode_all_if_no_na()` can't take `numeric(0)`
     # arguments, which might occur here.
     modes <- mode_all(x, FALSE)
-    # More than one mode per level means there is a pseudo-tie that can be
-    # broken by `NA`s, so there is no clear maximum in this case:
-    if (length(modes) > 1L && !accept) {
-      return(x[NA_integer_])
-    }
     # This vector will ultimately be returned, but other values may be added to
     # it:
     modes_out <- c(modes_out, unique(x[x %in% modes]))
@@ -143,10 +139,9 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
     modes_next_level <- mode_all(x[!x %in% modes], FALSE)
     n_modes <- length(x[x %in% modes[[1L]]])
     n_modes_next_level <- length(x[x %in% modes_next_level[[1L]]])
-    n_diff <- n_modes - n_modes_next_level
     n_max <- max(n_max, n_modes)
     x <- x[!x %in% modes]
-    n_empty_slots <- length(modes_next_level) * n_diff
+    n_empty_slots <- length(modes_next_level) * (n_modes - n_modes_next_level)
     # In case the remaining `NA`s can't fill up the empty slots, there won't be
     # another loop cycle:
     if (n_nas_left < n_empty_slots) {
@@ -174,6 +169,12 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
       # the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
       n_nas_left <- n_nas_left - max(n_empty_slots, 1L)
+      # If there is more than one mode per level and there are not enough `NA`s
+      # to fill all of them up, there is a pseudo-tie that can be broken by
+      # `NA`s, so there is no clear maximum in this case:
+      if (length(modes) > 1L && n_nas_left < n_empty_slots && !accept) {
+        return(x[NA_integer_])
+      }
     }
   }
   # Finally, return the vector of unique possible modes -- or `NA` if there are

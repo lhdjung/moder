@@ -21,10 +21,10 @@ necessarily return the minimal or maximal sets of modes but all values that
 \code{accept}.}
 }
 \value{
-By default, a vector with the minimal or maximal possible sets of
-modes (values tied for most frequent) in \code{x}. If the functions can't
-determine these possible modes because of missing values, they return \code{NA}
-by default (\code{accept = FALSE}).
+Vector of the same type as \code{x}. By default, it contains the minimal
+or maximal possible sets of modes (values tied for most frequent) in \code{x}.
+If the functions can't determine these possible modes because of missing
+values, they return \code{NA}.
 }
 \description{
 \code{mode_possible_min()} and \code{mode_possible_max()} determine the
@@ -34,10 +34,11 @@ minimal and maximal sets of modes, given the number of missing values.
 If \code{accept = TRUE}, the functions return multiple values that may or
 may not be modes depending on the true values behind \code{NA}s. Why is this
 disabled by default? In cases where multiple unique values would be modes
-if and only if one or more missing values represented them, any values that
-are not represented by enough \code{NA}s would not be modes. This makes it
-unclear which unique values are part of the minimal and maximal sets of
-modes, so the default is to return \code{NA} in these cases.
+if and only if one or more missing values represented them but there are
+not enough missing values to represent all of them, any values that are not
+represented by enough \code{NA}s would not be modes. This makes it unclear which
+unique values are part of the minimal and maximal sets of modes, so the
+default of \code{accept} is to return \code{NA} in these cases.
 }
 \examples{
 # "a" is guaranteed to be a mode,

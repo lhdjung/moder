@@ -16,6 +16,7 @@ x14 <- c(1, 1, 2, 2, 3, NA)
 x15 <- c(1, NA, NA)
 x16 <- c(1, 1, 1, 2, 2, 3, 3, NA)
 x17 <- c(1, 1, 2, 2, NA, NA)
+x18 <- c(1, 1, 1, 2, 2, 3, 3, NA, NA, NA)
 
 utils::globalVariables(c(
   x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17,

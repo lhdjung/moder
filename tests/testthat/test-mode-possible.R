@@ -17,9 +17,10 @@ test_that("`mode_possible_min()` works correctly", {
   expect_equal(mode_possible_min(x15), NA_real_)
   expect_equal(mode_possible_min(x16), 1)
   expect_equal(mode_possible_min(x17), NA_real_)
+  expect_equal(mode_possible_min(x18), NA_real_)
 })
 
-test_that("`mode_possible_min()` works correctly with `multiple = TRUE`", {
+test_that("`mode_possible_min()` works correctly with `accept = TRUE`", {
   expect_equal(mode_possible_min(x1 , TRUE), 9)
   expect_equal(mode_possible_min(x2 , TRUE), NA_real_)
   expect_equal(mode_possible_min(x3 , TRUE), 7)
@@ -37,6 +38,7 @@ test_that("`mode_possible_min()` works correctly with `multiple = TRUE`", {
   expect_equal(mode_possible_min(x15, TRUE), NA_real_)
   expect_equal(mode_possible_min(x16, TRUE), 1)
   expect_equal(mode_possible_min(x17, TRUE), c(1, 2))
+  expect_equal(mode_possible_min(x18, TRUE), NA_real_)
 })
 
 
@@ -47,7 +49,7 @@ test_that("`mode_possible_max()` works correctly by default", {
   expect_equal(mode_possible_max(x2 ), c(2, 1))
   expect_equal(mode_possible_max(x3 ), 7)
   expect_equal(mode_possible_max(x4 ), c("a", "b"))
-  expect_equal(mode_possible_max(x5 ), NA_real_)
+  expect_equal(mode_possible_max(x5 ), c(1, 2))
   expect_equal(mode_possible_max(x6 ), 5)
   expect_equal(mode_possible_max(x7 ), c("y", "z"))
   expect_equal(mode_possible_max(x8 ), c(1, 2))
@@ -61,9 +63,10 @@ test_that("`mode_possible_max()` works correctly by default", {
   expect_equal(mode_possible_max(x16), NA_real_)
   expect_equal(mode_possible_max(c(x16, 1)), 1)
   expect_equal(mode_possible_max(x17), NA_real_)
+  expect_equal(mode_possible_max(x18), c(1, 2, 3))
 })
 
-test_that("`mode_possible_max()` works correctly with `multiple = TRUE`", {
+test_that("`mode_possible_max()` works correctly with `accept = TRUE`", {
   expect_equal(mode_possible_max(x1 , TRUE), 9)
   expect_equal(mode_possible_max(x2 , TRUE), c(2, 1))
   expect_equal(mode_possible_max(x3 , TRUE), 7)
@@ -81,5 +84,6 @@ test_that("`mode_possible_max()` works correctly with `multiple = TRUE`", {
   expect_equal(mode_possible_max(x15, TRUE), c(1))
   expect_equal(mode_possible_max(x16, TRUE), c(1, 2, 3))
   expect_equal(mode_possible_max(x17, TRUE), c(1, 2))
+  expect_equal(mode_possible_max(x18, TRUE), c(1, 2, 3))
 })
 
