@@ -9,10 +9,10 @@ mode_first(x, na.rm = FALSE, accept = FALSE)
 \arguments{
 \item{x}{A vector to search for its first mode.}
 
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+\item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
-\item{accept}{Boolean. Should the first-appearing value known to be a mode be
+\item{accept}{Logical. Should the first-appearing value known to be a mode be
 accepted? If \code{FALSE} (the default), returns \code{NA} if a value that appears
 earlier might be another mode due to missing values.}
 }

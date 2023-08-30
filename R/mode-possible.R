@@ -4,7 +4,7 @@
 #'   minimal and maximal sets of modes, given the number of missing values.
 #'
 #' @param x A vector to search for its possible modes.
-#' @param accept Boolean. If `accept` is set to `TRUE`, the functions don't
+#' @param accept Logical. If `accept` is set to `TRUE`, the functions don't
 #'   necessarily return the minimal or maximal sets of modes but all values that
 #'   *might* be part of those sets. Default is `FALSE`. See details.
 #' @param multiple Deprecated; will be removed in the future. Old name of

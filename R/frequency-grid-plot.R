@@ -11,9 +11,9 @@
 #'   equally frequent.
 #'
 #' @param x A vector with frequencies to visualize.
-#' @param show_line_grid Boolean. Should gridlines be present, crossing at each
+#' @param show_line_grid Logical. Should gridlines be present, crossing at each
 #'   observation? Default is `FALSE`.
-#' @param show_line_mode Boolean. Should a dashed line demarcate the mode(s)
+#' @param show_line_mode Logical. Should a dashed line demarcate the mode(s)
 #'   among known values from the missing values that might add to these modes,
 #'   if there are any? Default is `FALSE`.
 #' @param label_missing String. Label used for missing values. Default is

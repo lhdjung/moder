@@ -4,9 +4,9 @@
 #' any other modes.
 #'
 #' @param x A vector to search for its first mode.
-#' @param na.rm Boolean. Should missing values in `x` be removed before
+#' @param na.rm Logical. Should missing values in `x` be removed before
 #'   computation proceeds? Default is `FALSE`.
-#' @param accept Boolean. Should the first-appearing value known to be a mode be
+#' @param accept Logical. Should the first-appearing value known to be a mode be
 #'   accepted? If `FALSE` (the default), returns `NA` if a value that appears
 #'   earlier might be another mode due to missing values.
 #'
@@ -197,7 +197,7 @@ mode_all <- function(x, na.rm = FALSE) {
 #' modes, it returns `NA` by default.
 #'
 #' @param x A vector to search for its mode.
-#' @param accept Boolean. Should the minimum set of modes be accepted to check
+#' @param accept Logical. Should the minimum set of modes be accepted to check
 #'   for a single mode? If `FALSE` (the default), insists on the complete set
 #'   and returns `NA` if it can't be determined.
 #' @param multiple String or integer (length 1), or a function. What to do if

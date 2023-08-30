@@ -13,7 +13,7 @@ mode_possible_max(x, accept = FALSE, multiple = NULL)
 \arguments{
 \item{x}{A vector to search for its possible modes.}
 
-\item{accept}{Boolean. If \code{accept} is set to \code{TRUE}, the functions don't
+\item{accept}{Logical. If \code{accept} is set to \code{TRUE}, the functions don't
 necessarily return the minimal or maximal sets of modes but all values that
 \emph{might} be part of those sets. Default is \code{FALSE}. See details.}
 

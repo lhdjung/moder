@@ -29,7 +29,7 @@
 #'   values by specifying `max_unique`. The function might then return `FALSE`
 #'   instead of `NA`.
 #'
-#' @return Boolean (length 1).
+#' @return Logical (length 1).
 #'
 #' @export
 #'

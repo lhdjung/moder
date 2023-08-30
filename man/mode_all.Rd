@@ -9,7 +9,7 @@ mode_all(x, na.rm = FALSE)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+\item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 }
 \value{

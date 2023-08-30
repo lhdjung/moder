@@ -25,10 +25,10 @@ frequency_grid_plot(
 \arguments{
 \item{x}{A vector with frequencies to visualize.}
 
-\item{show_line_grid}{Boolean. Should gridlines be present, crossing at each
+\item{show_line_grid}{Logical. Should gridlines be present, crossing at each
 observation? Default is \code{FALSE}.}
 
-\item{show_line_mode}{Boolean. Should a dashed line demarcate the mode(s)
+\item{show_line_mode}{Logical. Should a dashed line demarcate the mode(s)
 among known values from the missing values that might add to these modes,
 if there are any? Default is \code{FALSE}.}
 
