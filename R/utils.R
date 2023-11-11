@@ -150,3 +150,22 @@ mode_possible_warn_multiple <- function() {
   ))
 }
 
+
+# This helper can handle an `na.rm.amount`. It removes a number of missing
+# values from `x` equal to `na.rm.amount`, then returns `x`.
+decrease_na_amount <- function(x, na.rm, na.rm.amount) {
+  amount_is_wrong <- length(na.rm.amount) != 1L ||
+    !is_whole_number(na.rm.amount) ||
+    na.rm.amount < 0
+  if (amount_is_wrong) {
+    stop("`na.rm.amount` must be a single whole, non-negative number.")
+  } else if (na.rm) {
+    msg_error <- "Conflicting inputs: `na.rm` removes all missing values,"
+    msg_error <- paste(msg_error, "`na.rm.amount` only removes")
+    msg_error <- paste(msg_error, "some number of them.")
+    stop(msg_error)
+  }
+  nna <- max(0L, length(x[is.na(x)]) - na.rm.amount)
+  c(x[!is.na(x)], rep(NA, length = nna))
+}
+
