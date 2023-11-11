@@ -64,6 +64,15 @@ count_slots_empty <- function(x) {
 }
 
 
+# ONLY FOR VECTORS WITHOUT MISSING VALUES! The number of empty slots within the
+# part of the grid added by `NA`s -- hypothetical values beyond the known ones:
+count_slots_empty_new_vals <- function(n_na, frequency_max) {
+  n_new_vals <- ceiling(n_na / frequency_max)
+  n_slots_all <- n_new_vals * frequency_max
+  n_slots_all - n_na
+}
+
+
 # ONLY FOR VECTORS WITHOUT MISSING VALUES, AND WITHOUT ARGUMENTS LIKE
 # `numeric(0)`! A faster version of `mode_all()`:
 mode_all_if_no_na <- function(x) {
