@@ -6,9 +6,18 @@
 #' @param x A vector to search for its first mode.
 #' @param na.rm Logical. Should missing values in `x` be removed before
 #'   computation proceeds? Default is `FALSE`.
+#' @param na.rm.amount Numeric. Alternative to `na.rm` that only removes a
+#'   specified number of missing values. Default is `0`.
+#' @param na.rm.from String. If `na.rm.amount` is used, from which position in
+#'   `x` should missing values be removed? Options are `"start"`, `"end"`, and
+#'   `"random"`. Default is `"start"`.
 #' @param accept Logical. Should the first-appearing value known to be a mode be
 #'   accepted? If `FALSE` (the default), returns `NA` if a value that appears
 #'   earlier might be another mode due to missing values.
+#'
+#' @details Unlike [mode_all()] and [mode_single()], `mode_first()` has an
+#'   `na.rm.from` argument. That is because it cares about the order of `x`
+#'   values, whereas the other ones do not.
 #'
 #' @return The first mode (most frequent value) in `x`. If it can't be
 #'   determined because of missing values, returns `NA` instead.
@@ -45,7 +54,22 @@
 #' # You may accept the first-known mode:
 #' mode_first(c(1, 2, 2, NA), accept = TRUE)
 
-mode_first <- function(x, na.rm = FALSE, accept = FALSE) {
+# # Test with:
+# x <- 1:15
+# na.rm <- FALSE
+# na.rm.amount <- 0L
+# na.rm.from <- "start"
+# accept <- FALSE
+
+
+mode_first <- function(x, na.rm = FALSE, na.rm.amount = 0,
+                       na.rm.from = c("start", "end", "random"),
+                       accept = FALSE) {
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0 && anyNA(x)) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount, na.rm.from)
+  }
   # Iteration in the for loop will only proceed on known `x` values:
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required, or remove `NA`s entirely if desired:
@@ -158,7 +182,12 @@ mode_first <- function(x, na.rm = FALSE, accept = FALSE) {
 #' mode_all(c(8, 8, 9, NA), na.rm = TRUE)
 #' mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
-mode_all <- function(x, na.rm = FALSE) {
+mode_all <- function(x, na.rm = FALSE, na.rm.amount = 0) {
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0 && anyNA(x)) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+  }
   # `NA`s are ignored at this point because they will receive special treatment
   # later on:
   ix1 <- x[!is.na(x)]
@@ -258,7 +287,13 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
+mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
+                        multiple = "NA") {
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0 && anyNA(x)) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+  }
   if (na.rm) {
     x <- x[!is.na(x)]
   }

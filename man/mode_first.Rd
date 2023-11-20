@@ -4,13 +4,26 @@
 \alias{mode_first}
 \title{The first-appearing mode}
 \usage{
-mode_first(x, na.rm = FALSE, accept = FALSE)
+mode_first(
+  x,
+  na.rm = FALSE,
+  na.rm.amount = 0,
+  na.rm.from = c("start", "end", "random"),
+  accept = FALSE
+)
 }
 \arguments{
 \item{x}{A vector to search for its first mode.}
 
 \item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
+
+\item{na.rm.amount}{Numeric. Alternative to \code{na.rm} that only removes a
+specified number of missing values. Default is \code{0}.}
+
+\item{na.rm.from}{String. If \code{na.rm.amount} is used, from which position in
+\code{x} should missing values be removed? Options are \code{"start"}, \code{"end"}, and
+\code{"random"}. Default is \code{"start"}.}
 
 \item{accept}{Logical. Should the first-appearing value known to be a mode be
 accepted? If \code{FALSE} (the default), returns \code{NA} if a value that appears
@@ -23,6 +36,11 @@ determined because of missing values, returns \code{NA} instead.
 \description{
 \code{mode_first()} returns the mode that appears first in a vector, i.e., before
 any other modes.
+}
+\details{
+Unlike \code{\link[=mode_all]{mode_all()}} and \code{\link[=mode_single]{mode_single()}}, \code{mode_first()} has an
+\code{na.rm.from} argument. That is because it cares about the order of \code{x}
+values, whereas the other ones do not.
 }
 \examples{
 # `2` is most frequent:
