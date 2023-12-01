@@ -1,20 +1,25 @@
 #' Frequency grid data frame
 #'
-#' `frequency_grid_df()` takes a vector and creates an extended frequency table
-#' about it. Internally, this is used as a basis for `frequency_grid_plot()`.
+#' @description NOTE: This function is currently experimental and shouldn't be
+#'   relied upon.
+#'
+#'   `frequency_grid_df()` takes a vector and creates an extended frequency
+#'   table about it. Internally, this is used as a basis for
+#'   `frequency_grid_plot()`.
 #'
 #' @param x A vector.
+#' @inheritParams mode_is_trivial
 #'
 #' @return A data frame with these columns:
 #' - `x`: The input vector, with each unique known value repeated to be as
 #'   frequent as the most frequent one.
 #' - `freq` (integer): Hypothetical frequency of each `x` value.
-#' - `is_missing` (Boolean): Is the observation absent from the input vector?
-#' - `can_be_filled` (Boolean): Are there enough `NA`s so that one of them might
+#' - `is_missing` (logical): Is the observation absent from the input vector?
+#' - `can_be_filled` (logical): Are there enough `NA`s so that one of them might
 #'   hypothetically represent the `x` value in question, implying that there
 #'   would be at least as many observations of that value as the respective
 #'   frequency (`freq`) indicates?
-#' - `is_supermodal` (Boolean): Is the frequency of this value greater than the
+#' - `is_supermodal` (logical): Is the frequency of this value greater than the
 #'   maximum frequency among known values?
 #'
 #' @section Limitations: See the limitations section of `frequency_grid_plot()`.
@@ -25,7 +30,7 @@
 #' x <- c("a", "a", "a", "b", "b", "c", NA, NA, NA, NA, NA)
 #' frequency_grid_df(x)
 
-frequency_grid_df <- function(x) {
+frequency_grid_df <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- sort(x[!is.na(x)])
   n_na <- n_x - length(x)
@@ -49,12 +54,31 @@ frequency_grid_df <- function(x) {
   }
   unique_x <- unique(x)
   freq_max_known <- max(freq)
+
+  # For the `max_unique` argument:
+  max_unique <- handle_max_unique_input(
+    x, max_unique, length(unique_x), n_na, "frequency_grid_df"
+  )
+
   n_slots_empty <- freq_max_known * length(unique_x) - length(x)
   n_na_surplus <- n_na - n_slots_empty
-  freq_diff <- max(0L, ceiling(n_na_surplus / length(unique_x)))
-  if (is.na(freq_diff)) {
-    freq_diff <- 0L
+
+  # TODO: Fix this whole if-else block! Maybe put `freq_diff` to the end; it's
+  # the difference between `freq_max_known` and the "supermode".
+  freq_diff <- 0L
+  if (is.null(max_unique)) {
+    # max_unique <- max_unique %/% freq_max_known
+  } else if (max_unique == length(unique_x)) {
+    # START of the `max_unique = "known"`-assumption-specific part:
+    freq_diff <- max(0L, ceiling(n_na_surplus / length(unique_x)))
+    if (is.na(freq_diff)) {
+      freq_diff <- 0L
+    }
+    # END of the `max_unique = "known"`-assumption-specific part
+  } else if (max_unique > length(unique_x)) {
+    n_slots_empty_new_vals <- count_slots_empty_new_vals(n_na, freq_max)
   }
+
   freq_max <- freq_max_known + freq_diff
   n_final <- freq_max * length(unique_x)
 

@@ -1,8 +1,11 @@
 #' Frequency grid ggplot
 #'
-#' @description Call `frequency_grid_plot()` to visualize the absolute
-#'   frequencies of values in a vector. Each observation is plotted distinctly,
-#'   resulting in a hybrid of a histogram and a scatterplot.
+#' @description NOTE: This function is currently experimental and shouldn't be
+#'   relied upon.
+#'
+#'   Call `frequency_grid_plot()` to visualize the absolute frequencies of
+#'   values in a vector. Each observation is plotted distinctly, resulting in a
+#'   hybrid of a histogram and a scatterplot.
 #'
 #'   - Boxes are known values.
 #'   - Circles with `NA` labels are missing values.

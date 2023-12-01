@@ -28,6 +28,8 @@ VignetteBuilder: knitr
 Collate: 
     'counts.R'
     'frequencies.R'
+    'frequency-grid-df.R'
+    'frequency-grid-plot.R'
     'mode-proper.R'
     'mode-df.R'
     'mode-possible.R'
