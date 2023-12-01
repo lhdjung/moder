@@ -9,7 +9,7 @@ mode_single(
   na.rm = FALSE,
   na.rm.amount = 0,
   accept = FALSE,
-  multiple = "NA"
+  multiple = c("NA", "min", "max", "mean", "median", "first", "last", "random")
 )
 }
 \arguments{
@@ -26,15 +26,15 @@ for a single mode? If \code{FALSE} (the default), insists on the complete set
 and returns \code{NA} if it can't be determined.}
 
 \item{multiple}{String or integer (length 1), or a function. What to do if
-\code{x} has multiple modes. The default returns \code{NA}. All other options rely on
-the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
+\code{x} has multiple modes? The default returns \code{NA}. All other options rely
+on the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
 \code{"last"}, and \code{"random"}. Alternatively, \code{multiple} can be an index number,
 or a function that summarizes the modes. See details.}
 }
 \value{
 The only mode (most frequent value) in \code{x}. If it can't be determined
-because of missing values, \code{NA} is returned instead. By default, \code{NA} is
-also returned if there are multiple modes (\code{multiple = "NA"}).
+because of missing values, \code{NA} is returned instead. If there are multiple
+modes, \code{NA} is returned by default (\code{multiple = "NA"}).
 }
 \description{
 \code{mode_single()} returns the only mode in a vector. If there are multiple

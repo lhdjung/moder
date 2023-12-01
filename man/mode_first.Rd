@@ -8,7 +8,7 @@ mode_first(
   x,
   na.rm = FALSE,
   na.rm.amount = 0,
-  na.rm.from = c("start", "end", "random"),
+  na.rm.from = c("first", "last", "random"),
   accept = FALSE
 )
 }
@@ -22,8 +22,8 @@ computation proceeds? Default is \code{FALSE}.}
 specified number of missing values. Default is \code{0}.}
 
 \item{na.rm.from}{String. If \code{na.rm.amount} is used, from which position in
-\code{x} should missing values be removed? Options are \code{"start"}, \code{"end"}, and
-\code{"random"}. Default is \code{"start"}.}
+\code{x} should missing values be removed? Options are \code{"first"}, \code{"last"}, and
+\code{"random"}. Default is \code{"first"}.}
 
 \item{accept}{Logical. Should the first-appearing value known to be a mode be
 accepted? If \code{FALSE} (the default), returns \code{NA} if a value that appears
