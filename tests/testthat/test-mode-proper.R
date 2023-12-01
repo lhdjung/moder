@@ -163,6 +163,11 @@ test_that("`mode_single()` is right with some `NA` input and `na.rm = TRUE`
   expect_equal(mode_single(x17, na.rm = TRUE), NA_real_)
 })
 
+test_that("`mode_single()` throws an error if `multiple` has length > 1", {
+  expect_error(mode_single(x3, multiple = 1:2))
+  expect_error(mode_single(x4, multiple = 1:2))
+})
+
 test_that("`na.rm.amount` is right with `x2`", {
   expect_equal(mode_first(x2, na.rm.amount = 0), NA_real_)
   expect_equal(mode_first(x2, na.rm.amount = 1), NA_real_)

@@ -301,6 +301,8 @@ mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
   }
   if (is.character(multiple)) {
     multiple <- match.arg(multiple)
+  } else if (length(multiple) != 1L) {
+    stop("`multiple` must have length 1.")
   }
   # By default (`accept = FALSE`), all modes need to be known, not just any
   # number of modes:
