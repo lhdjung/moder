@@ -4,10 +4,16 @@
 \alias{frequency_grid_df}
 \title{Frequency grid data frame}
 \usage{
-frequency_grid_df(x)
+frequency_grid_df(x, max_unique = NULL)
 }
 \arguments{
 \item{x}{A vector.}
+
+\item{max_unique}{Numeric or string. If the maximum number of unique values
+in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
+represent values beyond that number (see examples). Set it to \code{"known"}
+instead if no values beyond those already known can occur. Default is
+\code{NULL}, which assumes no maximum.}
 }
 \value{
 A data frame with these columns:
@@ -15,18 +21,22 @@ A data frame with these columns:
 \item \code{x}: The input vector, with each unique known value repeated to be as
 frequent as the most frequent one.
 \item \code{freq} (integer): Hypothetical frequency of each \code{x} value.
-\item \code{is_missing} (Boolean): Is the observation absent from the input vector?
-\item \code{can_be_filled} (Boolean): Are there enough \code{NA}s so that one of them might
+\item \code{is_missing} (logical): Is the observation absent from the input vector?
+\item \code{can_be_filled} (logical): Are there enough \code{NA}s so that one of them might
 hypothetically represent the \code{x} value in question, implying that there
 would be at least as many observations of that value as the respective
 frequency (\code{freq}) indicates?
-\item \code{is_supermodal} (Boolean): Is the frequency of this value greater than the
+\item \code{is_supermodal} (logical): Is the frequency of this value greater than the
 maximum frequency among known values?
 }
 }
 \description{
-\code{frequency_grid_df()} takes a vector and creates an extended frequency table
-about it. Internally, this is used as a basis for \code{frequency_grid_plot()}.
+NOTE: This function is currently experimental and shouldn't be
+relied upon.
+
+\code{frequency_grid_df()} takes a vector and creates an extended frequency
+table about it. Internally, this is used as a basis for
+\code{frequency_grid_plot()}.
 }
 \section{Limitations}{
  See the limitations section of \code{frequency_grid_plot()}.

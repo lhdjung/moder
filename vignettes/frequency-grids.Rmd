@@ -1,0 +1,33 @@
+---
+title: "Frequency grids"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Frequency grids}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(moder)
+```
+
+NOTE: This is not (yet) a proper documentation vignette.
+
+TODO: Either elaborate this into a real vignette or turn it into a (final) section of the metadata vignette!
+
+The output of moder's metadata functions can be puzzling. Why do they return `NA` for this vector but not for that one? Frequency grids will help you understand.
+
+A frequency grid is a special kind of histogram. It is meant to depict possible ways in which the true values behind missing values may be distributed. As such, it illustrates the rationale of metadata functions such as `mode_count_range()`.
+
+```{r}
+# x <- c("a", "a", "a", "b", "b", "c", NA, NA, NA, NA, NA)
+# frequency_grid_plot(x)
+```
+

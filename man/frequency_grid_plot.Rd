@@ -57,9 +57,12 @@ structure. Default is \code{0.1}.}
 A ggplot object. To save it, call \code{ggplot2::ggsave()}.
 }
 \description{
-Call \code{frequency_grid_plot()} to visualize the absolute
-frequencies of values in a vector. Each observation is plotted distinctly,
-resulting in a hybrid of a histogram and a scatterplot.
+NOTE: This function is currently experimental and shouldn't be
+relied upon.
+
+Call \code{frequency_grid_plot()} to visualize the absolute frequencies of
+values in a vector. Each observation is plotted distinctly, resulting in a
+hybrid of a histogram and a scatterplot.
 \itemize{
 \item Boxes are known values.
 \item Circles with \code{NA} labels are missing values.
