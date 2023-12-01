@@ -8,8 +8,8 @@
 <meta name="description" content="moder">
 <title>Modes and missing values • moder</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Modes and missing values">
 <meta property="og:description" content="moder">
@@ -44,6 +44,7 @@
     <a class="dropdown-item" href="../articles/missings.html">Modes and missing values</a>
     <a class="dropdown-item" href="../articles/metadata.html">Modal counts and frequencies</a>
     <a class="dropdown-item" href="../articles/performance.html">Performance</a>
+    <a class="dropdown-item" href="../articles/frequency-grids.html">Frequency grids</a>
   </div>
 </li>
 <li class="nav-item">
@@ -162,13 +163,13 @@ modes but only assess metadata, such as the modal frequency. This is why
 they can sometimes obtain useful information where
 <code><a href="../reference/mode_first.html">mode_first()</a></code> and friends would only return <code>NA</code>.
 Even if the number or frequency of modes can’t be determined, at least a
-range for them can be given. See <code><a href="../articles/metadata.html">vignette("metadata")</a></code> to
-learn more.</p>
+range for them can be given. See <a href="https://lhdjung.github.io/moder/articles/metadata.html"><em>Modal
+counts and frequencies</em></a> to learn more.</p>
 <p>In particular, all the metadata functions have a
 <code>max_unique</code> argument. It allows you to encode some knowledge
-you might have about the missing values in your data. See
-<code><a href="../articles/metadata.html">vignette("metadata")</a></code>, section <em>Maximal number of unique
-values</em>.</p>
+you might have about the missing values in your data. See <em>Modal
+counts and frequencies</em>, section <a href="https://lhdjung.github.io/moder/articles/metadata.html#maximal-number-of-unique-values"><em>Maximal
+number of unique values</em></a>.</p>
 </div>
 <div class="section level3">
 <h3 id="possible-minimal-and-maximal-sets-of-modes">Possible (minimal and maximal) sets of modes<a class="anchor" aria-label="anchor" href="#possible-minimal-and-maximal-sets-of-modes"></a>
@@ -255,7 +256,7 @@ analysis.</p>
 <div class="section level3">
 <h3 id="the-first-known-mode">The first known mode<a class="anchor" aria-label="anchor" href="#the-first-known-mode"></a>
 </h3>
-<p><code><a href="../reference/mode_first.html">mode_first()</a></code> has a Boolean <code>accept</code> argument
+<p><code><a href="../reference/mode_first.html">mode_first()</a></code> has a logical <code>accept</code> argument
 that is <code>FALSE</code> by default. If set to <code>TRUE</code>, the
 function will pick the first value known to be a mode. This means it
 won’t strictly look for the first-appearing value that is a mode, but
@@ -298,15 +299,20 @@ known, but not all modes are:</p>
 <div class="section level3">
 <h3 id="taking-nas-seriously-enough">Taking <code>NA</code>s seriously enough<a class="anchor" aria-label="anchor" href="#taking-nas-seriously-enough"></a>
 </h3>
-<p>Some earlier mode functions for R treat <code>NA</code> like a known
-and constant value. This is suboptimal because <code>NA</code> means
-that a value is missing. Such an approach effectively assumes that all
-<code>NA</code>s represent the same unknown value, and that it’s
-different from all known values (although I’m sure this was not the
-intention).</p>
-<p>Rather than forming a distinct and cohesive group, however, the
-<code>NA</code>s may represent one or more known or unknown values, so
-this procedure can distort the data. Consider that <code>NA == NA</code>
+<p>Some earlier mode functions for R treat <code>NA</code> like a known,
+constant, and distinct value. For example, they return <code>1</code>
+for <code>c(1, 1, 1, 2, 2, NA, NA, NA)</code>. With one more
+<code>NA</code>, they return <code>NA</code> because now it is more
+frequent than <code>1</code>. This approach is suboptimal because it
+doesn’t treat <code>NA</code> as missing. In both examples,
+<code>2</code> could very well be more frequent than <code>1</code> if
+enough <code>NA</code>s represent <code>2</code>. Treating
+<code>NA</code> like any other value effectively assumes that all
+<code>NA</code>s represent the same value, and that it’s different from
+all known ones (although I’m sure this was not the intention).</p>
+<p>Rather than forming a distinct and cohesive group, the
+<code>NA</code>s may represent any number of known or unknown values, so
+this procedure can be misleading. Consider that <code>NA == NA</code>
 returns <code>NA</code>: If any two values are unknown, it’s also
 unknown whether they are equal (Wickham 2019, <a href="https://adv-r.hadley.nz/vectors-chap.html#missing-values" class="external-link">ch. 3.2.3</a>).</p>
 <p>What’s more, categorizing missing values as a separate group is
@@ -316,10 +322,10 @@ supposed to simply determine a statistic. All moder functions treat
 <code>NA</code>s as genuinely missing values, just like
 <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean()</a></code>, <code><a href="https://rdrr.io/r/stats/median.html" class="external-link">median()</a></code>, and language primitives such
 as <code>==</code> do. Sometimes, this means the functions can just
-ignore them because a known value is more frequent than the
+ignore <code>NA</code>s because a known value is more frequent than the
 next-most-frequent value and all <code>NA</code>s taken together. They
-will only return <code>NA</code> if the user’s question cannot possibly
-be answered by the data.</p>
+will only return <code>NA</code> if the data cannot possibly answer the
+user’s question.</p>
 <p>All choices about imputation will then be left to the user. In this
 way, moder functions draw a clear line between estimation and
 imputation.</p>
@@ -354,6 +360,14 @@ to determine the result. Such knowledge is built into R (Wickham 2019,
 <a href="https://adv-r.hadley.nz/vectors-chap.html#missing-values" class="external-link">ch. 3.2.3</a>),
 and I think function design should emulate this pattern to keep the
 semantics of <code>NA</code> consistent across contexts.</p>
+<p>It’s not just R that works this way: <a href="https://modern-sql.com/concept/three-valued-logic#logical-operations" class="external-link">SQL</a>,
+<a href="https://pandas.pydata.org/docs/user_guide/missing_data.html#propagation-in-arithmetic-and-comparison-operations" class="external-link">Python
+(pandas)</a> and, to a large degree, <a href="https://docs.julialang.org/en/v1/manual/missing/#Logical-operators" class="external-link">Julia</a><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;In Julia, &lt;code&gt;missing^0&lt;/code&gt; returns
+&lt;code&gt;missing&lt;/code&gt; instead of &lt;code&gt;1&lt;/code&gt;. This doesn’t correspond
+to Kleene logic, but nor does R’s &lt;code&gt;&lt;a href="https://rdrr.io/r/stats/median.html" class="external-link"&gt;median()&lt;/a&gt;&lt;/code&gt; function. See
+footnote 1.&lt;/p&gt;'><sup>2</sup></a> implement
+the same system of logic, called <a href="https://en.wikipedia.org/wiki/Three-valued_logic#Kleene_and_Priest_logics" class="external-link">Kleene
+logic</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="na-return-types">

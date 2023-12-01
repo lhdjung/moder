@@ -10,6 +10,9 @@
     <loc>https://lhdjung.github.io/moder/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://lhdjung.github.io/moder/articles/frequency-grids.html</loc>
+  </url>
+  <url>
     <loc>https://lhdjung.github.io/moder/articles/index.html</loc>
   </url>
   <url>
@@ -31,6 +34,12 @@
     <loc>https://lhdjung.github.io/moder/news/index.html</loc>
   </url>
   <url>
+    <loc>https://lhdjung.github.io/moder/reference/frequency_grid_df.html</loc>
+  </url>
+  <url>
+    <loc>https://lhdjung.github.io/moder/reference/frequency_grid_plot.html</loc>
+  </url>
+  <url>
     <loc>https://lhdjung.github.io/moder/reference/index.html</loc>
   </url>
   <url>
@@ -44,6 +53,9 @@
   </url>
   <url>
     <loc>https://lhdjung.github.io/moder/reference/mode_count_range.html</loc>
+  </url>
+  <url>
+    <loc>https://lhdjung.github.io/moder/reference/mode_df.html</loc>
   </url>
   <url>
     <loc>https://lhdjung.github.io/moder/reference/mode_first.html</loc>
