@@ -32,6 +32,7 @@ reference:
 - title: Possible modes
 - contents:
   - mode_possible_max
+  - mode_df
 - title: Metadata
 - contents:
   - mode_count
