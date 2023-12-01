@@ -1,0 +1,62 @@
+
+# Example vectors ---------------------------------------------------------
+
+vec1 <- list(
+  a = 1:15,
+  b = c(1, 1, NA),
+  c = c(4, 4, NA, NA, NA, NA),
+  d = c(96, 24, 3, NA)
+)
+
+vec2 <- iris[1:4]
+
+
+# Expected output ---------------------------------------------------------
+
+vec1_exp_default <- tibble::tibble(
+  term = c("a", "b", "c", "d"),
+  estimate = c(1, 1, 4, 96),
+  certainty = rep(c(TRUE, FALSE), each = 2L),
+  na_ignored = c(0L, 0L, 2L, 1L),
+  na_total = c(0L, 1L, 4L, 1L),
+  rate_ignored_na = c(NaN, 0, 0.5, 1),
+  sum_total = c(15L, 3L, 6L, 4L),
+  rate_ignored_sum = c(0, 0, 0.3333333333333333, 0.25),
+)
+
+vec1_exp_single <- tibble::tibble(
+  term = c("a", "b", "c", "d"),
+  estimate = c(NA, 1, 4, NA),
+  certainty = rep(c(TRUE, FALSE), each = 2L),
+  na_ignored = c(0L, 0L, 3L, 1L),
+  na_total = c(0L, 1L, 4L, 1L),
+  rate_ignored_na = c(NaN, 0, 0.75, 1),
+  sum_total = c(15L, 3L, 6L, 4L),
+  rate_ignored_sum = c(0, 0, 0.5, 0.25),
+)
+
+vec2_exp <- tibble::tibble(
+  term = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"),
+  estimate = c(5, 3, 1.4, 0.2),
+  certainty = rep(TRUE, 4L),
+  na_ignored = integer(4),
+  na_total = integer(4),
+  rate_ignored_na = rep(NaN, 4L),
+  sum_total = rep(150L, 4L),
+  rate_ignored_sum = numeric(4),
+)
+
+
+# Testing -----------------------------------------------------------------
+
+test_that("`mode_df()` works by default", {
+  expect_equal(mode_df(vec1), vec1_exp_default)
+  expect_equal(mode_df(vec2), vec2_exp)
+})
+
+test_that("`mode_df()` works with `method = \"single\"`", {
+  expect_equal(mode_df(vec1, method = "single"), vec1_exp_single)
+  expect_equal(mode_df(vec2), vec2_exp)
+})
+
+

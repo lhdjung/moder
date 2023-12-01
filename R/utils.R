@@ -16,9 +16,11 @@ x14 <- c(1, 1, 2, 2, 3, NA)
 x15 <- c(1, NA, NA)
 x16 <- c(1, 1, 1, 2, 2, 3, 3, NA)
 x17 <- c(1, 1, 2, 2, NA, NA)
+x18 <- c(1, 1, 1, 2, 2, 3, 3, NA, NA, NA)
 
 utils::globalVariables(c(
-  x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17
+  x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17,
+  "freq"
 ))
 
 # # Test interactively:
@@ -59,6 +61,15 @@ count_slots_empty <- function(x) {
   frequency_max <- length(x[x %in% mode_first_if_no_na(x)])
   n_slots_all <- length(unique(x)) * frequency_max
   n_slots_all - length(x)
+}
+
+
+# ONLY FOR VECTORS WITHOUT MISSING VALUES! The number of empty slots within the
+# part of the grid added by `NA`s -- hypothetical values beyond the known ones:
+count_slots_empty_new_vals <- function(n_na, frequency_max) {
+  n_new_vals <- ceiling(n_na / frequency_max)
+  n_slots_all <- n_new_vals * frequency_max
+  n_slots_all - n_na
 }
 
 
@@ -103,7 +114,10 @@ check_factor_max_unique <- function(x, n_na, fn_name) {
 # Call this helper in each function that has a `max_unique` argument, but only
 # if the user overrode the default of `max_unique = NULL`:
 handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
-  if (is.character(max_unique) && max_unique == "known") {
+  if (is.null(max_unique)) {
+    check_factor_max_unique(x, n_na, fn_name)
+    return(NULL)
+  } else if (max_unique == "known") {
     return(n_unique_x)
   } else {
     check_factor_max_unique(x, n_na, fn_name)
@@ -125,3 +139,76 @@ handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
   }
 }
 
+
+# Warning after deprecation check in `mode_possible_min()` and
+# `mode_possible_max()`:
+mode_possible_warn_multiple <- function() {
+  warning(paste(
+    "The `multiple` argument in `mode_possible_min()` and",
+    "`mode_possible_max()` was renamed to `accept` in moder 0.3.0.",
+    "`multiple` no longer has any effect. It will be removed in",
+    "a future version."
+  ))
+}
+
+
+# Adapted with modifications from the examples of the `?integer` documentation.
+# For each element of `x`, this vectorized helper checks whether it is
+# *conceptually* an integer (but not necessarily by object type). If `x` is not
+# numeric, a vector of `FALSE` values with the same length as `x` is returned
+# because every single element is not a (whole) number.
+is_whole_number <- function(x, tolerance = .Machine$double.eps^0.5) {
+  if (is.numeric(x)) {
+    abs(x - round(x)) < tolerance
+  } else {
+    logical(length(x))
+  }
+}
+
+
+# This helper handles the `na.rm.amount` argument in the proper mode functions:
+# `mode_first()`, `mode_all()`, and `mode_single()`. It removes a number of
+# missing values from `x` equal to `na.rm.amount`, then returns `x`. Notes:
+# -- The specification of `na.rm.from` should be checked by the calling
+# function, like `na.rm.from <- match.arg(na.rm.from)`.
+# -- For efficiency, `decrease_na_amount()` should only be called under very
+# specific conditions, as in `mode_first()` etc.
+decrease_na_amount <- function(x, na.rm, na.rm.amount,
+                               na.rm.from = c("first")) {
+  # Check for misspecifications of the calling function's arguments:
+  if (na.rm) {
+    stop(paste(
+      "Conflicting instructions: `na.rm` removes all missing values,",
+      "`na.rm.amount` only removes some number of them."
+    ))
+  }
+  amount_is_wrong <- length(na.rm.amount) != 1L ||
+    !is_whole_number(na.rm.amount) ||
+    na.rm.amount < 0
+  if (amount_is_wrong) {
+    stop("`na.rm.amount` must be a single whole, non-negative number.")
+  }
+  # Vectors without any `NA`s have nothing to remove, so they should be returned
+  # as they are:
+  if (!anyNA(x)) {
+    return(x)
+  }
+  # Record the indices of missing values in `x`:
+  x_na <- which(is.na(x))
+  # Subtract `na.rm.amount` from the number of missing values:
+  nna <- length(x_na) - na.rm.amount
+  # In case no `NA`s remain after this subtraction, all of them need to be
+  # removed from `x`:
+  if (nna <= 0L) {
+    return(x[-x_na])
+  }
+  # Target the indices of those missings that should be ignored:
+  x_na_but_ignored <- switch(
+    na.rm.from,
+    "first"  = utils::head(x_na, length(x_na) - nna),
+    "last"   = utils::tail(x_na, length(x_na) - nna),
+    "random" = sample(x_na, length(x_na) - nna)
+  )
+  # Return `x`, excluding those values:
+  x[-x_na_but_ignored]
+}

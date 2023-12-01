@@ -4,28 +4,37 @@
 \alias{mode_single}
 \title{The single mode}
 \usage{
-mode_single(x, na.rm = FALSE, accept = FALSE, multiple = "NA")
+mode_single(
+  x,
+  na.rm = FALSE,
+  na.rm.amount = 0,
+  accept = FALSE,
+  multiple = c("NA", "min", "max", "mean", "median", "first", "last", "random")
+)
 }
 \arguments{
 \item{x}{A vector to search for its mode.}
 
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+\item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
-\item{accept}{Boolean. Should the minimum set of modes be accepted to check
+\item{na.rm.amount}{Numeric. Alternative to \code{na.rm} that only removes a
+specified number of missing values. Default is \code{0}.}
+
+\item{accept}{Logical. Should the minimum set of modes be accepted to check
 for a single mode? If \code{FALSE} (the default), insists on the complete set
 and returns \code{NA} if it can't be determined.}
 
 \item{multiple}{String or integer (length 1), or a function. What to do if
-\code{x} has multiple modes. The default returns \code{NA}. All other options rely on
-the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
+\code{x} has multiple modes? The default returns \code{NA}. All other options rely
+on the modal values: "\verb{min"}, \code{"max"}, \code{"mean"}, \code{"median"}, \code{"first"},
 \code{"last"}, and \code{"random"}. Alternatively, \code{multiple} can be an index number,
 or a function that summarizes the modes. See details.}
 }
 \value{
 The only mode (most frequent value) in \code{x}. If it can't be determined
-because of missing values, \code{NA} is returned instead. By default, \code{NA} is
-also returned if there are multiple modes (\code{multiple = "NA"}).
+because of missing values, \code{NA} is returned instead. If there are multiple
+modes, \code{NA} is returned by default (\code{multiple = "NA"}).
 }
 \description{
 \code{mode_single()} returns the only mode in a vector. If there are multiple

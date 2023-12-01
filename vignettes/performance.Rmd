@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 Accuracy and flexibility are among the strong suits of moder. Performance is not. `mode_all()` and friends are multiple times slower than R's built-in functions for common measures of central tendency, `mean()` and `median()`.
 
-Why is that? All of moder's code is written in R. By contrast, the default `mean()` method calls an internal function. Also, handling missing values is much more complex in the mode functions than in `mean()` or `median()`; see `vignette("missings")`. The default methods for `mean()` and `median()` are fairly short when compared to `mode_first()`, and to `mode_all()` if its helper function is included. `mode_single()` is a wrapper around `mode_all()`, so it's even longer.
+Why is that? All of moder's code is written in R. By contrast, the default `mean()` method calls an internal function. Also, handling missing values is much more complex in the mode functions than in `mean()` or `median()`; see [*Modes and missing values*](https://lhdjung.github.io/moder/articles/missings.html). The default methods for `mean()` and `median()` are fairly short when compared to `mode_first()`, and to `mode_all()` if its helper function is included. `mode_single()` is a wrapper around `mode_all()`, so it's even longer.
 
 It is also possible that some of the code is less efficient than it could be. In particular, rewriting moder's R code in a language like C++ or Rust might blend accuracy with high performance. I myself am not going to port the package in the near term, so help is welcome. If you have any suggestions, please [open an issue](https://github.com/lhdjung/moder/issues) or get in touch via email (jung-lukas\@gmx.net).
 

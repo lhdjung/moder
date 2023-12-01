@@ -1,6 +1,9 @@
 # moder (development version)
 
--   Fixed a bug in mode_count_range() that displayed a maximum of 0 for certain kinds of input.
+-   New functions `frequency_grid_df()` and `frequency_grid_plot()` to analyze and visualize possible frequency distributions given missing values.
+-   Fixed a bug in `mode_count_range()` that displayed a maximum of 0 for certain kinds of input.
+-   In `mode_possible_min()` and `mode_possible_max()`, the `multiple` argument was renamed to `accept` for greater consistency with `mode_first()` and other functions.
+-   `mode_possible_max()` no longer returns `NA` if the number of `NA`s in the input is equal to or higher than the number of "empty slots" (i.e., the hypothetical non-`NA` values that would have to be present in `x` in order for all of its unique values to be equally frequent). After all, it is possible for all unique values to be "filled up" by `NA`s so that they are themselves modes.
 
 # moder 0.2.1
 

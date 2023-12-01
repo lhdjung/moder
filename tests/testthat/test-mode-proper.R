@@ -163,3 +163,29 @@ test_that("`mode_single()` is right with some `NA` input and `na.rm = TRUE`
   expect_equal(mode_single(x17, na.rm = TRUE), NA_real_)
 })
 
+test_that("`mode_single()` throws an error if `multiple` has length > 1", {
+  expect_error(mode_single(x3, multiple = 1:2))
+  expect_error(mode_single(x4, multiple = 1:2))
+})
+
+test_that("`na.rm.amount` is right with `x2`", {
+  expect_equal(mode_first(x2, na.rm.amount = 0), NA_real_)
+  expect_equal(mode_first(x2, na.rm.amount = 1), NA_real_)
+  expect_equal(mode_first(x2, na.rm.amount = 2), NA_real_)
+  expect_equal(mode_first(x2, na.rm.amount = 3), 2)
+})
+
+test_that("`na.rm.amount` is right with `x3`", {
+  expect_equal(mode_first(x3, na.rm.amount = 0), 7)
+  expect_equal(mode_first(x3, na.rm.amount = 1), 7)
+})
+
+test_that("`na.rm.amount` is right with `x5`", {
+  expect_equal(mode_first(x5, na.rm.amount = 0), NA_real_)
+  expect_equal(mode_first(x5, na.rm.amount = 1), 1)
+})
+
+test_that("`na.rm.amount` is right with `x9`", {
+  expect_equal(mode_first(x9, na.rm.amount = 0), NA_real_)
+  expect_equal(mode_first(x9, na.rm.amount = 1), 1)
+})

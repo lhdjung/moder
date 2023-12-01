@@ -4,11 +4,20 @@
 #' any other modes.
 #'
 #' @param x A vector to search for its first mode.
-#' @param na.rm Boolean. Should missing values in `x` be removed before
+#' @param na.rm Logical. Should missing values in `x` be removed before
 #'   computation proceeds? Default is `FALSE`.
-#' @param accept Boolean. Should the first-appearing value known to be a mode be
+#' @param na.rm.amount Numeric. Alternative to `na.rm` that only removes a
+#'   specified number of missing values. Default is `0`.
+#' @param na.rm.from String. If `na.rm.amount` is used, from which position in
+#'   `x` should missing values be removed? Options are `"first"`, `"last"`, and
+#'   `"random"`. Default is `"first"`.
+#' @param accept Logical. Should the first-appearing value known to be a mode be
 #'   accepted? If `FALSE` (the default), returns `NA` if a value that appears
 #'   earlier might be another mode due to missing values.
+#'
+#' @details Unlike [mode_all()] and [mode_single()], `mode_first()` has an
+#'   `na.rm.from` argument. That is because it cares about the order of `x`
+#'   values, whereas the other ones do not.
 #'
 #' @return The first mode (most frequent value) in `x`. If it can't be
 #'   determined because of missing values, returns `NA` instead.
@@ -45,7 +54,23 @@
 #' # You may accept the first-known mode:
 #' mode_first(c(1, 2, 2, NA), accept = TRUE)
 
-mode_first <- function(x, na.rm = FALSE, accept = FALSE) {
+# # Test interactively with:
+# x <- 1:15
+# na.rm <- FALSE
+# na.rm.amount <- 1
+# na.rm.from <- "first"
+# accept <- FALSE
+
+
+mode_first <- function(x, na.rm = FALSE, na.rm.amount = 0,
+                       na.rm.from = c("first", "last", "random"),
+                       accept = FALSE) {
+  na.rm.from <- match.arg(na.rm.from)
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount, na.rm.from)
+  }
   # Iteration in the for loop will only proceed on known `x` values:
   ix1 <- x[!is.na(x)]
   # Return `NA` early if required, or remove `NA`s entirely if desired:
@@ -158,7 +183,12 @@ mode_first <- function(x, na.rm = FALSE, accept = FALSE) {
 #' mode_all(c(8, 8, 9, NA), na.rm = TRUE)
 #' mode_all(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
-mode_all <- function(x, na.rm = FALSE) {
+mode_all <- function(x, na.rm = FALSE, na.rm.amount = 0) {
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+  }
   # `NA`s are ignored at this point because they will receive special treatment
   # later on:
   ix1 <- x[!is.na(x)]
@@ -197,19 +227,19 @@ mode_all <- function(x, na.rm = FALSE) {
 #' modes, it returns `NA` by default.
 #'
 #' @param x A vector to search for its mode.
-#' @param accept Boolean. Should the minimum set of modes be accepted to check
+#' @param accept Logical. Should the minimum set of modes be accepted to check
 #'   for a single mode? If `FALSE` (the default), insists on the complete set
 #'   and returns `NA` if it can't be determined.
 #' @param multiple String or integer (length 1), or a function. What to do if
-#'   `x` has multiple modes. The default returns `NA`. All other options rely on
-#'   the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
+#'   `x` has multiple modes? The default returns `NA`. All other options rely
+#'   on the modal values: "`min"`, `"max"`, `"mean"`, `"median"`, `"first"`,
 #'   `"last"`, and `"random"`. Alternatively, `multiple` can be an index number,
 #'   or a function that summarizes the modes. See details.
 #' @inheritParams mode_first
 #'
 #' @return The only mode (most frequent value) in `x`. If it can't be determined
-#'   because of missing values, `NA` is returned instead. By default, `NA` is
-#'   also returned if there are multiple modes (`multiple = "NA"`).
+#'   because of missing values, `NA` is returned instead. If there are multiple
+#'   modes, `NA` is returned by default (`multiple = "NA"`).
 #'
 #' @details If `accept` is `FALSE` (the default), the set of modes is obtained
 #'   via `mode_all()` instead of `mode_possible_min()`. Set it to `TRUE` to
@@ -258,18 +288,24 @@ mode_all <- function(x, na.rm = FALSE) {
 #' # (there should be good reasons for this!):
 #' mode_single(c(8, 8, 9, NA), na.rm = TRUE)
 
-mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
+mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
+                        multiple = c("NA", "min", "max", "mean", "median",
+                                     "first", "last", "random")) {
+  # The user may choose to ignore any number of missing values (see the utils.R
+  # file for the `decrease_na_amount()` helper function):
+  if (!missing(na.rm.amount) && na.rm.amount != 0) {
+    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+  }
   if (na.rm) {
     x <- x[!is.na(x)]
   }
   if (is.character(multiple)) {
-    match.arg(
-      multiple,
-      c("NA", "min", "max", "mean", "median", "first", "last", "random")
-    )
+    multiple <- match.arg(multiple)
+  } else if (length(multiple) != 1L) {
+    stop("`multiple` must have length 1.")
   }
-  # By default (`accept = TRUE`), it is sufficient that at least one mode is
-  # known, as opposed to all modes:
+  # By default (`accept = FALSE`), all modes need to be known, not just any
+  # number of modes:
   modes <- if (accept) {
     mode_possible_min(x)
   } else {
@@ -278,9 +314,9 @@ mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
   # As the name says, if the distribution has a single mode, return that value:
   if (length(modes) == 1L) {
     modes
-    # Multimodal distributions are `NA` by default. Some users prefer this
-    # stricter way of estimating the mode, or they require it for their specific
-    # use cases.
+    # Multimodal distributions are `NA` by default. Some users may prefer this
+    # stricter way of estimating the mode, or they may require it for their
+    # specific use cases.
   } else if (is.character(multiple)) {
     # Execute the user's chosen strategy for dealing with multiple modes, or the
     # "NA" default:
@@ -299,8 +335,9 @@ mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
     # Index numbers must not be greater than the number of modes, which is an
     # error:
     if (multiple > length(modes)) {
-      msg_error <- paste("`multiple` is", multiple, "but there are only")
-      msg_error <- paste(msg_error, length(modes), "modes")
+      msg_error <- paste(
+        "`multiple` is", multiple, "but there are only", length(modes), "modes"
+      )
       stop(msg_error)
     }
     modes[multiple]
@@ -313,8 +350,10 @@ mode_single <- function(x, na.rm = FALSE, accept = FALSE, multiple = "NA") {
     if (length(modes) == 1L) {
       modes
     } else {
-      msg_error <- "Function supplied to `multiple` returns object of length"
-      msg_error <- paste(msg_error, length(modes), "instead of 1")
+      msg_error <- paste(
+        "Function supplied to `multiple` returns object of length", msg_error,
+        length(modes), "instead of 1"
+      )
       stop(msg_error)
     }
   }

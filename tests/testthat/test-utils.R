@@ -44,3 +44,8 @@ test_that("`check_factor_max_unique()` and `handle_max_unique_input()`
   expect_no_warning(mode_count_range(x17_factor, max_unique = "known"))
 })
 
+test_that("`decrease_na_amount()` throws an error when it should", {
+  expect_error(decrease_na_amount(1:5, na.rm = TRUE,  na.rm.amount = 1))
+  expect_error(decrease_na_amount(1:5, na.rm = FALSE, na.rm.amount = 0.5))
+})
+

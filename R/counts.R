@@ -98,7 +98,7 @@ mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
 #' # there are two modes:
 #' mode_count_range(c(7, 7, 7, 8, 8, NA))
 #'
-#' # But now, there is now way for `8` to be
+#' # But now, there is no way for `8` to be
 #' # as frequent as `7`:
 #' mode_count_range(c(7, 7, 7, 7, 8, 8, NA))
 #'
@@ -118,13 +118,9 @@ mode_count_range <- function(x, max_unique = NULL) {
   n_na <- n_x - length(x)
   rm(n_x)
   n_unique_x <- length(unique(x))
-  if (is.null(max_unique)) {
-    check_factor_max_unique(x, n_na, "mode_count_range")
-  } else {
-    max_unique <- handle_max_unique_input(
-      x, max_unique, n_unique_x, n_na, "mode_count_range"
-    )
-  }
+  max_unique <- handle_max_unique_input(
+    x, max_unique, n_unique_x, n_na, "mode_count_range"
+  )
   # Throw an error if `max_unique` was specified as too low a number:
   if (!is.null(max_unique) && max_unique < n_unique_x) {
     msg_error <- paste("`max_unique` is", max_unique, "but there are")

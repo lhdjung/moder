@@ -13,7 +13,9 @@
 #' @details The function returns `TRUE` whenever `x` has length < 3 because no
 #'   value is more frequent than another one. Otherwise, it returns `NA` in
 #'   these cases:
-#'   - Some `x` values are missing and all known values are equal. Thus, it is
+#'   - Some `x` values are missing, all known values are equal, and the number
+#'   of missing values is divisible by the number of unique known values. Thus,
+#'   the missings don't necessarily break the tie among known values, and it is
 #'   unknown whether there is a value with a different frequency.
 #'   - All known values are modes if the `NA`s "fill up" the non-modal values
 #'   exactly, i.e., without any `NA`s remaining.
@@ -27,7 +29,7 @@
 #'   values by specifying `max_unique`. The function might then return `FALSE`
 #'   instead of `NA`.
 #'
-#' @return Boolean (length 1).
+#' @return Logical (length 1).
 #'
 #' @export
 #'
@@ -74,14 +76,10 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_na <- n_x - length(x)
   rm(n_x)
   unique_x <- unique(x)
-  # This chunk should be part of each function that has a `max_unique` argument:
-  if (is.null(max_unique)) {
-    check_factor_max_unique(x, n_na, "mode_is_trivial")
-  } else {
-    max_unique <- handle_max_unique_input(
-      x, max_unique, length(unique_x), n_na, "mode_is_trivial"
-    )
-  }
+  max_unique <- handle_max_unique_input(
+    x, max_unique, length(unique_x), n_na, "mode_is_trivial"
+  )
+
   # If some values are missing (from a length >= 3 vector) and all known values
   # are equal, it's unknown whether there is a value with a different frequency:
   if (n_na > 0L && length(unique_x) == 1L) {

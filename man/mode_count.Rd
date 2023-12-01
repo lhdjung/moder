@@ -9,7 +9,7 @@ mode_count(x, na.rm = FALSE, max_unique = NULL)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+\item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values

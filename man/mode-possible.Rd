@@ -6,30 +6,39 @@
 \alias{mode_possible_max}
 \title{Possible sets of modes}
 \usage{
-mode_possible_min(x, multiple = FALSE)
+mode_possible_min(x, accept = FALSE, multiple = NULL)
 
-mode_possible_max(x, multiple = FALSE)
+mode_possible_max(x, accept = FALSE, multiple = NULL)
 }
 \arguments{
 \item{x}{A vector to search for its possible modes.}
 
-\item{multiple}{Boolean. If \code{multiple} is set to \code{TRUE}, the functions return
-multiple modes with the same frequency, even if some values are missing.
-Default is \code{FALSE} because \code{NA}s may tip the balance between values that
-are equally frequent among the known values. Thus, if \code{multiple = TRUE},
-the functions don't necessarily return the minimal or maximal sets of
-modes, but all values that \emph{might} be part of those sets.}
+\item{accept}{Logical. If \code{accept} is set to \code{TRUE}, the functions don't
+necessarily return the minimal or maximal sets of modes but all values that
+\emph{might} be part of those sets. Default is \code{FALSE}. See details.}
+
+\item{multiple}{Deprecated; will be removed in the future. Old name of
+\code{accept}.}
 }
 \value{
-By default, a vector with the minimal or maximal possible sets of
-modes (values tied for most frequent) in \code{x}. If the functions can't
-determine these possible modes because of missing values, they return
-\code{NA} by default (\code{multiple = FALSE}).
+Vector of the same type as \code{x}. By default, it contains the minimal
+or maximal possible sets of modes (values tied for most frequent) in \code{x}.
+If the functions can't determine these possible modes because of missing
+values, they return \code{NA}.
 }
 \description{
 \code{mode_possible_min()} and \code{mode_possible_max()} determine the
-minimal and maximal sets of modes from among known modes, given the number
-of missing values.
+minimal and maximal sets of modes, given the number of missing values.
+}
+\details{
+If \code{accept = TRUE}, the functions return multiple values that may or
+may not be modes depending on the true values behind \code{NA}s. Why is this
+disabled by default? In cases where multiple unique values would be modes
+if and only if one or more missing values represented them but there are
+not enough missing values to represent all of them, any values that are not
+represented by enough \code{NA}s would not be modes. This makes it unclear which
+unique values are part of the minimal and maximal sets of modes, so the
+default of \code{accept} is to return \code{NA} in these cases.
 }
 \examples{
 # "a" is guaranteed to be a mode,
@@ -51,12 +60,12 @@ mode_possible_max(c(7, 7, 8, 8, 8, 8, NA))
 mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA))
 mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA))
 
-# With `multiple = TRUE`, the functions
+# With `accept = TRUE`, the functions
 # return all values that might be part of
 # the min / max sets of modes; not these
 # sets themselves:
-mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA), multiple = TRUE)
-mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA), multiple = TRUE)
+mode_possible_min(c(1, 1, 2, 2, 3, 4, 5, NA), accept = TRUE)
+mode_possible_max(c(1, 1, 2, 2, 3, 4, 5, NA), accept = TRUE)
 }
 \seealso{
 \code{\link[=mode_count_range]{mode_count_range()}} for the minimal and maximal \emph{numbers} of

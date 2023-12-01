@@ -9,7 +9,7 @@ mode_is_trivial(x, na.rm = FALSE, max_unique = NULL)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Boolean. Should missing values in \code{x} be removed before
+\item{na.rm}{Logical. Should missing values in \code{x} be removed before
 computation proceeds? Default is \code{FALSE}.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
@@ -19,7 +19,7 @@ instead if no values beyond those already known can occur. Default is
 \code{NULL}, which assumes no maximum.}
 }
 \value{
-Boolean (length 1).
+Logical (length 1).
 }
 \description{
 \code{mode_is_trivial()} checks whether all values in a given vector
@@ -30,7 +30,9 @@ The function returns \code{TRUE} whenever \code{x} has length < 3 because no
 value is more frequent than another one. Otherwise, it returns \code{NA} in
 these cases:
 \itemize{
-\item Some \code{x} values are missing and all known values are equal. Thus, it is
+\item Some \code{x} values are missing, all known values are equal, and the number
+of missing values is divisible by the number of unique known values. Thus,
+the missings don't necessarily break the tie among known values, and it is
 unknown whether there is a value with a different frequency.
 \item All known values are modes if the \code{NA}s "fill up" the non-modal values
 exactly, i.e., without any \code{NA}s remaining.
