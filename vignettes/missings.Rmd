@@ -61,9 +61,9 @@ Where is `mode_single()` in all of this? It calls `mode_all()` internally, so it
 
 ### Modal metadata
 
-All of these functions attempt to find modal values. However, moder also has some functions that are not concerned about any particular modes but only assess metadata, such as the modal frequency. This is why they can sometimes obtain useful information where `mode_first()` and friends would only return `NA`. Even if the number or frequency of modes can't be determined, at least a range for them can be given. See `vignette("metadata")` to learn more.
+All of these functions attempt to find modal values. However, moder also has some functions that are not concerned about any particular modes but only assess metadata, such as the modal frequency. This is why they can sometimes obtain useful information where `mode_first()` and friends would only return `NA`. Even if the number or frequency of modes can't be determined, at least a range for them can be given. See [*Modal counts and frequencies*](https://lhdjung.github.io/moder/articles/metadata.html) to learn more.
 
-In particular, all the metadata functions have a `max_unique` argument. It allows you to encode some knowledge you might have about the missing values in your data. See `vignette("metadata")`, section *Maximal number of unique values*.
+In particular, all the metadata functions have a `max_unique` argument. It allows you to encode some knowledge you might have about the missing values in your data. See *Modal counts and frequencies*, section [*Maximal number of unique values*](https://lhdjung.github.io/moder/articles/metadata.html#maximal-number-of-unique-values).
 
 ### Possible (minimal and maximal) sets of modes
 
@@ -123,7 +123,7 @@ This approach makes sure to inform the user if the data can't answer their quest
 
 ### The first known mode
 
-`mode_first()` has a Boolean `accept` argument that is `FALSE` by default. If set to `TRUE`, the function will pick the first value known to be a mode. This means it won't strictly look for the first-appearing value that is a mode, but accept the first value that is a mode without counting `NA`s in its favor:
+`mode_first()` has a logical `accept` argument that is `FALSE` by default. If set to `TRUE`, the function will pick the first value known to be a mode. This means it won't strictly look for the first-appearing value that is a mode, but accept the first value that is a mode without counting `NA`s in its favor:
 
 ```{r}
 x4 <- c(6, 4, 4, 4, NA, NA, 1)
@@ -147,11 +147,11 @@ mode_single(x5, accept = TRUE)
 
 ### Taking `NA`s seriously enough
 
-Some earlier mode functions for R treat `NA` like a known, constant, and distinct value. For example, they return `1` for `c(1, 1, 1, 2, 2, NA, NA, NA)`. With one more `NA`, they return `NA` because now it is more frequent than `1`. This approach is suboptimal because `NA` means that a value is missing. In the example, `2` could very well be more frequent than `1` if enough `NA`s represent `2`. Treating `NA` like any other value effectively assumes that all `NA`s represent the same value, and that it's different from all known ones (although I'm sure this was not the intention).
+Some earlier mode functions for R treat `NA` like a known, constant, and distinct value. For example, they return `1` for `c(1, 1, 1, 2, 2, NA, NA, NA)`. With one more `NA`, they return `NA` because now it is more frequent than `1`. This approach is suboptimal because it doesn't treat `NA` as missing. In both examples, `2` could very well be more frequent than `1` if enough `NA`s represent `2`. Treating `NA` like any other value effectively assumes that all `NA`s represent the same value, and that it's different from all known ones (although I'm sure this was not the intention).
 
-Rather than forming a distinct and cohesive group, however, the `NA`s may represent one or more known or unknown values, so this procedure can be misleading. Consider that `NA == NA` returns `NA`: If any two values are unknown, it's also unknown whether they are equal (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)).
+Rather than forming a distinct and cohesive group, the `NA`s may represent any number of known or unknown values, so this procedure can be misleading. Consider that `NA == NA` returns `NA`: If any two values are unknown, it's also unknown whether they are equal (Wickham 2019, [ch. 3.2.3](https://adv-r.hadley.nz/vectors-chap.html#missing-values)).
 
-What's more, categorizing missing values as a separate group is actually an imputation strategy --- and perhaps not a very wise one. I think imputation by default is not the job of operations that are supposed to simply determine a statistic. All moder functions treat `NA`s as genuinely missing values, just like `mean()`, `median()`, and language primitives such as `==` do. Sometimes, this means the functions can just ignore them because a known value is more frequent than the next-most-frequent value and all `NA`s taken together. They will only return `NA` if the data cannot possibly answer the user's question.
+What's more, categorizing missing values as a separate group is actually an imputation strategy --- and perhaps not a very wise one. I think imputation by default is not the job of operations that are supposed to simply determine a statistic. All moder functions treat `NA`s as genuinely missing values, just like `mean()`, `median()`, and language primitives such as `==` do. Sometimes, this means the functions can just ignore `NA`s because a known value is more frequent than the next-most-frequent value and all `NA`s taken together. They will only return `NA` if the data cannot possibly answer the user's question.
 
 All choices about imputation will then be left to the user. In this way, moder functions draw a clear line between estimation and imputation.
 

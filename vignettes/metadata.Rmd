@@ -82,7 +82,7 @@ mode_frequency_range(c(1, 1, 1, 1, 2, NA, NA))
 
 ### Trivial modes
 
-Related to frequencies, `mode_is_trivial()` flags cases where the mode is not meaningful. It returns `TRUE` if all values are equally frequent. Modality is trivial in this case because it is a property of all values taken together, not of some values over others.
+Related to frequencies, `mode_is_trivial()` flags cases where the mode is not meaningful. It returns `TRUE` if all values are equally frequent. Modality is trivial in this case because it is a property of every single value, not of some values over others.
 
 ```{r}
 mode_is_trivial(c("a", "b", "c"))
