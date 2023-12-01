@@ -144,7 +144,8 @@ handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
 # `mode_possible_max()`:
 mode_possible_warn_multiple <- function() {
   warning(paste(
-    "The `multiple` argument was renamed to `accept` in moder 0.3.0.",
+    "The `multiple` argument in `mode_possible_min()` and",
+    "`mode_possible_max()` was renamed to `accept` in moder 0.3.0.",
     "`multiple` no longer has any effect. It will be removed in",
     "a future version."
   ))
@@ -173,21 +174,24 @@ is_whole_number <- function(x, tolerance = .Machine$double.eps^0.5) {
 # -- For efficiency, `decrease_na_amount()` should only be called under very
 # specific conditions, as in `mode_first()` etc.
 decrease_na_amount <- function(x, na.rm, na.rm.amount,
-                               na.rm.from = c("start", "end", "random")) {
-  na.rm.from <- match.arg(na.rm.from)
+                               na.rm.from = c("first")) {
   # Check for misspecifications of the calling function's arguments:
   if (na.rm) {
-    msg_error <- paste(
+    stop(paste(
       "Conflicting instructions: `na.rm` removes all missing values,",
       "`na.rm.amount` only removes some number of them."
-    )
-    stop(msg_error)
+    ))
   }
   amount_is_wrong <- length(na.rm.amount) != 1L ||
     !is_whole_number(na.rm.amount) ||
     na.rm.amount < 0
   if (amount_is_wrong) {
     stop("`na.rm.amount` must be a single whole, non-negative number.")
+  }
+  # Vectors without any `NA`s have nothing to remove, so they should be returned
+  # as they are:
+  if (!anyNA(x)) {
+    return(x)
   }
   # Record the indices of missing values in `x`:
   x_na <- which(is.na(x))
@@ -198,15 +202,13 @@ decrease_na_amount <- function(x, na.rm, na.rm.amount,
   if (nna <= 0L) {
     return(x[-x_na])
   }
-  # Remove the indices of those missings that should be ignored from the vector
-  # of the indices of all missing values:
+  # Target the indices of those missings that should be ignored:
   x_na_but_ignored <- switch(
     na.rm.from,
-    "start"  = utils::head(x_na, length(x_na) - nna),
-    "end"    = utils::tail(x_na, length(x_na) - nna),
+    "first"  = utils::head(x_na, length(x_na) - nna),
+    "last"   = utils::tail(x_na, length(x_na) - nna),
     "random" = sample(x_na, length(x_na) - nna)
   )
   # Return `x`, excluding those values:
   x[-x_na_but_ignored]
 }
-

@@ -47,7 +47,7 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
     # If the mode can be determined, count its occurrences among non-`NA`
     # values. This requires one mode of `x`, so we call `mode_first()` with
     # `accept = TRUE` (because position is irrelevant here):
-    mode <- mode_first(x, na.rm, TRUE)
+    mode <- mode_first(x, na.rm, accept = TRUE)
     return(length(x[x == mode]))
   } else if (is.null(max_unique)) {
     return(NA_integer_)
