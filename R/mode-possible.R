@@ -68,7 +68,6 @@ mode_possible_min <- function(x, accept = FALSE, multiple = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  rm(n_x)
   if (n_na == 0L) {
     return(mode_all_if_no_na(x))
   }
@@ -112,7 +111,6 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_nas_left <- n_x - length(x)
-  rm(n_x)
   # No `NA`s mean no ambiguity about any possible modes below the top level, so
   # the modes from this level are returned:
   modes <- mode_all_if_no_na(x)

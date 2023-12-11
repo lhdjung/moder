@@ -37,7 +37,6 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  rm(n_x)
   if (is.null(max_unique)) {
     check_factor_max_unique(x, n_na, "mode_frequency")
   }
@@ -108,7 +107,6 @@ mode_frequency_range <- function(x, max_unique = NULL) {
   if (length(x) == 0L) {
     return(c(1L, n_x))
   }
-  rm(n_x)
   if (!is.null(max_unique)) {
     unique_x <- unique(x)
     max_unique <- handle_max_unique_input(

@@ -34,7 +34,6 @@ frequency_grid_df <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- sort(x[!is.na(x)])
   n_na <- n_x - length(x)
-  rm(n_x)
   freq_table <- as.data.frame(
     table(x), responseName = "freq", stringsAsFactors = FALSE
   )

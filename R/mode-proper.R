@@ -335,10 +335,9 @@ mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
     # Index numbers must not be greater than the number of modes, which is an
     # error:
     if (multiple > length(modes)) {
-      msg_error <- paste(
+      stop(paste(
         "`multiple` is", multiple, "but there are only", length(modes), "modes"
-      )
-      stop(msg_error)
+      ))
     }
     modes[multiple]
   } else {
@@ -350,11 +349,10 @@ mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
     if (length(modes) == 1L) {
       modes
     } else {
-      msg_error <- paste(
-        "Function supplied to `multiple` returns object of length", msg_error,
+      stop(paste(
+        "Function supplied to `multiple` returns object of length",
         length(modes), "instead of 1"
-      )
-      stop(msg_error)
+      ))
     }
   }
 }

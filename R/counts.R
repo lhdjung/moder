@@ -43,7 +43,6 @@ mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  rm(n_x)
   if (is.null(max_unique)) {
     check_factor_max_unique(x, n_na, "mode_count")
   } else {
@@ -116,24 +115,24 @@ mode_count_range <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  rm(n_x)
   n_unique_x <- length(unique(x))
   max_unique <- handle_max_unique_input(
     x, max_unique, n_unique_x, n_na, "mode_count_range"
   )
   # Throw an error if `max_unique` was specified as too low a number:
   if (!is.null(max_unique) && max_unique < n_unique_x) {
-    msg_error <- paste("`max_unique` is", max_unique, "but there are")
-    msg_error <- paste(msg_error, n_unique_x, "values in `x`")
-    stop(msg_error)
+    stop(paste(
+      "`max_unique` is", max_unique, "but there are", n_unique_x,
+      "values in `x`"
+    ))
   }
   # The minimal and maximal mode counts are identical if there are no `NA`s:
   if (n_na == 0L) {
-    n_exact <- suppressWarnings(mode_count(x, FALSE))
-    return(rep(n_exact, times = 2L))
+    n_exact <- length(mode_all_if_no_na(x))
+    return(c(n_exact, n_exact))
   }
-  # This part works like the helper `count_slots_empty()`, but it involves
-  # variables that are used elsewhere in the present function:
+  # This part works somewhat like the helper `count_slots_empty()`, but it
+  # involves variables that are used elsewhere in the present function:
   frequency_max <- length(x[x %in% mode_first_if_no_na(x)])
   n_slots_all <- n_unique_x * frequency_max
   n_slots_empty <- n_slots_all - length(x)
@@ -141,14 +140,15 @@ mode_count_range <- function(x, max_unique = NULL) {
   if (n_na < n_slots_empty) {
     frequency_all <- table(x)
     for (i in seq_along(frequency_all)) {
-      if (frequency_all[i] < frequency_max) {
-        diff_to_max <- frequency_max - frequency_all[i]
-        if (n_na < diff_to_max) {
-          return(c(1L, length(frequency_all[frequency_all == frequency_max])))
-        } else {
-          frequency_all[i] <- frequency_max
-          n_na <- n_na - diff_to_max
-        }
+      if (frequency_all[i] >= frequency_max) {
+        next
+      }
+      diff_to_max <- frequency_max - frequency_all[i]
+      if (n_na < diff_to_max) {
+        return(c(1L, length(frequency_all[frequency_all == frequency_max])))
+      } else {
+        frequency_all[i] <- frequency_max
+        n_na <- n_na - diff_to_max
       }
     }
   }
