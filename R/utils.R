@@ -36,10 +36,11 @@ decide_mode_na <- function(x, unique_x, mode1) {
     }
   }
   ix2 <- x[x != mode1 & !is.na(x)]
-  frequency2 <- vapply(ix2, function(x) length(ix2[ix2 == x]), 1L)
+  frequency2 <- vapply(
+    ix2, function(x) length(ix2[ix2 == x]), 1L, USE.NAMES = FALSE
+  )
   mode2 <- ix2[which.max(frequency2)]
   n_na <- length(x[is.na(x)])
-  x <- x[!is.na(x)]
   n_mode1 <- length(x[x == mode1])
   n_mode2_na <- length(x[x == mode2]) + n_na
   if (n_mode1 > n_mode2_na) {
@@ -72,7 +73,7 @@ count_slots_empty_new_vals <- function(n_na, frequency_max) {
 # ONLY FOR VECTORS WITHOUT MISSING VALUES, AND WITHOUT ARGUMENTS LIKE
 # `numeric(0)`! A faster version of `mode_all()`:
 mode_all_if_no_na <- function(x) {
-  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
+  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L, USE.NAMES = FALSE)
   unique(x[frequency1 == max(frequency1)])
 }
 
@@ -80,9 +81,10 @@ mode_all_if_no_na <- function(x) {
 # ONLY FOR VECTORS WITHOUT MISSING VALUES, AND WITHOUT ARGUMENTS LIKE
 # `numeric(0)`! A faster version of `mode_first()`:
 mode_first_if_no_na <- function(x) {
-  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L)
+  frequency1 <- vapply(x, function(y) length(x[x == y]), 1L, USE.NAMES = FALSE)
   x[which.max(frequency1)]
 }
+
 
 
 print_example_x <- function() {
@@ -96,11 +98,15 @@ check_factor_max_unique <- function(x, n_na, fn_name) {
   }
   msg_warn <- paste0(
     "In `", fn_name, "()`, `max_unique` should be \"known\" ",
-    "if `x` is a factor (the presumption is that all factor levels are known)."
+    "because `x` is a factor (the presumption is that all factor levels ",
+    "are known)."
   )
   # Calculate the modal frequency, which can put the issue in perspective if
   # it's high enough:
-  if (n_na < max(vapply(x, function(y) length(x[x == y]), 1L))) {
+  frequency_max <- max(vapply(
+    x, function(y) length(x[x == y]), 1L, USE.NAMES = FALSE
+  ))
+  if (frequency_max > n_na) {
     msg_warn <- paste(
       msg_warn, "It won't matter in this particular case because there are not",
       "enough `NA`s to form any new modes."

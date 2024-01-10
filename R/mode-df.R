@@ -148,16 +148,18 @@ mode_df <- function(x, method = c("first", "all", "single"),
           )
         )
       )
-      # Check whether `estimate_current` is `NA` and, if `mode_single()` was
-      # called with its `multiple == "NA"` default, whether some `NA`s in `x`
-      # have not yet been ignored. This additional check is necessary to prevent
-      # an infinite loop in certain cases because `mode_single()` returns `NA`
-      # by default if there are multiple modes.
+      # Check whether `estimate_current` is `NA`, excluding a dangerous edge
+      # case: `mode_single()` was called with its `multiple == "NA"` default,
+      # but all `NA`s in `x[[i]]` are already ignored. This additional check can
+      # be necessary to prevent an infinite loop because `mode_single()` returns
+      # `NA` by default if there are multiple modes.
       estimate_is_na <- length(estimate_current) == 1L &&
-        is.na(estimate_current)
-      if (estimate_is_na && method == "single" && multiple == "NA") {
-        estimate_is_na <- na_ignored_current < length(x[[i]][is.na(x[[i]])])
-      }
+        is.na(estimate_current) &&
+        !(
+          method == "single" &&
+            multiple == "NA" &&
+            na_ignored_current >= length(x[[i]][is.na(x[[i]])])
+        )
       # -- If the estimate is `NA`, there will be (at least) one more iteration
       # of the repeat loop, and it will ignore one more `NA`.
       # -- If a non-`NA` estimate has been found, enter it into the `estimate`
