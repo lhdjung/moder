@@ -1,9 +1,21 @@
 # moder (development version)
 
+## New features
+
 -   New functions `frequency_grid_df()` and `frequency_grid_plot()` to analyze and visualize possible frequency distributions given missing values.
--   Fixed a bug in `mode_count_range()` that displayed a maximum of 0 for certain kinds of input.
--   In `mode_possible_min()` and `mode_possible_max()`, the `multiple` argument was renamed to `accept` for greater consistency with `mode_first()` and other functions.
+-   New function `mode_df()` to help when other moder functions return `NA`.
+
+## Bugfixes
+
+-   `mode_is_trivial()` no longer ignores `max_unique` if all known values are equally frequent.
+-   `mode_count_range()` no longer returns a maximum of 0 for certain kinds of input.
+-   `mode_count_range()`, `mode_possible_min()`, and `mode_possible_max()` no longer display a spurious warning if `x` is `NULL`.
 -   `mode_possible_max()` no longer returns `NA` if the number of `NA`s in the input is equal to or higher than the number of "empty slots" (i.e., the hypothetical non-`NA` values that would have to be present in `x` in order for all of its unique values to be equally frequent). After all, it is possible for all unique values to be "filled up" by `NA`s so that they are themselves modes.
+-   The tibble and ggplot2 packages are now imported, as are stats and utils. The former two are used by the new `frequency_grid_*()` functions, and the latter two should have been imported all along. (They used to be suggested but are needed at runtime.)
+
+## Minor improvements
+
+-   In `mode_possible_min()` and `mode_possible_max()`, the `multiple` argument was renamed to `accept` for greater consistency with `mode_first()` and other functions.
 
 # moder 0.2.1
 
