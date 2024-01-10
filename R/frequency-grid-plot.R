@@ -19,16 +19,16 @@
 #' @param show_line_mode Logical. Should a dashed line demarcate the mode(s)
 #'   among known values from the missing values that might add to these modes,
 #'   if there are any? Default is `FALSE`.
-#' @param label_missing String. Label used for missing values. Default is
+#' @param label_hypothetical String. Label used for missing values. Default is
 #'   `"NA"`.
-#' @param color_label_missing,color_missing,color_non_missing String. Colors of
+#' @param color_label_hypothetical,color_hypothetical,color_non_hypothetical String. Colors of
 #'   the data points. Defaults are `"red2"` for missing data points as well as
 #'   their labels, and `"blue2"` for non-missing data points.
-#' @param alpha_missing,alpha_non_missing Numeric. Opacity of the data points.
+#' @param alpha_hypothetical,alpha_non_hypothetical Numeric. Opacity of the data points.
 #'   Defaults are `1` and `0.75`, respectively.
-#' @param size_label_missing,size_missing,size_non_missing Numeric. Sizes of the
+#' @param size_label_hypothetical,size_hypothetical,size_non_hypothetical Numeric. Sizes of the
 #'   data points. Defaults are `3` for the label and `10` for both symbols.
-#' @param shape_missing,shape_non_missing Numeric or string. Signifiers for the
+#' @param shape_hypothetical,shape_non_hypothetical Numeric or string. Signifiers for the
 #'   shapes of the data points. Defaults are `1` (circle) and `15` (square
 #'   filled), respectively.
 #' @param expand Numeric. Padding whitespace between the axes and the data
@@ -60,28 +60,28 @@
 #'
 #' # With "N/A" as a marker of missing values
 #' # instead of "NA":
-#' frequency_grid_plot(x, label_missing = "N/A")
+#' frequency_grid_plot(x, label_hypothetical = "N/A")
 #'
 #' # Black and white mode:
 #' frequency_grid_plot(
-#'   x, color_label_missing = "black",
-#'   color_missing = "black", color_non_missing = "black"
+#'   x, color_label_hypothetical = "black",
+#'   color_hypothetical = "black", color_non_hypothetical = "black"
 #' )
 
 frequency_grid_plot <- function(x,
                                 show_line_grid = FALSE,
                                 show_line_mode = FALSE,
-                                label_missing = "NA",
-                                color_label_missing = "red2",
-                                color_missing = "red2",
-                                color_non_missing = "blue2",
-                                alpha_missing = 1,
-                                alpha_non_missing = 0.75,
-                                size_label_missing = 3,
-                                size_missing = 10,
-                                size_non_missing = 10,
-                                shape_missing = 1,
-                                shape_non_missing = 15,
+                                label_hypothetical = "NA",
+                                color_label_hypothetical = "red2",
+                                color_hypothetical = "red2",
+                                color_non_hypothetical = "blue2",
+                                alpha_hypothetical = 1,
+                                alpha_non_hypothetical = 0.75,
+                                size_label_hypothetical = 3,
+                                size_hypothetical = 10,
+                                size_non_hypothetical = 10,
+                                shape_hypothetical = 1,
+                                shape_non_hypothetical = 15,
                                 expand = 0.1) {
 
   # Arrange the data. The `x` column is converted to a factor so that it always
@@ -111,15 +111,15 @@ frequency_grid_plot <- function(x,
   # Build and return the plot:
   ggplot2::ggplot(freq_table, ggplot2::aes(x = x, y = freq)) +
     ggplot2::geom_point(
-      shape = ifelse(freq_table$is_missing, shape_missing, shape_non_missing),
-      size  = ifelse(freq_table$is_missing, size_missing , size_non_missing),
-      color = ifelse(freq_table$is_missing, color_missing, color_non_missing),
-      alpha = ifelse(freq_table$is_missing, alpha_missing, alpha_non_missing)
+      shape = ifelse(freq_table$is_hypothetical, shape_hypothetical, shape_non_hypothetical),
+      size  = ifelse(freq_table$is_hypothetical, size_hypothetical , size_non_hypothetical),
+      color = ifelse(freq_table$is_hypothetical, color_hypothetical, color_non_hypothetical),
+      alpha = ifelse(freq_table$is_hypothetical, alpha_hypothetical, alpha_non_hypothetical)
     ) +
     ggplot2::geom_text(
-      label = ifelse(freq_table$can_be_filled, label_missing, ""),
-      size  = size_label_missing,
-      color = color_label_missing
+      label = ifelse(freq_table$can_be_filled, label_hypothetical, ""),
+      size  = size_label_hypothetical,
+      color = color_label_hypothetical
     ) +
     geom_line_mode +
     ggplot2::scale_x_discrete(expand = c(expand, expand)) +

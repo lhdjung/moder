@@ -5,24 +5,23 @@
 #'
 #'   `frequency_grid_df()` takes a vector and creates an extended frequency
 #'   table about it. Internally, this is used as a basis for
-#'   `frequency_grid_plot()`.
+#'   `frequency_grid_plot()`. See there for current limitations.
 #'
 #' @param x A vector.
 #' @inheritParams mode_is_trivial
 #'
-#' @return A data frame with these columns:
+#' @return A tibble (data frame) with these columns:
 #' - `x`: The input vector, with each unique known value repeated to be as
 #'   frequent as the most frequent one.
 #' - `freq` (integer): Hypothetical frequency of each `x` value.
-#' - `is_missing` (logical): Is the observation absent from the input vector?
+#' - `is_hypothetical` (logical): Is the observation absent from the input
+#'   vector?
 #' - `can_be_filled` (logical): Are there enough `NA`s so that one of them might
 #'   hypothetically represent the `x` value in question, implying that there
 #'   would be at least as many observations of that value as the respective
 #'   frequency (`freq`) indicates?
 #' - `is_supermodal` (logical): Is the frequency of this value greater than the
 #'   maximum frequency among known values?
-#'
-#' @section Limitations: See the limitations section of `frequency_grid_plot()`.
 #'
 #' @export
 #'
@@ -34,9 +33,7 @@ frequency_grid_df <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- sort(x[!is.na(x)])
   n_na <- n_x - length(x)
-  freq_table <- as.data.frame(
-    table(x), responseName = "freq", stringsAsFactors = FALSE
-  )
+  freq_table <- tibble::as_tibble(table(x), responseName = "freq")
   freq <- integer(length = sum(freq_table$freq))
   index_out <- 1L
   for (i in seq_len(nrow(freq_table))) {
@@ -86,12 +83,12 @@ frequency_grid_df <- function(x, max_unique = NULL) {
   # missings counted towards it:
   x_out <- rep(unique_x, each = freq_max)
   freq_x <- table(x) + freq_diff
-  is_missing <- logical()
+  is_hypothetical <- logical()
   for (i in seq_along(unique_x)) {
-    n_not_missing <- freq_x[i] - freq_diff
-    is_missing <- c(is_missing, c(
-      rep(FALSE, times = n_not_missing),
-      rep(TRUE,  times = freq_max - n_not_missing)
+    n_not_hypothetical <- freq_x[i] - freq_diff
+    is_hypothetical <- c(is_hypothetical, c(
+      rep(FALSE, times = n_not_hypothetical),
+      rep(TRUE,  times = freq_max - n_not_hypothetical)
     ))
   }
 
@@ -116,7 +113,7 @@ frequency_grid_df <- function(x, max_unique = NULL) {
     for (j in seq_along(freq_indices)) {
       if (n_na == 0L) {
         break
-      } else if (is_missing[freq_indices[j]]) {
+      } else if (is_hypothetical[freq_indices[j]]) {
         can_be_filled[freq_indices[j]] <- TRUE
         n_na <- n_na - 1L
       }
@@ -132,8 +129,7 @@ frequency_grid_df <- function(x, max_unique = NULL) {
   # The output is returned as a base R data frame, not as a tibble, because (a)
   # this package shouldn't have too many dependencies, (b) its columns are
   # highly controlled, and (c) it has an explicit `stringsAsFactors = FALSE`:
-  data.frame(
-    x = x_out, freq = freq_out, is_missing, can_be_filled, is_supermodal,
-    stringsAsFactors = FALSE
+  tibble::tibble(
+    x = x_out, freq = freq_out, is_hypothetical, can_be_filled, is_supermodal
   )
 }
