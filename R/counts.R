@@ -37,12 +37,14 @@
 #' mode_count(c(1, 1, 2, 2, NA), na.rm = TRUE)
 
 mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
-  if (na.rm) {
-    x <- x[!is.na(x)]
-  }
   n_x <- length(x)
   x <- x[!is.na(x)]
-  n_na <- n_x - length(x)
+  if (na.rm) {
+    n_x <- length(x)
+    n_na <- 0L
+  } else {
+    n_na <- n_x - length(x)
+  }
   if (is.null(max_unique)) {
     check_factor_max_unique(x, n_na, "mode_count")
   } else {
@@ -56,8 +58,6 @@ mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
       } else {
         return(NA_integer_)
       }
-    } else {
-      rm(unique_x, max_unique, na.rm)
     }
   }
   modes <- mode_all(c(x, rep(x[NA_integer_], times = n_na)))
@@ -119,17 +119,20 @@ mode_count_range <- function(x, max_unique = NULL) {
   max_unique <- handle_max_unique_input(
     x, max_unique, n_unique_x, n_na, "mode_count_range"
   )
-  # Throw an error if `max_unique` was specified as too low a number:
-  if (!is.null(max_unique) && max_unique < n_unique_x) {
-    stop(paste(
-      "`max_unique` is", max_unique, "but there are", n_unique_x,
-      "values in `x`"
-    ))
-  }
-  # The minimal and maximal mode counts are identical if there are no `NA`s:
+  # Special rules apply if there are no `NA`s. (Note that the nesting here is
+  # the reverse of the analogous block in `mode_frequency_range()` because it
+  # checks for a final case in which there are no `NA`s but some known values,
+  # and `mode_frequency_range()` checks for precisely the opposite case.)
+  # -- If there are no known values either, there are no values at all, so the
+  # modal count is known to be zero.
+  # -- Otherwise, the minimal and maximal modal counts are known and identical.
   if (n_na == 0L) {
-    n_exact <- length(mode_all_if_no_na(x))
-    return(c(n_exact, n_exact))
+    if (length(x) == 0L) {
+      return(c(0L, 0L))
+    } else {
+      n_exact <- length(mode_all_if_no_na(x))
+      return(c(n_exact, n_exact))
+    }
   }
   # This part works somewhat like the helper `count_slots_empty()`, but it
   # involves variables that are used elsewhere in the present function:
@@ -152,36 +155,34 @@ mode_count_range <- function(x, max_unique = NULL) {
       }
     }
   }
-  # What if the `NA`s cannot represent any values other than those already
-  # known, or if there is a known limit to the number of values they can
-  # represent?
-  if (!is.null(max_unique)) {
-    # How many `NA`s remain after filling up all the empty slots with other
-    # `NA`s?
-    n_na_surplus <- n_na - n_slots_empty
-    if (n_na_surplus < 0L) {
-      return(c(1L, n_unique_x + n_na_surplus))
-    }
-    n_na_new_vals <- frequency_max * (max_unique - n_unique_x)
-    if (n_na_new_vals < frequency_max && n_na_surplus %% n_unique_x == 0L) {
-      return(c(1L, n_unique_x))
-    } else if (n_na_new_vals < n_na_surplus) {
-      n_na_beyond_new_vals <- (n_na_surplus - n_na_new_vals) %% max_unique
-      if (n_na_beyond_new_vals == 0L) {
-        return(c(1L, n_unique_x + (n_na_new_vals / frequency_max)))
-      } else {
-        return(c(1L, n_na_beyond_new_vals))
-      }
-    } else if (n_na_new_vals == n_na_surplus) {
-      return(c(1L, max_unique))
-    } else {
-      return(c(1L, n_unique_x + n_na_new_vals %/% frequency_max))
-    }
+  if (is.null(max_unique)) {
+    # How many slots can be filled at the maximum?
+    n_slots_max <- length(x) + n_na
+    # Implicit condition: Some values are missing, and their number is greater
+    # than or equal to the number of empty slots.
+    return(c(1L, n_slots_max %/% frequency_max))
   }
-  # How many slots can be filled at the maximum?
-  n_slots_max <- length(x) + n_na
-  # Implicit condition: Some values are missing, and their number is greater
-  # than or equal to the number of empty slots.
-  c(1L, n_slots_max %/% frequency_max)
+  # All the rest is about `max_unique`: what if the `NA`s cannot represent any
+  # values other than those already known, or if there is a known limit to the
+  # number of values they can represent? To begin, `n_na_surplus` is the number
+  # of `NA`s that remain after filling up all the empty slots with other `NA`s:
+  n_na_surplus <- n_na - n_slots_empty
+  if (n_na_surplus < 0L) {
+    return(c(1L, n_unique_x + n_na_surplus))
+  }
+  n_na_new_vals <- frequency_max * (max_unique - n_unique_x)
+  if (n_na_new_vals < frequency_max && n_na_surplus %% n_unique_x == 0L) {
+    return(c(1L, n_unique_x))
+  } else if (n_na_new_vals < n_na_surplus) {
+    n_na_beyond_new_vals <- (n_na_surplus - n_na_new_vals) %% max_unique
+    if (n_na_beyond_new_vals == 0L) {
+      return(c(1L, n_unique_x + (n_na_new_vals / frequency_max)))
+    } else {
+      return(c(1L, n_na_beyond_new_vals))
+    }
+  } else if (n_na_new_vals == n_na_surplus) {
+    return(c(1L, max_unique))
+  }
+  c(1L, n_unique_x + n_na_new_vals %/% frequency_max)
 }
 

@@ -69,7 +69,11 @@ mode_possible_min <- function(x, accept = FALSE, multiple = NULL) {
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
   if (n_na == 0L) {
-    return(mode_all_if_no_na(x))
+    if (length(x) == 0L) {
+      return(NULL)
+    } else {
+      return(mode_all_if_no_na(x))
+    }
   }
   # Otherwise, the minimum might be the set of modes among known values:
   mode1 <- mode_all_if_no_na(x)
@@ -110,13 +114,25 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
   # go, and it will be decremented as the process goes on:
   n_x <- length(x)
   x <- x[!is.na(x)]
-  n_nas_left <- n_x - length(x)
-  # No `NA`s mean no ambiguity about any possible modes below the top level, so
-  # the modes from this level are returned:
-  modes <- mode_all_if_no_na(x)
-  if (n_nas_left == 0L) {
-    return(modes)
+  n_na_left <- n_x - length(x)
+  # Special rules apply if there are no `NA`s:
+  # -- If there are no known values either, there are no values at all, so there
+  # is nothing but `NULL` to return.
+  # -- Otherwise, the maximal set of modes is known to be the set of modes from
+  # among the known values.
+  if (n_na_left == 0L) {
+    if (length(x) == 0L) {
+      return(NULL)
+    } else {
+      return(mode_all_if_no_na(x))
+    }
+    # If there are `NA`s but no known values, nothing meaningful is known about
+    # `x`, so `NA` is returned:
+  } else if (length(x) == 0L) {
+    return(x[NA_integer_])
   }
+  # Modes among the known values:
+  modes <- mode_all_if_no_na(x)
   # Initialize the vector of mode values. These will be appended to the vector
   # from within the loop: one set of mode values per level of modes.
   modes_out <- NULL
@@ -125,11 +141,12 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
   n_max <- NULL
   # Run through the mode levels of `x` for as long as there is a sufficient
   # amount of missing values left to fill the "empty slots" of each lower level:
-  while (n_nas_left > 0L) {
+  while (n_na_left > 0L) {
     # Determine the modes on the *current* level. This requires `mode_all()`
     # because the faster `mode_all_if_no_na()` can't take `numeric(0)`
     # arguments, which might occur here.
     modes <- mode_all(x, FALSE)
+    # modes <- mode_all_if_no_na(x)
     # This vector will ultimately be returned, but other values may be added to
     # it:
     modes_out <- c(modes_out, unique(x[x %in% modes]))
@@ -142,7 +159,7 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
     n_empty_slots <- length(modes_next_level) * (n_modes - n_modes_next_level)
     # In case the remaining `NA`s can't fill up the empty slots, there won't be
     # another loop cycle:
-    if (n_nas_left < n_empty_slots) {
+    if (n_na_left < n_empty_slots) {
       # With multiple next-most-frequent values (which is not accepted by
       # default of `accept`) and some `NA`s remaining (but not enough; see right
       # above) and the possibility that some of the multiples might be actual
@@ -150,12 +167,12 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
       # set of modes because the `NA`s make it unclear which of the
       # next-most-frequent values might be as frequent as the top-level ones.
       # This returns `NA` for the same reason as `mode_all(c(1, 1, 2, 2, NA))`.
-      if (accept && n_modes_next_level + n_nas_left >= n_max) {
+      if (accept && n_modes_next_level + n_na_left >= n_max) {
         next
       } else if (
         length(modes_next_level) > 1L &&
-        n_nas_left > 0L &&
-        n_modes_next_level + n_nas_left >= n_max
+        n_na_left > 0L &&
+        n_modes_next_level + n_na_left >= n_max
       ) {
         return(x[NA_integer_])
       } else {
@@ -166,11 +183,11 @@ mode_possible_max <- function(x, accept = FALSE, multiple = NULL) {
       # In this case, the empty slots can be filled. Append lower-level modes to
       # the return vector:
       modes_out <- c(modes_out, unique(x[x == modes_next_level]))
-      n_nas_left <- n_nas_left - max(n_empty_slots, 1L)
+      n_na_left <- n_na_left - max(n_empty_slots, 1L)
       # If there is more than one mode per level and there are not enough `NA`s
       # to fill all of them up, there is a pseudo-tie that can be broken by
       # `NA`s, so there is no clear maximum in this case:
-      if (length(modes) > 1L && n_nas_left < n_empty_slots && !accept) {
+      if (length(modes) > 1L && n_na_left < n_empty_slots && !accept) {
         return(x[NA_integer_])
       }
     }
