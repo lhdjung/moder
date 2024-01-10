@@ -9,12 +9,12 @@
 #' @inheritParams mode_first
 #' @inheritParams mode_is_trivial
 #'
-#' @details By default (`na.rm = FALSE`), the function returns `NA` if any
-#'   values are missing. That is because missings make the frequency uncertain
-#'   even if the mode is known: any missing value may or may not be the mode,
-#'   and hence count towards the modal frequency.
+#' @details By default, the function returns `NA` if any values are missing.
+#'   That is because missings make the frequency uncertain even if the mode is
+#'   known: any missing value may or may not be an instance of the mode, and
+#'   hence count towards the modal frequency.
 #'
-#' @return Integer (length 1) or `NA`.
+#' @return Integer (length 1).
 #'
 #' @seealso [mode_first()], which the function wraps.
 #'
@@ -24,30 +24,41 @@
 #' # The mode, `9`, appears three times:
 #' mode_frequency(c(7, 8, 8, 9, 9, 9))
 #'
-#' # With missing values, the frequency
-#' # is unknown, even if the mode isn't:
+#' # Missing values make the frequency
+#' # unknown, even if the mode is obvious:
 #' mode_frequency(c(1, 1, NA))
 #'
 #' # You can ignore this problem and
 #' # determine the frequency among known values
 #' # (there should be good reasons for this!):
 #' mode_frequency(c(1, 1, NA), na.rm = TRUE)
+#'
+#' # In a multimodal distribution, the modal
+#' # frequency is that of a single mode:
+#' mode_frequency(c(3, 3, 4, 4, 5, 5, 6))
 
 mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
-  n_na <- n_x - length(x)
+  if (na.rm) {
+    n_x <- length(x)
+    n_na <- 0L
+  } else {
+    n_na <- n_x - length(x)
+  }
   if (is.null(max_unique)) {
     check_factor_max_unique(x, n_na, "mode_frequency")
   }
-  # The modal frequency can't be determined if any values are missing because
-  # each of them might increase the frequency:
-  if (na.rm || n_na == 0L) {
-    # If the mode can be determined, count its occurrences among non-`NA`
-    # values. This requires one mode of `x`, so we call `mode_first()` with
-    # `accept = TRUE` (because position is irrelevant here):
-    mode <- mode_first(x, na.rm, accept = TRUE)
-    return(length(x[x == mode]))
+  # Two important cases to check for:
+  # -- No values are missing, so the frequency can be determined by finding one
+  # mode (using a specialized internal helper) and counting its instances.
+  # -- By default, the modal frequency can't be determined if any values are
+  # missing because each of them may or may not increase the frequency.
+  # -- Some values are missing and the number of unique values is not limited by
+  # `max_unique`. This means the modal frequency is unknown.
+  if (n_na == 0L) {
+    mode1 <- mode_first_if_no_na(x)
+    return(length(x[x == mode1]))
   } else if (is.null(max_unique)) {
     return(NA_integer_)
   }
@@ -55,12 +66,22 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
   max_unique <- handle_max_unique_input(
     x, max_unique, length(unique_x), n_na, "mode_frequency"
   )
-  if (
-    n_na == 1L &&
+  # An edge case occurs if there is only one `NA`, it must represent a known
+  # value (as per `max_unique`), and all known values are equally frequent.
+  # Since the `NA` must count towards one of the known values, the modal
+  # frequency is known to be the modal frequency among known values plus one
+  # `NA`. Otherwise, `NA_integer_` is returned because the frequency is unknown:
+  # either multiple `NA`s are distributed across the known values in unknown
+  # ways, or it is unclear whether a single `NA` represents a known or an
+  # unknown value, or even the known values are non-uniformly distributed.
+  frequency_is_known <- n_na == 1L &&
     max_unique == length(unique_x) &&
     all(unique_x %in% mode_all_if_no_na(x))
-  ) {
-    as.integer(length(x) / length(unique_x) + 1)
+  # Arithmetically, integer division (`%/%`) works like regular division here
+  # because `length(x)` will always be divisible by `length(unique_x)`. The only
+  # difference is that the output is integer, as it should be.
+  if (frequency_is_known) {
+    length(x) %/% length(unique_x) + 1L
   } else {
     NA_integer_
   }
@@ -75,11 +96,8 @@ mode_frequency <- function(x, na.rm = FALSE, max_unique = NULL) {
 #'
 #' @inheritParams mode_frequency
 #'
-#' @details If there are no `NA`s in `x`, the two return values are identical.
-#'   If all `x` values are `NA`, the return values are `1` (no two `x` values
-#'   are the same) and the total number of values (all `x` values are the same).
-#'
-#' @return Integer (length 2).
+#' @return Integer (length 2). If there are no `NA`s in `x`, the two elements
+#'   are identical because the modal frequency is precisely known.
 #'
 #' @export
 #'
@@ -103,27 +121,34 @@ mode_frequency_range <- function(x, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   n_na <- n_x - length(x)
-  # If all values are missing, the range is highly uncertain (see docs):
-  if (length(x) == 0L) {
-    return(c(1L, n_x))
-  }
   if (!is.null(max_unique)) {
     unique_x <- unique(x)
     max_unique <- handle_max_unique_input(
       x, max_unique, length(unique_x), n_na, "mode_frequency_range"
     )
-    if (
-      any(c(n_na, length(unique_x)) == 1L) &&
-      max_unique == length(unique_x) &&
+    frequency_is_1 <- max_unique == length(unique_x) &&
+      (n_na == 1L || length(unique_x) == 1L) &&
       all(unique_x %in% mode_all_if_no_na(x))
-    ) {
+    if (frequency_is_1) {
       return(c(1L, 1L))
+    }
+  }
+  # Special rules apply if there are no known values:
+  # -- If there are no `NA`s either, there are no values at all, so the modal
+  # frequency is known to be zero.
+  # -- Otherwise, all values are `NA`, so the minimal frequency is 1 (no two `x`
+  # values are the same) and the maximal frequency is the total number of values
+  # (all `x` values are the same).
+  if (length(x) == 0L) {
+    if (n_na == 0L) {
+      return(c(0L, 0L))
+    } else {
+      return(c(1L, n_x))
     }
   }
   # -- Minimum frequency: exclude all `NA`s (they were removed above)
   # -- Maximum frequency: include all `NA`s (add their count to the minimum)
-  frequency_min <- mode_frequency(x)
-  frequency_max <- frequency_min + n_na
-  c(frequency_min, frequency_max)
+  mode1 <- mode_first_if_no_na(x)
+  frequency_min <- length(x[x == mode1])
+  c(frequency_min, frequency_min + n_na)
 }
-
