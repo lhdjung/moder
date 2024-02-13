@@ -1,15 +1,15 @@
-#' Is the mode trivial?
+#' Are the values uniformly distributed?
 #'
-#' @description `mode_is_trivial()` checks whether all values in a given vector
-#'   are equally frequent, i.e., uniformly distributed. The mode is not too
-#'   informative in such cases.
+#' @description `is_uniform()` checks whether all values in a given vector are
+#'   equally frequent, i.e., uniformly distributed. The mode is trivial in such
+#'   cases.
 #'
 #' @inheritParams mode_all
 #' @param max_unique Numeric or string. If the maximum number of unique values
 #'   in `x` is known, set `max_unique` to that number. This puts a limit on how
 #'   many unique values may be represented by `NA`s. Set it to `"known"` instead
-#'   if no values beyond those already known can occur in `x`. Default is
-#'   `NULL`, which assumes no maximum.
+#'   if no values beyond those already known can occur in `x`, or if `x` is a
+#'   factor. Default is `NULL`, which assumes no maximum.
 #'
 #' @details The function returns `TRUE` if `x` has length < 3 because no value
 #'   is more frequent than another one. Otherwise, it returns `NA` in these
@@ -37,36 +37,40 @@
 #'
 #' @export
 #'
+#' @section Factors and `max_unique`: If `x` is a factor, `max_unique` should be
+#'   `"known"` or there is a warning. This is because a factor's levels are
+#'   supposed to include all of its possible values.
+#'
 #' @examples
-#' # The mode is trivial if
-#' # all values are equal...
-#' mode_is_trivial(c(1, 1, 1))
+#' # The distribution is uniform
+#' # if all values are equal...
+#' is_uniform(c(1, 1, 1))
 #'
 #' # ...and even if there are multiple unique
 #' # values but they are all equally frequent:
-#' mode_is_trivial(c(1, 1, 2, 2))
+#' is_uniform(c(1, 1, 2, 2))
 #'
 #' # This includes cases where
 #' # all values are different:
-#' mode_is_trivial(c(1, 2, 3))
+#' is_uniform(c(1, 2, 3))
 #'
 #' # Here, the mode is nontrivial
 #' # because `1` is more frequent than `2`:
-#' mode_is_trivial(c(1, 1, 2))
+#' is_uniform(c(1, 1, 2))
 #'
 #' # Two of the `NA`s might be `8`s, and
 #' # the other three might represent a value
 #' # different from both `7` and `8`. Thus,
 #' # it's possible that all three distinct
 #' # values are equally frequent:
-#' mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)))
+#' is_uniform(c(7, 7, 7, 8, rep(NA, 5)))
 #'
 #' # The same is not true if all values,
 #' # even the missing ones, must represent
 #' # one of the known values:
-#' mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)), max_unique = "known")
+#' is_uniform(c(7, 7, 7, 8, rep(NA, 5)), max_unique = "known")
 
-mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
+is_uniform <- function(x, na.rm = FALSE, max_unique = NULL) {
   n_x <- length(x)
   x <- x[!is.na(x)]
   if (na.rm) {
@@ -77,7 +81,7 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
   }
   unique_x <- unique(x)
   max_unique <- handle_max_unique_input(
-    x, max_unique, length(unique_x), n_na, "mode_is_trivial"
+    x, max_unique, length(unique_x), n_na, "is_uniform"
   )
   # Some edge cases to check for:
   # -- With less than three values, none can be more frequent than another.
@@ -178,3 +182,27 @@ mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
     FALSE
   }
 }
+
+
+#' Is the mode trivial?
+#'
+#' @description `mode_is_trivial()` was renamed to [`is_uniform()`]. Please use
+#'   this new function instead.
+#'
+#'   The function with the old name is deprecated and will be removed in a
+#'   future version. It is retained for now, but using it will cause a warning.
+#'
+#' @inheritParams is_uniform
+#'
+#' @return Logical (length 1).
+#'
+#' @export
+
+mode_is_trivial <- function(x, na.rm = FALSE, max_unique = NULL) {
+  warning(paste(
+    "`mode_is_trivial()` was renamed to `is_uniform()` in moder 0.4.0.",
+    "The function with the old name will be removed in a future version."
+  ))
+  is_uniform(x = x, na.rm = na.rm, max_unique = max_unique)
+}
+

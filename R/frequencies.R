@@ -7,7 +7,7 @@
 #'
 #' @param x A vector to check for its modal frequency.
 #' @inheritParams mode_first
-#' @inheritParams mode_is_trivial
+#' @inheritParams is_uniform
 #'
 #' @details By default, the function returns `NA` if any values are missing.
 #'   That is because missings make the frequency uncertain even if the mode is

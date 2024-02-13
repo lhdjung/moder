@@ -1,5 +1,9 @@
 # moder (development version)
 
+## Breaking changes
+
+-   `mode_is_trivial()` was renamed to `is_uniform()`. This makes the interpretation more clear and appealing.
+
 ## New features
 
 -   New functions `frequency_grid_df()` and `frequency_grid_plot()` to analyze and visualize possible frequency distributions given missing values.

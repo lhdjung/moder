@@ -1,14 +1,16 @@
 #' Modal count
 #'
-#' `mode_count()` counts the modes in a vector. Thin wrapper around
-#' [`mode_all()`].
+#' @description `mode_count()` counts the modes in a vector. If this returns
+#'   `NA`, see [`mode_count_range()`].
 #'
 #' @inheritParams mode_all
-#' @inheritParams mode_is_trivial
+#' @inheritParams is_uniform
+#'
+#' @inheritSection is_uniform Factors and `max_unique`
 #'
 #' @return Integer. Number of modes (values tied for most frequent) in `x`. If
-#'   the modes can't be determined because of missing values,
-#'   returns `NA` instead.
+#'   the modes can't be determined because of missing values, returns `NA`
+#'   instead.
 #'
 #' @export
 #'
@@ -75,11 +77,9 @@ mode_count <- function(x, na.rm = FALSE, max_unique = NULL) {
 #'   of modes given the number of missing values.
 #'
 #' @inheritParams mode-possible
-#' @inheritParams mode_is_trivial
+#' @inheritParams is_uniform
 #'
-#' @details If `x` is a factor, `max_unique` should be `"known"` or there is a
-#'   warning. This is because a factor's levels are supposed to include all of
-#'   its possible values.
+#' @inheritSection is_uniform Factors and `max_unique`
 #'
 #' @return Integer (length 2). Minimal and maximal number of modes (values tied
 #'   for most frequent) in `x`.

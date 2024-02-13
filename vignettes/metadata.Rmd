@@ -80,39 +80,39 @@ With `mode_frequency_range()`, at least the minimal and maximal frequencies can 
 mode_frequency_range(c(1, 1, 1, 1, 2, NA, NA))
 ```
 
-### Trivial modes
+### Uniform distribution
 
-Related to frequencies, `mode_is_trivial()` flags cases where the mode is not meaningful. It returns `TRUE` if all values are equally frequent. Modality is trivial in this case because it is a property of every single value, not of some values over others.
+`is_uniform()` flags cases where all values are equally frequent. Modality is trivial in this case because it is a property of every single value, not of some values over others.
 
 ```{r}
-mode_is_trivial(c("a", "b", "c"))
-mode_is_trivial(c(1, 1, 2, 2, 3, 3))
-mode_is_trivial(c(1, 1, 1, 2, 3))
+is_uniform(c("a", "b", "c"))
+is_uniform(c(1, 1, 2, 2, 3, 3))
+is_uniform(c(1, 1, 1, 2, 3))
 ```
 
 The mode is clearly not a useful concept in the first two cases [cf. @härdle2015, p. 40]. Some authors say that the mode is not defined if each value appears only once [@manikandan2011, p. 214]. However, it is certainly possible for the maximal frequency to be 1, so the only way for such distributions not to have any modal values would be a specific exception in the definition of the mode. The same applies to uniformly distributed data in general. No such exception appears in any definition that I am aware of. Even if it were to be suggested, I think the more elegant solution would be to accept all values of uniformly distributed data as trivially modal.
 
 ## Maximal number of unique values
 
-All of moder's functions for metadata, such as `mode_is_trivial()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
+All of moder's functions for metadata, such as `is_uniform()` and `mode_count_range()`, have a `max_unique` argument. It allows you to state how many unique values your data can have at the maximum. Why is this important? The two functions care about possible modes beyond the known values. In other words, their results might depend on whether or not the `NA`s can mask modal values that don't even occur among the known values! If that is possible, it presents an additional source of uncertainty.
 
 Conversely, `max_unique` limits the possible number of such wildcard modes. Specify it as an integer that is the maximal number of unique values. If there can be no other values than those already known, specify `max_unique` as `"known"` instead. Always use `"known"` if you have factor data or you will get a warning. (The idea behind factors is that all possible values are known at the outset.)
 
 Note that this argument does not represent an analytical decision but simply conveys your knowledge of the data to the computer. There is no meaningful choice to make: If the maximum number of unique values is known, you must specify `max_unique`; if not, you must not do so. Otherwise, you risk incorrect results if any values are missing. The default is `NULL` because the baseline assumption is always that nothing is known about missing values except for their number.
 
-Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency. In this case, all values would trivially be modes in the sense of `mode_is_trivial()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
+Below is an example. If two of the `NA`s represent `8` and the other three stand for a third value, all values appear with the same frequency, as determined by `is_uniform()`. This scenario is not certain at all, but it can't be ruled out either, so the function returns `NA`. As `mode_count_range()` shows, there could be three modes at most. (The minimum is always one if any values are missing.)
 
 ```{r}
 x1 <- c(7, 7, 7, 8, NA, NA, NA, NA, NA)
-mode_is_trivial(x1)
+is_uniform(x1)
 mode_count_range(x1)
 ```
 
-The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the mode nontrivial. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
+The picture is different if we know that each missing value must represent a known value, i.e., `7` or `8`. Even if two `NA`s stand for `8`, the other three can't be evenly distributed across `7` and `8`, so one of these values must be more frequent than the other one. This makes the distribution non-uniform. Also, there can only be one mode, so both the minimal and maximal mode counts are `1`.
 
 ```{r}
 x1
-mode_is_trivial(x1, max_unique = "known")
+is_uniform(x1, max_unique = "known")
 mode_count_range(x1, max_unique = "known")
 ```
 
