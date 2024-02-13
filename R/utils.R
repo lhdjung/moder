@@ -220,6 +220,10 @@ decrease_na_amount <- function(x, na.rm, na.rm.amount, na.rm.from = "first") {
     "last"   = utils::tail(na_indices, na.rm.amount),
     "random" = sample(na_indices, na.rm.amount)
   )
-  # Return `x`, excluding those values:
+  # If no `NA`s are to be ignored, `x` should be returned as it is:
+  if (length(na_indices_ignored) == 0L) {
+    return(x)
+  }
+  # Return `x`, excluding the values in question:
   x[-na_indices_ignored]
 }
