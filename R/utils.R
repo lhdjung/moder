@@ -98,8 +98,8 @@ check_factor_max_unique <- function(x, n_na, fn_name) {
   }
   msg_warn <- paste0(
     "In `", fn_name, "()`, `max_unique` should be \"known\" ",
-    "because `x` is a factor (the presumption is that all factor levels ",
-    "are known)."
+    "because `x` is a factor (the presumption is that a factor's levels ",
+    "contain all of its possible values)."
   )
   # Calculate the modal frequency, which can put the issue in perspective if
   # it's high enough:
@@ -123,6 +123,9 @@ handle_max_unique_input <- function(x, max_unique, n_unique_x, n_na, fn_name) {
     check_factor_max_unique(x, n_na, fn_name)
     return(NULL)
   } else if (max_unique == "known") {
+    if (is.factor(x)) {
+      return(length(levels(x)))
+    }
     return(n_unique_x)
   } else {
     check_factor_max_unique(x, n_na, fn_name)

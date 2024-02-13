@@ -9,7 +9,8 @@
 #'   in `x` is known, set `max_unique` to that number. This puts a limit on how
 #'   many unique values may be represented by `NA`s. Set it to `"known"` instead
 #'   if no values beyond those already known can occur in `x`, or if `x` is a
-#'   factor. Default is `NULL`, which assumes no maximum.
+#'   factor (it will then count the levels). Default is `NULL`, which assumes no
+#'   maximum.
 #'
 #' @details The function returns `TRUE` if `x` has length < 3 because no value
 #'   is more frequent than another one. Otherwise, it returns `NA` in these
