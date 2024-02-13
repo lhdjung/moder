@@ -8,6 +8,7 @@
 
 -   New functions `frequency_grid_df()` and `frequency_grid_plot()` to analyze and visualize possible frequency distributions given missing values.
 -   New function `mode_df()` to help when other moder functions return `NA`.
+-   New predicate functions `is_unimodal()` and `is_multimodal()` to check whether a vector has only one mode or multiple modes.
 
 ## Bugfixes
 

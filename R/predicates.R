@@ -1,3 +1,50 @@
+#' Is a vector unimodal or multimodal?
+#'
+#' @description Two complementary functions:
+#'
+#' - `is_unimodal()` checks whether a vector has exactly one mode.
+#' - `is_multimodal()` checks whether a vector has multiple modes.
+#'
+#' @param x A vector to search for its modes.
+#' @inheritParams mode_count
+#'
+#' @details These functions are thin wrappers around [`mode_count()`], a more
+#'   general tool. See examples there for `NA` handling.
+#'
+#' @inheritSection is_uniform Factors and `max_unique`
+#'
+#' @return Logical (length 1).
+#'
+#' @name is-unimodal-multimodal
+#'
+#' @export
+#'
+#' @seealso [`is_uniform()`] to check for a uniform distribution.
+#'
+#' @examples
+#' # Only one mode:
+#' is_unimodal(c(5, 5, 6))
+#' is_multimodal(c(5, 5, 6))
+#'
+#' # Two modes:
+#' is_unimodal(c(5, 5, 6, 6))
+#' is_multimodal(c(5, 5, 6, 6))
+#'
+#' # Unclear because of the missing value:
+#' is_unimodal(c(5, 5, 6, NA))
+#' is_multimodal(c(5, 5, 6, NA))
+
+is_unimodal <- function(x, na.rm = FALSE, max_unique = NULL) {
+  mode_count(x, na.rm = na.rm, max_unique = max_unique) == 1L
+}
+
+#' @rdname is-unimodal-multimodal
+#' @export
+is_multimodal <- function(x, na.rm = FALSE, max_unique = NULL) {
+  mode_count(x, na.rm = na.rm, max_unique = max_unique) > 1L
+}
+
+
 #' Are the values uniformly distributed?
 #'
 #' @description `is_uniform()` checks whether all values in a given vector are
