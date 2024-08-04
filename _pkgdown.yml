@@ -39,6 +39,7 @@ reference:
   - mode_count_range
   - mode_frequency
   - mode_frequency_range
+  - is-unimodal-multimodal
   - mode_is_trivial
 - title: Frequency grids
 - contents:

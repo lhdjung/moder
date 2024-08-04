@@ -9,70 +9,23 @@ mode_is_trivial(x, na.rm = FALSE, max_unique = NULL)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Logical. Should missing values in \code{x} be removed before
-computation proceeds? Default is \code{FALSE}.}
+\item{na.rm}{Logical. Should missing values in \code{x} be removed, i.e., ignored?
+Default is \code{FALSE}.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
-in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent values beyond that number (see examples). Set it to \code{"known"}
-instead if no values beyond those already known can occur. Default is
-\code{NULL}, which assumes no maximum.}
+in \code{x} is known, set \code{max_unique} to that number. This puts a limit on how
+many unique values may be represented by \code{NA}s. Set it to \code{"known"} instead
+if no values beyond those already known can occur in \code{x}, or if \code{x} is a
+factor (it will then count the levels). Default is \code{NULL}, which assumes no
+maximum.}
 }
 \value{
 Logical (length 1).
 }
 \description{
-\code{mode_is_trivial()} checks whether all values in a given vector
-are equally frequent. The mode is not too informative in such cases.
-}
-\details{
-The function returns \code{TRUE} whenever \code{x} has length < 3 because no
-value is more frequent than another one. Otherwise, it returns \code{NA} in
-these cases:
-\itemize{
-\item Some \code{x} values are missing, all known values are equal, and the number
-of missing values is divisible by the number of unique known values. Thus,
-the missings don't necessarily break the tie among known values, and it is
-unknown whether there is a value with a different frequency.
-\item All known values are modes if the \code{NA}s "fill up" the non-modal values
-exactly, i.e., without any \code{NA}s remaining.
-\item Some \code{NA}s remain after "filling up" the non-modal values with \code{NA}s (so
-that they are hypothetically modes), and the number of remaining \code{NA}s is
-divisible by the number of unique known values.
-\item There are so many missing values that they might form mode-sized groups
-of values that are not among the known values, and the number of \code{NA}s is
-divisible by the modal frequency so that all (partly hypothetical) values
-might be equally frequent. You can limit the number of such hypothetical
-values by specifying \code{max_unique}. The function might then return \code{FALSE}
-instead of \code{NA}.
-}
-}
-\examples{
-# The mode is trivial if
-# all values are equal...
-mode_is_trivial(c(1, 1, 1))
+\code{mode_is_trivial()} was renamed to \code{\link[=is_uniform]{is_uniform()}}. Please use
+this new function instead.
 
-# ...and even if all unique
-# values are equally frequent:
-mode_is_trivial(c(1, 1, 2, 2))
-
-# It's also trivial if
-# all values are different:
-mode_is_trivial(c(1, 2, 3))
-
-# Here, the mode is nontrivial
-# because `1` is more frequent than `2`:
-mode_is_trivial(c(1, 1, 2))
-
-# Two of the `NA`s might be `8`s, and
-# the other three might represent a value
-# different from both `7` and `8`. Thus,
-# it's possible that all three distinct
-# values are equally frequent:
-mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)))
-
-# The same is not true if all values,
-# even the missing ones, must represent
-# one of the known values:
-mode_is_trivial(c(7, 7, 7, 8, rep(NA, 5)), max_unique = "known")
+The function with the old name is deprecated and will be removed in a
+future version. It is retained for now, but using it will cause a warning.
 }
