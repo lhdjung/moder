@@ -9,24 +9,31 @@ mode_count(x, na.rm = FALSE, max_unique = NULL)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Logical. Should missing values in \code{x} be removed before
-computation proceeds? Default is \code{FALSE}.}
+\item{na.rm}{Logical. Should missing values in \code{x} be removed, i.e., ignored?
+Default is \code{FALSE}.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
-in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent values beyond that number (see examples). Set it to \code{"known"}
-instead if no values beyond those already known can occur. Default is
-\code{NULL}, which assumes no maximum.}
+in \code{x} is known, set \code{max_unique} to that number. This puts a limit on how
+many unique values may be represented by \code{NA}s. Set it to \code{"known"} instead
+if no values beyond those already known can occur in \code{x}, or if \code{x} is a
+factor (it will then count the levels). Default is \code{NULL}, which assumes no
+maximum.}
 }
 \value{
 Integer. Number of modes (values tied for most frequent) in \code{x}. If
-the modes can't be determined because of missing values,
-returns \code{NA} instead.
+the modes can't be determined because of missing values, returns \code{NA}
+instead.
 }
 \description{
-\code{mode_count()} counts the modes in a vector. Thin wrapper around
-\code{\link[=mode_all]{mode_all()}}.
+\code{mode_count()} counts the modes in a vector. If this returns
+\code{NA}, see \code{\link[=mode_count_range]{mode_count_range()}}.
 }
+\section{Factors and \code{max_unique}}{
+ If \code{x} is a factor, \code{max_unique} should be
+\code{"known"} or there is a warning. This is because a factor's levels are
+supposed to include all of its possible values.
+}
+
 \examples{
 # There are two modes, `3` and `4`:
 mode_count(c(1, 2, 3, 3, 4, 4))

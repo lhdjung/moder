@@ -10,10 +10,11 @@ mode_count_range(x, max_unique = NULL)
 \item{x}{A vector to search for its possible modes.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
-in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent values beyond that number (see examples). Set it to \code{"known"}
-instead if no values beyond those already known can occur. Default is
-\code{NULL}, which assumes no maximum.}
+in \code{x} is known, set \code{max_unique} to that number. This puts a limit on how
+many unique values may be represented by \code{NA}s. Set it to \code{"known"} instead
+if no values beyond those already known can occur in \code{x}, or if \code{x} is a
+factor (it will then count the levels). Default is \code{NULL}, which assumes no
+maximum.}
 }
 \value{
 Integer (length 2). Minimal and maximal number of modes (values tied
@@ -23,11 +24,12 @@ for most frequent) in \code{x}.
 \code{mode_count_range()} determines the minimal and maximal number
 of modes given the number of missing values.
 }
-\details{
-If \code{x} is a factor, \code{max_unique} should be \code{"known"} or there is a
-warning. This is because a factor's levels are supposed to include all of
-its possible values.
+\section{Factors and \code{max_unique}}{
+ If \code{x} is a factor, \code{max_unique} should be
+\code{"known"} or there is a warning. This is because a factor's levels are
+supposed to include all of its possible values.
 }
+
 \examples{
 # If `NA` is `7` or `8`, that number is
 # the only mode; otherwise, both numbers

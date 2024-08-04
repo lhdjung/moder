@@ -84,6 +84,8 @@ test_that("`mode_frequency_range()` works correctly", {
   expect_equal(mode_frequency_range(x17), c(2L, 4L))
 })
 
+# The expectations marked with "diff" are different from the block above because
+# of `max_unique = "known"`:
 test_that("`mode_frequency_range()` works correctly with `max_unique = TRUE`", {
   expect_equal(mode_frequency_range(x1 , max_unique = "known"), c(3L, 3L))
   expect_equal(mode_frequency_range(x2 , max_unique = "known"), c(4L, 8L))

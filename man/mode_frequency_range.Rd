@@ -10,23 +10,20 @@ mode_frequency_range(x, max_unique = NULL)
 \item{x}{A vector to check for its modal frequency.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
-in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent values beyond that number (see examples). Set it to \code{"known"}
-instead if no values beyond those already known can occur. Default is
-\code{NULL}, which assumes no maximum.}
+in \code{x} is known, set \code{max_unique} to that number. This puts a limit on how
+many unique values may be represented by \code{NA}s. Set it to \code{"known"} instead
+if no values beyond those already known can occur in \code{x}, or if \code{x} is a
+factor (it will then count the levels). Default is \code{NULL}, which assumes no
+maximum.}
 }
 \value{
-Integer (length 2).
+Integer (length 2). If there are no \code{NA}s in \code{x}, the two elements
+are identical because the modal frequency is precisely known.
 }
 \description{
 \code{mode_frequency_range()} determines the minimum and maximum
 number of times that a vector's mode appears in the vector. The minimum
 assumes that no \code{NA}s are the mode; the maximum assumes that all \code{NA}s are.
-}
-\details{
-If there are no \code{NA}s in \code{x}, the two return values are identical.
-If all \code{x} values are \code{NA}, the return values are \code{1} (no two \code{x} values
-are the same) and the total number of values (all \code{x} values are the same).
 }
 \examples{
 # The mode is `7`. It appears four or

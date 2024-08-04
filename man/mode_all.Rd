@@ -9,8 +9,8 @@ mode_all(x, na.rm = FALSE, na.rm.amount = 0)
 \arguments{
 \item{x}{A vector to search for its modes.}
 
-\item{na.rm}{Logical. Should missing values in \code{x} be removed before
-computation proceeds? Default is \code{FALSE}.}
+\item{na.rm}{Logical. Should missing values in \code{x} be removed, i.e., ignored?
+Default is \code{FALSE}.}
 
 \item{na.rm.amount}{Numeric. Alternative to \code{na.rm} that only removes a
 specified number of missing values. Default is \code{0}.}
