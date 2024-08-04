@@ -10,18 +10,20 @@ frequency_grid_df(x, max_unique = NULL)
 \item{x}{A vector.}
 
 \item{max_unique}{Numeric or string. If the maximum number of unique values
-in \code{x} is known, set \code{max_unique} to that number. This rules out that \code{NA}s
-represent values beyond that number (see examples). Set it to \code{"known"}
-instead if no values beyond those already known can occur. Default is
-\code{NULL}, which assumes no maximum.}
+in \code{x} is known, set \code{max_unique} to that number. This puts a limit on how
+many unique values may be represented by \code{NA}s. Set it to \code{"known"} instead
+if no values beyond those already known can occur in \code{x}, or if \code{x} is a
+factor (it will then count the levels). Default is \code{NULL}, which assumes no
+maximum.}
 }
 \value{
-A data frame with these columns:
+A tibble (data frame) with these columns:
 \itemize{
 \item \code{x}: The input vector, with each unique known value repeated to be as
 frequent as the most frequent one.
 \item \code{freq} (integer): Hypothetical frequency of each \code{x} value.
-\item \code{is_missing} (logical): Is the observation absent from the input vector?
+\item \code{is_hypothetical} (logical): Is the observation absent from the input
+vector?
 \item \code{can_be_filled} (logical): Are there enough \code{NA}s so that one of them might
 hypothetically represent the \code{x} value in question, implying that there
 would be at least as many observations of that value as the respective
@@ -36,12 +38,8 @@ relied upon.
 
 \code{frequency_grid_df()} takes a vector and creates an extended frequency
 table about it. Internally, this is used as a basis for
-\code{frequency_grid_plot()}.
+\code{frequency_grid_plot()}. See there for current limitations.
 }
-\section{Limitations}{
- See the limitations section of \code{frequency_grid_plot()}.
-}
-
 \examples{
 x <- c("a", "a", "a", "b", "b", "c", NA, NA, NA, NA, NA)
 frequency_grid_df(x)

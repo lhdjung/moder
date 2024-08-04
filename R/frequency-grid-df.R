@@ -8,7 +8,7 @@
 #'   `frequency_grid_plot()`. See there for current limitations.
 #'
 #' @param x A vector.
-#' @inheritParams mode_is_trivial
+#' @inheritParams is_uniform
 #'
 #' @return A tibble (data frame) with these columns:
 #' - `x`: The input vector, with each unique known value repeated to be as

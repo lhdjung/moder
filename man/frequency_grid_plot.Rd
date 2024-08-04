@@ -8,17 +8,17 @@ frequency_grid_plot(
   x,
   show_line_grid = FALSE,
   show_line_mode = FALSE,
-  label_missing = "NA",
-  color_label_missing = "red2",
-  color_missing = "red2",
-  color_non_missing = "blue2",
-  alpha_missing = 1,
-  alpha_non_missing = 0.75,
-  size_label_missing = 3,
-  size_missing = 10,
-  size_non_missing = 10,
-  shape_missing = 1,
-  shape_non_missing = 15,
+  label_hypothetical = "NA",
+  color_label_hypothetical = "red2",
+  color_hypothetical = "red2",
+  color_non_hypothetical = "blue2",
+  alpha_hypothetical = 1,
+  alpha_non_hypothetical = 0.75,
+  size_label_hypothetical = 3,
+  size_hypothetical = 10,
+  size_non_hypothetical = 10,
+  shape_hypothetical = 1,
+  shape_non_hypothetical = 15,
   expand = 0.1
 )
 }
@@ -32,20 +32,20 @@ observation? Default is \code{FALSE}.}
 among known values from the missing values that might add to these modes,
 if there are any? Default is \code{FALSE}.}
 
-\item{label_missing}{String. Label used for missing values. Default is
+\item{label_hypothetical}{String. Label used for missing values. Default is
 \code{"NA"}.}
 
-\item{color_label_missing, color_missing, color_non_missing}{String. Colors of
+\item{color_label_hypothetical, color_hypothetical, color_non_hypothetical}{String. Colors of
 the data points. Defaults are \code{"red2"} for missing data points as well as
 their labels, and \code{"blue2"} for non-missing data points.}
 
-\item{alpha_missing, alpha_non_missing}{Numeric. Opacity of the data points.
+\item{alpha_hypothetical, alpha_non_hypothetical}{Numeric. Opacity of the data points.
 Defaults are \code{1} and \code{0.75}, respectively.}
 
-\item{size_label_missing, size_missing, size_non_missing}{Numeric. Sizes of the
+\item{size_label_hypothetical, size_hypothetical, size_non_hypothetical}{Numeric. Sizes of the
 data points. Defaults are \code{3} for the label and \code{10} for both symbols.}
 
-\item{shape_missing, shape_non_missing}{Numeric or string. Signifiers for the
+\item{shape_hypothetical, shape_non_hypothetical}{Numeric or string. Signifiers for the
 shapes of the data points. Defaults are \code{1} (circle) and \code{15} (square
 filled), respectively.}
 
@@ -93,12 +93,12 @@ frequency_grid_plot(x)
 
 # With "N/A" as a marker of missing values
 # instead of "NA":
-frequency_grid_plot(x, label_missing = "N/A")
+frequency_grid_plot(x, label_hypothetical = "N/A")
 
 # Black and white mode:
 frequency_grid_plot(
-  x, color_label_missing = "black",
-  color_missing = "black", color_non_missing = "black"
+  x, color_label_hypothetical = "black",
+  color_hypothetical = "black", color_non_hypothetical = "black"
 )
 }
 \seealso{
