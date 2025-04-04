@@ -230,3 +230,22 @@ decrease_na_amount <- function(x, na.rm, na.rm.amount, na.rm.from = "first") {
   # Return `x`, excluding the values in question:
   x[-na_indices_ignored]
 }
+
+
+# Mutating operation alert! Calling this function will not return a modified
+# copy (it returns `NULL`) but rather actually change a field of a ggplot2 geom
+# in memory. The other two arguments are strings. The name of an existing
+# aesthetic, `name_old`, is replaced by `name_new`. For example, the main use
+# case: changing `linewidth` to `size` if the installed version of ggplot2 does
+# not have `linewidth` yet. The condition would be: `packageVersion("ggplot2") <
+# "3.4.0"`
+rename_aes <- function(geom, name_old, name_new) {
+  params <- geom$aes_params
+  aes_value <- params[[name_old]]
+  names(aes_value) <- name_new
+  params <- c(params, aes_value)
+  params[[name_old]] <- NULL
+  geom$aes_params <- params
+  invisible(NULL)
+}
+
