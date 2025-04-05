@@ -239,7 +239,7 @@ decrease_na_amount <- function(x, na.rm, na.rm.amount, na.rm.from = "first") {
 # case: changing `linewidth` to `size` if the installed version of ggplot2 does
 # not have `linewidth` yet. The condition would be: `packageVersion("ggplot2") <
 # "3.4.0"`
-rename_aes <- function(geom, name_old, name_new) {
+rename_aes_param <- function(geom, name_old, name_new) {
   params <- geom$aes_params
   aes_value <- params[[name_old]]
   names(aes_value) <- name_new
