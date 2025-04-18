@@ -230,3 +230,15 @@ decrease_na_amount <- function(x, na.rm, na.rm.amount, na.rm.from = "first") {
   # Return `x`, excluding the values in question:
   x[-na_indices_ignored]
 }
+
+
+# Versions of ggplot2 before 3.4.0 have the `size` aesthetic instead of
+# `linewidth`. This helper checks which name is needed on the user's system.
+get_linewidth_name <- function() {
+  if (utils::packageVersion("ggplot2") < "3.4.0") {
+    "size"
+  } else {
+    "linewidth"
+  }
+}
+
