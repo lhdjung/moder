@@ -240,6 +240,7 @@ get_linewidth_name <- function() {
   } else {
     "linewidth"
   }
+}
 
 
 #' Add an aesthetic to an existing geom
@@ -266,12 +267,8 @@ get_linewidth_name <- function() {
 #' @examples
 #' # As ggplot2 extension devs will know, version 3.4.0 replaced the `size`
 #' # aesthetic by `linewidth`. We don't know which versions our users have
-#' # installed, but this code determines it at runtime:
-#' linewidth_name <- if (utils::packageVersion("ggplot2") < "3.4.0") {
-#'   "size"
-#' } else {
-#'   "linewidth"
-#' }
+#' # installed, but this helper (see above) determines it at runtime:
+#' linewidth_name <- get_linewidth_name()
 #'
 #' # Assign your geom to a variable but leave out those two aesthetics:
 #' my_geom <- ggplot2::geom_point(
