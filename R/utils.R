@@ -240,5 +240,56 @@ get_linewidth_name <- function() {
   } else {
     "linewidth"
   }
+
+
+#' Add an aesthetic to an existing geom
+#'
+#' @description Mutating operation alert! Calling `aes_add()` will not return a
+#'   modified copy (it returns `NULL`) but rather actually change a field of a
+#'   ggplot2 geom in memory: after the function was called, the geom will have
+#'   an additional aesthetic with the chose name and the chosen value.
+#'
+#'   Make sure you know which `field` of `geom` the new aesthetics belongs to.
+#'   The function will not check this.
+#'
+#' @param geom Existing ggplot2 geom. Assign it before calling the function.
+#' @param field String (length 1). Name of the field where the new aesthetic
+#'   should live, such as `"aes_params"` or `"mapping"`.
+#' @param aes_name String (length 1). Name of the new aesthetic.
+#' @param aes_value Value of the new aesthetic. Mind types here; they are not
+#'   checked.
+#'
+#' @returns `NULL`, invisibly.
+#'
+#' @noRd
+#'
+#' @examples
+#' # As ggplot2 extension devs will know, version 3.4.0 replaced the `size`
+#' # aesthetic by `linewidth`. We don't know which versions our users have
+#' # installed, but this code determines it at runtime:
+#' linewidth_name <- if (utils::packageVersion("ggplot2") < "3.4.0") {
+#'   "size"
+#' } else {
+#'   "linewidth"
+#' }
+#'
+#' # Assign your geom to a variable but leave out those two aesthetics:
+#' my_geom <- ggplot2::geom_point(
+#'   # only provide arguments that will work in any case
+#' )
+#'
+#' # Add `size` / `linewidth` to the geom with `0.5` as a value. This will
+#' # mutate the geom in memory, so no assignment is needed. Note that both of
+#' # these aesthetics belong to `my_geom$aes_params`.
+#' aes_add(
+#'   geom = my_geom,
+#'   field = "aes_params",
+#'   aes_name = linewidth_name,
+#'   aes_value = 0.5
+#' )
+aes_add <- function(geom, field, aes_name, aes_value) {
+  names(aes_value) <- aes_name
+  geom[[field]] <- c(geom[[field]], aes_value)
+  invisible(NULL)
 }
 
