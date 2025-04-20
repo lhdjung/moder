@@ -300,3 +300,29 @@ near_or_equal <- function(x, y) {
   }
 }
 
+
+# Check that either (a) all list elements are numeric, or (b) all are
+# non-numeric. If some are numeric and some are not, throw a bespoke error.
+check_numeric_types_mixed <- function(x) {
+
+  types <- vapply(x, typeof, character(1))
+  type_is_numeric <- types %in% c("double", "integer")
+
+  if (any(type_is_numeric) && !all(type_is_numeric)) {
+    numeric1 <- which(type_is_numeric)[1]
+    non_numeric_1 <- which(!type_is_numeric)[1]
+    numeric1_type <- types[numeric1]
+    non_numeric1_type <- types[non_numeric_1]
+    cli::cli_abort(
+      message = c(
+        "Mixing numeric and non-numeric data is not allowed.",
+        "x" = "Numeric type: {numeric1_type} (index {numeric1})",
+        "x" = "Non-numeric type: {non_numeric1_type} (index {non_numeric_1})"
+      ),
+      call = rlang::caller_call()
+    )
+  }
+
+}
+
+
