@@ -303,7 +303,7 @@ near_or_equal <- function(x, y) {
 
 # Keep record of corner case classes that are built on top of numeric types but
 # don't put their values on the number line
-get_trigger_classes <- function() {
+get_type_classes <- function() {
   c("Date", "factor")
 }
 
@@ -331,8 +331,8 @@ check_types_consistent <- function(x) {
   }
 
   # Demonstrate my knowledge that factor and date are not, in fact, types
-  info_trigger <- NULL
-  trigger_classes <- get_trigger_classes()
+  info_type <- NULL
+  type_classes <- get_type_classes()
 
   # First type that is different from the very first type
   index_type_diff1 <- which(types != types[1])[1]
@@ -341,24 +341,24 @@ check_types_consistent <- function(x) {
   # Record the presence of any type-like class (date, factor) and replace the
   # corresponding type by that class. With a factor, for example, the misleading
   # "integer" is replaced by "factor".
-  for (tc in trigger_classes) {
+  for (tc in type_classes) {
     if (inherits(x[[1]], tc)) {
-      info_trigger <- c(info_trigger, tc)
+      info_type <- c(info_type, tc)
       types[1] <- tc
     }
     if (inherits(x[[index_type_diff1]], tc)) {
-      info_trigger <- c(info_trigger, tc)
+      info_type <- c(info_type, tc)
       types[index_type_diff1] <- tc
     }
   }
 
   # Tell the user that dates and factors are effectively types of their own
-  msg_trigger <- if (is.null(info_trigger)) {
+  msg_type <- if (is.null(info_type)) {
     NULL
   } else {
-    type_types <- if (length(info_trigger) == 1) "a type" else "types"
-    info_trigger <- paste(info_trigger, collapse = " and ")
-    paste("Pragmatically counting", info_trigger, "as", type_types, "here.")
+    type_types <- if (length(info_type) == 1) "a type" else "types"
+    info_type <- paste(info_type, collapse = " and ")
+    paste("Pragmatically counting", info_type, "as", type_types, "here.")
   }
 
   # Some numeric, though not all: mixing types not allowed
@@ -372,7 +372,7 @@ check_types_consistent <- function(x) {
         "Mixing numeric and non-numeric data is not allowed.",
         "x" = "Numeric type: {numeric1_type} (index {numeric1})",
         "x" = "Non-numeric type: {non_numeric1_type} (index {non_numeric_1})",
-        "i" = msg_trigger
+        "i" = msg_type
       ),
       call = rlang::caller_call()
     )
@@ -387,7 +387,7 @@ check_types_consistent <- function(x) {
         "Mixing different types of non-numeric data is not allowed.",
         "x" = "Contains type {types[1]} (index 1).",
         "x" = "But also type {type_diff1} (index {index_type_diff1}).",
-        "i" = msg_trigger
+        "i" = msg_type
       ),
       call = rlang::caller_call()
     )
