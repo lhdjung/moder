@@ -301,28 +301,97 @@ near_or_equal <- function(x, y) {
 }
 
 
+# Keep record of corner case classes that are built on top of numeric types but
+# don't put their values on the number line
+get_trigger_classes <- function() {
+  c("Date", "factor")
+}
+
+
 # Check that either (a) all list elements are numeric, or (b) all are
 # non-numeric. If some are numeric and some are not, throw a bespoke error.
-check_numeric_types_mixed <- function(x) {
+check_types_consistent <- function(x) {
+
+  x_is_numeric <- vapply(x, is.numeric, logical(1))
+
+  if (all(x_is_numeric)) {
+    return(invisible(NULL))
+  }
 
   types <- vapply(x, typeof, character(1))
-  type_is_numeric <- types %in% c("double", "integer")
 
-  if (any(type_is_numeric) && !all(type_is_numeric)) {
-    numeric1 <- which(type_is_numeric)[1]
-    non_numeric_1 <- which(!type_is_numeric)[1]
+  # Given that not all elements are numeric, no element can be numeric or there
+  # will be coercion bugs and incompatible scales. Similarly, all elements must
+  # have the same (non-numeric) type.
+  some_are_numeric <- any(x_is_numeric)
+  some_are_unequal <- !all(types == types[1])
+
+  if (!any(some_are_numeric, some_are_unequal)) {
+    return(invisible(NULL))
+  }
+
+  # Demonstrate my knowledge that factor and date are not, in fact, types
+  info_trigger <- NULL
+  trigger_classes <- get_trigger_classes()
+
+  # First type that is different from the very first type
+  index_type_diff1 <- which(types != types[1])[1]
+  type_diff1 <- types[index_type_diff1]
+
+  # Record the presence of any type-like class (date, factor) and replace the
+  # corresponding type by that class. With a factor, for example, the misleading
+  # "integer" is replaced by "factor".
+  for (tc in trigger_classes) {
+    if (inherits(x[[1]], tc)) {
+      info_trigger <- c(info_trigger, tc)
+      types[1] <- tc
+    }
+    if (inherits(x[[index_type_diff1]], tc)) {
+      info_trigger <- c(info_trigger, tc)
+      types[index_type_diff1] <- tc
+    }
+  }
+
+  # Tell the user that dates and factors are effectively types of their own
+  msg_trigger <- if (is.null(info_trigger)) {
+    NULL
+  } else {
+    type_types <- if (length(info_trigger) == 1) "a type" else "types"
+    info_trigger <- paste(info_trigger, collapse = " and ")
+    paste("Pragmatically counting", info_trigger, "as", type_types, "here.")
+  }
+
+  # Some numeric, though not all: mixing types not allowed
+  if (some_are_numeric) {
+    numeric1 <- which(x_is_numeric)[1]
+    non_numeric_1 <- which(!x_is_numeric)[1]
     numeric1_type <- types[numeric1]
     non_numeric1_type <- types[non_numeric_1]
     cli::cli_abort(
       message = c(
         "Mixing numeric and non-numeric data is not allowed.",
         "x" = "Numeric type: {numeric1_type} (index {numeric1})",
-        "x" = "Non-numeric type: {non_numeric1_type} (index {non_numeric_1})"
+        "x" = "Non-numeric type: {non_numeric1_type} (index {non_numeric_1})",
+        "i" = msg_trigger
+      ),
+      call = rlang::caller_call()
+    )
+  }
+
+  # No numeric, but different non-numeric types: mixing types not allowed.
+  # Currently, the condition is necessarily true at this point, but that may
+  # change with further conditions; hence the explicit check.
+  if (some_are_unequal) {
+    cli::cli_abort(
+      message = c(
+        "Mixing different types of non-numeric data is not allowed.",
+        "x" = "Contains type {types[1]} (index 1).",
+        "x" = "But also type {type_diff1} (index {index_type_diff1}).",
+        "i" = msg_trigger
       ),
       call = rlang::caller_call()
     )
   }
 
 }
-
 
