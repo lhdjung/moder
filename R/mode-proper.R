@@ -66,9 +66,9 @@ mode_first <- function(x, na.rm = FALSE, na.rm.amount = 0,
                        accept = FALSE) {
   na.rm.from <- match.arg(na.rm.from)
   # The user may choose to ignore any number of missing values (see the utils.R
-  # file for the `decrease_na_amount()` helper function):
+  # file for the `remove_some_na()` helper function):
   if (!missing(na.rm.amount) && na.rm.amount != 0) {
-    x <- decrease_na_amount(x, na.rm, na.rm.amount, na.rm.from)
+    x <- remove_some_na(x, na.rm, na.rm.amount, na.rm.from)
   }
   # Iteration in the for loop will only proceed on known `x` values:
   ix1 <- x[!is.na(x)]
@@ -190,9 +190,9 @@ mode_first <- function(x, na.rm = FALSE, na.rm.amount = 0,
 
 mode_all <- function(x, na.rm = FALSE, na.rm.amount = 0) {
   # The user may choose to ignore any number of missing values (see the utils.R
-  # file for the `decrease_na_amount()` helper function):
+  # file for the `remove_some_na()` helper function):
   if (!missing(na.rm.amount) && na.rm.amount != 0) {
-    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+    x <- remove_some_na(x, na.rm, na.rm.amount)
   }
   # Return `NA` early if required, or remove `NA`s entirely if desired:
   if (length(x) == 0L || all(is.na(x))) {
@@ -301,9 +301,9 @@ mode_single <- function(x, na.rm = FALSE, na.rm.amount = 0, accept = FALSE,
                         multiple = c("NA", "min", "max", "mean", "median",
                                      "first", "last", "random")) {
   # The user may choose to ignore any number of missing values (see the utils.R
-  # file for the `decrease_na_amount()` helper function):
+  # file for the `remove_some_na()` helper function):
   if (!missing(na.rm.amount) && na.rm.amount != 0) {
-    x <- decrease_na_amount(x, na.rm, na.rm.amount)
+    x <- remove_some_na(x, na.rm, na.rm.amount)
   } else if (na.rm) {
     x <- x[!is.na(x)]
   }
